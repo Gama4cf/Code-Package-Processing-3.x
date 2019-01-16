@@ -1,7 +1,9 @@
 读 Generative Design 代码注释
 ===============================================
 
-神书 <Generative Design: Visualize, Program, and Create with Processing > 代码丰富,由浅入深,为以后再读方便,记录代码注释于此.
+神书 <Generative Design: Visualize, Program, and Create with Processing > 
+
+代码丰富,由浅入深,为以后再读方便,记录代码注释于此.
 
 This code package still needs to be updated to Processing 3.x and is work in progress! Most of it should work by now.
 ===============================================
