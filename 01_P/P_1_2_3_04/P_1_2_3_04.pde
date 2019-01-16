@@ -39,7 +39,7 @@ int[] brightnessValues = new int[colorCount];
 int actRandomSeed = 0;
 
 void setup() {
-  size(800, 800, P3D); 
+  size(600, 600, P3D); 
   colorMode(HSB, 360, 100, 100);
   noStroke();
 }
@@ -101,13 +101,15 @@ void draw() {
       sumPartsNow += parts[ii];
 
       if (random(1.0) < 0.45) {
+        //添加x,y随机值，看起来上下并不对齐
         float x = map(sumPartsNow, 0,sumPartsTotal, 0,width)+random(-10,10);
         float y = rowHeight*i+random(-10,10);
         float w = map(parts[ii], 0,sumPartsTotal, 0,width)*-1+random(-10,10);
         float h = rowHeight*1.5;
 
         beginShape();
-        fill(0,0,0, 180);
+        //此处仅仅修改了下层的透明度
+        fill(0, 0, 0, 180);
         vertex(x,y);
         vertex(x+w,y);
         // get component color values + aplha
@@ -145,9 +147,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-

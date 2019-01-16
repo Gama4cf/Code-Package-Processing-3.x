@@ -50,7 +50,7 @@ float angle = getRandomAngle(direction);
 float stepSize = 3;
 int minLength = 10;
 
-// width and brightness of the stroke depend on line length
+// 画笔的宽度和亮度依靠线的长度
 int dWeight = 50;
 int dStroke = 4;
 
@@ -111,12 +111,15 @@ void draw(){
       angle = getRandomAngle(direction);
       float distance = dist(posX, posY, posXcross, posYcross);
       if (distance >= minLength) {
+        //宽度与长度正相关
         strokeWeight(distance/dWeight);
+        //亮度和长度正相关
         if (drawMode == 1) stroke(0);
         if (drawMode == 2) stroke(52, 100, distance/dStroke);
         if (drawMode == 3) stroke(192, 100, 64, distance/dStroke);
         line(posX, posY, posXcross, posYcross);
       }
+      //需要注意:宽度变大,那么在宽度之内(黑色)运动就变随机
       posXcross = posX;
       posYcross = posY;
     }
@@ -178,6 +181,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-

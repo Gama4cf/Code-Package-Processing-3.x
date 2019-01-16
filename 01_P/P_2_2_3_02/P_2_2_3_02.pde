@@ -55,7 +55,8 @@ int mode = 0;
 
 void setup(){
   // use fullscreen size 
-  size(displayWidth, displayHeight);
+  size(displayWidth, displayHeight);  
+  // fullScreen();
   smooth();
 
   // init form
@@ -89,7 +90,8 @@ void draw(){
   strokeWeight(0.75);
   if (filled) fill(random(255));
   else noFill();
-
+  //mode 0,1 之间的区别是什么
+  //mode=0  用来画圆,闭合的
   if (mode == 0) {
     beginShape();
     // start controlpoint
@@ -105,7 +107,7 @@ void draw(){
     curveVertex(x[1]+centerX, y[1]+centerY);
     endShape();
   }
-
+  //mode=1 用来画线,不闭合
   if (mode == 1) {
     beginShape();
     // start controlpoint
@@ -129,7 +131,7 @@ void mousePressed() {
   centerX = mouseX; 
   centerY = mouseY;
 
-  // circle
+  // circle, 同 P_2_2_03_01
   if (mode == 0) {
     centerX = mouseX;
     centerY = mouseY;
@@ -145,16 +147,20 @@ void mousePressed() {
   if (mode == 1) {
     centerX = mouseX;
     centerY = mouseY;
+    ////初始直径的一半到五倍
+    //float radius = initRadius * random(0.5,5.0);
+    ////初始角度
+    //float angle = random(PI);
     float radius = initRadius * random(0.5,5.0);
-    float angle = random(PI);
-    radius = initRadius*4;
-    angle = 0;
+    // 还是画原来圆的步骤,但是这里的角度限制在0或者-pi
+    float angle = 0;
     
     float x1 = cos(angle) * radius;
     float y1 = sin(angle) * radius;
     float x2 = cos(angle-PI) * radius;
     float y2 = sin(angle-PI) * radius;
     for(int i=0; i<formResolution; i++) {
+      // 递增的插值
       x[i] = lerp(x1, x2, i/(float)formResolution);
       y[i] = lerp(y1, y2, i/(float)formResolution);
     }
@@ -175,6 +181,7 @@ void keyReleased() {
 
   if (key == '1') filled = false;
   if (key == '2') filled = true;
+  //快捷键选择 圆或者线模式
   if (key == '3') mode = 0;
   if (key == '4') mode = 1;
 
@@ -210,5 +217,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-

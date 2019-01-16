@@ -84,6 +84,7 @@ void draw() {
   if (doSave) beginRecord(PDF, timestamp()+".pdf");
 
   background(255);
+  // 判断填充样式
   if (filled) {
     noStroke();
     fill(0);
@@ -103,12 +104,14 @@ void draw() {
     grp = font.toGroup(textTyped);
     grp = grp.toPolygonGroup();
     RPoint[] pnts = grp.getPoints();
-
-    // map mouse axis
+    // 书上有详细的分析图
+    // mouseX控制角度
     float addToAngle = map(mouseX, 0,width, -PI,+PI);
+    // mouseY控制曲线高度, 曲线的幅度
     float curveHeight = map(mouseY, 0,height, 0.1,2);
 
     for (int i = 0; i < pnts.length-1; i++ ) {
+      // 下一个点到这个点的距离
       float d = dist(pnts[i].x, pnts[i].y, pnts[i+1].x, pnts[i+1].y);
       // create a gap between each letter
       if (d > 20) continue;
@@ -116,10 +119,11 @@ void draw() {
       float stepper = map(i%2,0,1,-1,1);
       float angle = atan2(pnts[i+1].y-pnts[i].y, pnts[i+1].x-pnts[i].x);
       angle = angle + addToAngle;
-
+      // 
       float cx = pnts[i].x + cos(angle*stepper) * d*4 * curveHeight;
       float cy = pnts[i].y + sin(angle*stepper) * d*3 * curveHeight;
-
+      // Draws a Bezier curve on the screen. These curves are defined by a series of anchor and control points.
+      // 中间两个参数用于控制弯曲率,control point
       bezier(pnts[i].x,pnts[i].y,  cx,cy, cx,cy,  pnts[i+1].x,pnts[i+1].y);
     }
 

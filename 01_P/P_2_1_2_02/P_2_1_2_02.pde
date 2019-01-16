@@ -37,19 +37,19 @@ import processing.pdf.*;
 import java.util.Calendar;
 
 boolean savePDF = false;
-
+//前景背景色
 color moduleColorBackground = color(0);
 color moduleColorForeground = color(255);
-
+//前景背景α通道
 color moduleAlphaBackground = 100;
 color moduleAlphaForeground = 100;
-
+//半径
 float moduleRadiusBackground = 30;
 float moduleRadiusForeground = 15;
 
 color backColor = color(255);
 
-
+//瓷砖数量
 float tileCount = 20;
 int actRandomSeed = 0;
 
@@ -59,35 +59,37 @@ void setup(){
 
 void draw() {
   if (savePDF) beginRecord(PDF, timestamp()+".pdf");
-
+  //平移坐标
   translate(width/tileCount/2, height/tileCount/2);
 
   colorMode(HSB, 360, 100, 100, 100);
   background(backColor);
   smooth();
   noStroke();
-
+  //又在draw()内部设置种子
   randomSeed(actRandomSeed);
-
+  //画背景
   for (int gridY=0; gridY<tileCount; gridY++) {
     for (int gridX=0; gridX<tileCount; gridX++) {
+      //计算中心
       float posX = width/tileCount * gridX;
       float posY = height/tileCount * gridY;
-
-      float shiftX =  random(-1, 1) * mouseX/20;
-      float shiftY =  random(-1, 1) * mouseY/20;
-
+      //计算偏移，保证无论如何偏移都在(width/tileCount±1,height/tileCount±1)
+      //其实保持在上面范围的一般，看起来更形象
+      float shiftX =  random(-1, 1) * mouseX/tileCount;  // /2;
+      float shiftY =  random(-1, 1) * mouseY/tileCount;  // /2;
+      //填充背景色，画出背景圆
       fill(moduleColorBackground, moduleAlphaBackground);
       ellipse(posX+shiftX, posY+shiftY, moduleRadiusBackground, moduleRadiusBackground);
     }
   }
-
+  //画前景
   for (int gridY=0; gridY<tileCount; gridY++) {
     for (int gridX=0; gridX<tileCount; gridX++) {
-
+      //固定的瓷砖中心位置
       float posX = width/tileCount * gridX;
       float posY = height/tileCount * gridY;
-
+      //填充前景色，画前景圆
       fill(moduleColorForeground, moduleAlphaForeground);
       ellipse(posX, posY, moduleRadiusForeground, moduleRadiusForeground);
     }
@@ -106,7 +108,7 @@ void mousePressed() {
 void keyReleased(){
   if (key == 's' || key == 'S') saveFrame(timestamp()+"_##.png");
   if (key == 'p' || key == 'P') savePDF = true;
-
+  //快捷键换色
   if (key == '1'){
     if (moduleColorBackground == color(0)) {
       moduleColorBackground = color(273, 73, 51);
@@ -157,15 +159,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-

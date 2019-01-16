@@ -34,7 +34,7 @@
  * arrow down          : zoom canvas -
  * ctrl                : save png + pdf
  */
-
+// 图形多了之后,每次translate()坐标位置的计算...打开AI算吧
 import processing.pdf.*;
 import java.util.Calendar;
 
@@ -49,7 +49,7 @@ PShape shapeQuestionmark, shapeReturn,  icon1, icon2, icon3, icon4, icon5;
 
 int centerX = 0, centerY = 0, offsetX = 0, offsetY = 0;
 float zoom = 0.75;
-
+// 调色板
 color[] palette = {
   color(253, 195, 0), color(0), color(0, 158, 224), color(99, 33, 129), 
   color(121, 156, 19), color(226, 0, 26), color(224, 134, 178)};
@@ -60,7 +60,7 @@ void setup() {
   size(800, 600);
   // make window resizable
   surface.setResizable(true); 
-
+  // 中心
   centerX = width/2;
   centerY = height/2;  
 
@@ -79,7 +79,8 @@ void setup() {
   icon3 = loadShape("icon3.svg");
   icon4 = loadShape("icon4.svg");
   icon5 = loadShape("icon5.svg");
-
+  // Disables the shape's style data and uses Processing's current styles. 
+  // Styles include attributes such as colors, stroke weight, and stroke joints.
   shapeSpace.disableStyle();
   shapeSpace2.disableStyle();
   shapePeriod.disableStyle();
@@ -98,13 +99,14 @@ void draw() {
   background(255);
   smooth();
   noStroke();
+  // 文本左对齐
   textAlign(LEFT);
-
+  // 计算现在的中心位置
   if (mousePressed == true) {
     centerX = mouseX-offsetX;
     centerY = mouseY-offsetY;
   } 
-
+  // 平移到中心
   translate(centerX,centerY);
   scale(zoom);
 
@@ -117,14 +119,17 @@ void draw() {
   rect(0, -25, 10, 35);
 
   for (int i = 0; i < textTyped.length(); i++) {
+    // 对字符初始的处理
     float fontSize = 25;
     textFont(font,fontSize);
     char letter = textTyped.charAt(i);
     float letterWidth = textWidth(letter);
 
-    // ------ letter rule table ------
+    // ------ 字母规则表 ------
+    // 这是核心规则,定义了输入字符的处理
+    // 注意:坐标原点是跟随光标的
     switch(letter) {
-    case ' ': // space
+    case ' ': // 空格
       // 60% noturn, 20% left, 20% right
       int dir = floor(random(0, 5)); 
       if(dir == 0){
@@ -134,36 +139,36 @@ void draw() {
       }
       if(dir == 1){
         shape(shapeSpace2, 0, 0);
-        translate( 13 ,-5);
+        translate(13 ,-5);
         rotate(-PI/4);
       }
       break;
-
-    case ',': 
+    // 以下所有弧都是 在该坐标系下
+    case ',':   // 逗号, 是一段弧 顺方向 圆心角PI/4
       shape(shapeComma, 0, 0);
       translate(34, 15);
       rotate(PI/4);
       break;
 
-    case '.':
+    case '.':  // 句号 一段弧 逆方向 圆心角 -PI/2
       shape(shapePeriod, 0, 0);
       translate(56, -54);
       rotate(-PI/2);
       break;
 
-    case '!':    
+    case '!':    // 感叹号 一段弧 逆方向 圆心角 -PI/4
       shape(shapeExclamationmark, 0, 0);
       translate(42, -17.4);
       rotate(-PI/4);
       break;
 
-    case '?':
+    case '?':   // 问号  一段弧  顺方向 圆心角 PI/2  
       shape(shapeQuestionmark, 0, 0);
-      translate(42, -18);
-      rotate(-PI/4);
+      translate(42, 42);
+      rotate(PI/2);
       break;
 
-    case '\n': // return
+    case '\n': // 返回键:生成一个新的轨迹
       // start a new line at a random position near the center
       rect(0,-25,10,35);
       popMatrix();
@@ -176,10 +181,12 @@ void draw() {
       rect( 0,-25,10,35);
       break;
 
-    case 'o': // Station big
+    case 'o': // 大站台
       rect(0,0-15,letterWidth+1,15);
+      // 神奇,原来样式也可以保存状态
       pushStyle();
       fill(0);
+      // 站的名字是到站前输入字符指定的
       String station = textTyped.substring(i-10,i-1);
       station = station.toLowerCase();
       station = station.replaceAll(" ", "");

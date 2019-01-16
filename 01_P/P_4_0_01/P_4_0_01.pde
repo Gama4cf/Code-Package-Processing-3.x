@@ -37,6 +37,7 @@ void setup(){
 }
 
 void draw(){
+  // 鼠标控制瓷砖数量
   float tileCountX = mouseX/3+1;
   float tileCountY = mouseY/3+1;
   float stepX = width/tileCountX;
@@ -57,4 +58,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-

@@ -52,10 +52,13 @@ void setup() {
       // skip hidden files and folders starting with a dot, load .png files only
       if (contents[i].charAt(0) == '.') continue;
       else if (contents[i].toLowerCase().endsWith(".png")) {
-        File childFile = new File(dir, contents[i]);        
+        File childFile = new File(dir, contents[i]);       
+        // 载入全部图片
         images[imageCount] = loadImage(childFile.getPath());
+        // 载入全部图片名称
         imageNames[imageCount] = childFile.getName();
         println(imageCount+" "+contents[i]+"  "+childFile.getPath());
+        // 图片数量
         imageCount++;             
       }
     }
@@ -112,7 +115,8 @@ class CollageItem {
 
 
 // ------ collage items helper functions ------
-CollageItem[] generateCollageItems(String thePrefix, int theCount, float thePosX, float thePosY, float theRangeX, float theRangeY, float theScaleStart, float theScaleEnd, float therotationStart, float therotationEnd) {
+CollageItem[] generateCollageItems(String thePrefix, int theCount, float thePosX, 
+      float thePosY, float theRangeX, float theRangeY, float theScaleStart, float theScaleEnd, float therotationStart, float therotationEnd) {
   // collect all images with the specified prefix
   int[] indexes = new int[0];
   for (int i = 0 ; i < imageNames.length; i++) {
@@ -122,7 +126,7 @@ CollageItem[] generateCollageItems(String thePrefix, int theCount, float thePosX
       }
     }
   }
-
+  //新建一个集合,参数添加随机值
   CollageItem[] items = new CollageItem[theCount];
   for (int i = 0 ; i < items.length; i++) {
     items[i] = new CollageItem();
@@ -135,11 +139,12 @@ CollageItem[] generateCollageItems(String thePrefix, int theCount, float thePosX
   return items;
 }
 
-
+// 把集合里面所有的图片全都画出来
 void drawCollageItems(CollageItem[] theItems) {
   for (int i = 0 ; i < theItems.length; i++) {
     pushMatrix();
     translate(theItems[i].x, theItems[i].y);
+    // 转一个随机角度
     rotate(theItems[i].rotation);
     scale(theItems[i].scaling);
     image(images[theItems[i].indexToImage], 0,0);

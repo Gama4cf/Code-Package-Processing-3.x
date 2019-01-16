@@ -31,20 +31,20 @@
  * c                   : save color palette
  */
  
-import generativedesign.*;
+import generativedesign.*;  //导入了自带库
 import processing.pdf.*;
 import java.util.Calendar;
 
 boolean savePDF = false;
 
-int tileCountX = 2;
+int tileCountX = 2;  //tile 瓷砖
 int tileCountY = 10;
 
 color[] colorsLeft = new color[tileCountY];
 color[] colorsRight = new color[tileCountY];
 color[] colors;
 
-boolean interpolateShortest = true;
+boolean interpolateShortest = true; //interpolate 插入
 
 
 void setup() { 
@@ -61,8 +61,9 @@ void draw() {
     noStroke();
     colorMode(HSB,360,100,100,100);
   } 
-
-  tileCountX = (int) map(mouseX,0,width,2,100);
+  //此处map映射到2开始，1不可以，原因没理解！！！
+  //计算瓷砖的数量以及每一块瓷砖的宽和长
+  tileCountX = (int) map(mouseX,0,width,1,100);
   tileCountY = (int) map(mouseY,0,height,2,10);
   float tileWidth = width / (float)tileCountX;
   float tileHeight = height / (float)tileCountY;
@@ -71,17 +72,22 @@ void draw() {
   // just for ase export
   colors = new color[tileCountX*tileCountY];
   int i = 0;
-  
+  //开始循环的创建瓷砖填充颜色
   for (int gridY=0; gridY< tileCountY; gridY++) {
+    //记录边界的颜色值，以方便用于分割
     color col1 = colorsLeft[gridY];
     color col2 = colorsRight[gridY];
 
     for (int gridX=0; gridX< tileCountX ; gridX++) { 
+      //根据 lerp() 函数，需要一个 0-1 之间的数字表示增量
       float amount = map(gridX,0,tileCountX-1,0,1);
-      
+      //填充颜色以及填充 Color 的模式
       if (interpolateShortest) {
         // switch to rgb
         colorMode(RGB,255,255,255,255);
+        //Calculates a number between two numbers at a specific increment. 
+        //The amt parameter is the amount to interpolate between the two values
+        //上面是 lerp() 函数的介绍，使用 lerpColor() 函数的时候，有相同的结论
         interCol = lerpColor(col1,col2, amount); 
         // switch back
         colorMode(HSB,360,100,100,100);
@@ -90,7 +96,7 @@ void draw() {
         interCol = lerpColor(col1,col2, amount); 
       }
       fill(interCol);
-      
+      //绘制此色块的瓷砖
       float posX = tileWidth*gridX;
       float posY = tileHeight*gridY;      
       rect(posX, posY, tileWidth, tileHeight); 
@@ -107,7 +113,7 @@ void draw() {
   }
 } 
 
-
+//shakeColors() 用来初始化边界的颜色
 void shakeColors() {
   for (int i=0; i<tileCountY; i++) {
     colorsLeft[i] = color(random(0,60), random(0,100), 100);

@@ -57,9 +57,6 @@ class ImageRibbon {
     pageInSection = thePageInSection;
     stripIndex = theStripIndex;
 
-    int c1 = 0;
-    int c2 = 0;
-    int c3 = 0;
     colors = new color[count*detail];
     int w = sourceImage.width;
     int h = sourceImage.height;
@@ -215,42 +212,3 @@ class ImageRibbon {
 
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

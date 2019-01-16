@@ -43,8 +43,9 @@ int currentCount = 1;
 float[] x = new float[maxCount];
 float[] y = new float[maxCount];
 float[] r = new float[maxCount]; //radius
+//存储最近的圆环的坐标数组
 int[] closestIndex = new int[maxCount]; //index
-
+//半径的最大最小值
 float minRadius = 3;
 float maxRadius = 50;
 
@@ -63,8 +64,9 @@ void setup() {
   size(800, 800);
   noFill();
   smooth();
+  //Sets the cursor(光标) to a predefined symbol or an image, or makes it visible if already hidden.
   cursor(CROSS);
-
+  //两种图案,一黄一黑
   module1 = loadShape("01.svg");
   module2 = loadShape("02.svg");
 
@@ -82,26 +84,29 @@ void draw() {
   background(255);
 
   for (int j = 0; j < 40; j++) {
-    // create a random position
+    // 创建一组随机参数
     float tx = random(0+maxRadius,width-maxRadius);
     float ty = random(0+maxRadius,height-maxRadius);
     float tr = minRadius;
 
-    // create a random position according to mouse position
+    // 如果鼠标按下了,那就根据鼠标创建一组随机位置
+    // 这组位置波动的范围是 正方形mouseRect 中
     if (mousePressed == true) {
       tx = random(mouseX-mouseRect/2,mouseX+mouseRect/2);
       ty = random(mouseY-mouseRect/2,mouseY+mouseRect/2);
+      //半径非常小,仅为1
       tr = 1;
-    } 
+    }
 
     boolean insection = true;
-    // find a pos with no intersection with others circles
+    // 找一个和已存在圆 互斥的位置
     for(int i=0; i < currentCount; i++) {
       float d = dist(tx,ty, x[i],y[i]);
       //println(d);
       if (d >= (tr + r[i])) insection = false;     
       else {
         insection = true; 
+        //交叉的话直接跳出
         break;
       }
     }
@@ -109,10 +114,13 @@ void draw() {
     // stop process by pressing hotkey 'F'
     if (freeze) insection = true;
 
-    // no intection ... add a new circle
+    // 不交叉的情况下,就创建一个新圆
     if (insection == false) {
       // get closest neighbour and closest possible radius
       float tRadius = width;
+      // 有点乱了... 
+      // 记录最近圆在数组中的序号
+      // 但大体思路是, 与最近圆的距离-最近圆的半径=新圆半径
       for(int i=0; i < currentCount; i++) {
         float d = dist(tx,ty, x[i],y[i]);
         if (tRadius > d-r[i]) {
@@ -120,8 +128,7 @@ void draw() {
           closestIndex[currentCount] = i;
         }
       }
-
-      if (tRadius > maxRadius) tRadius = maxRadius;
+      if (tRadius > maxRadius) tRadius = maxRadius;  // 不超过半径最大值
 
       x[currentCount] = tx;
       y[currentCount] = ty;
@@ -134,11 +141,13 @@ void draw() {
   for (int i=0 ; i < currentCount; i++) {
     pushMatrix();
     translate(x[i],y[i]);
-    // we abuse radius as random angle :)
+    // 我们 滥用 半径 作为 随机 角度 :) 
+    // 转不转有区别?
     rotate(radians(r[i]));
 
     if (showSvg) {
       // draw SVGs
+      // 最大半径的画成黄色的圆
       if (r[i] == maxRadius) shape(module1, 0, 0, r[i]*2,r[i]*2);
       else shape(module2, 0, 0, r[i]*2,r[i]*2);
     }
@@ -160,6 +169,7 @@ void draw() {
   } 
 
   // visualize the random range of the new positions
+  // 鼠标框
   if (mousePressed == true) {
     stroke(255,200,0);
     strokeWeight(2);
@@ -174,7 +184,7 @@ void draw() {
   }
 }
 
-void keyReleased() {
+void keyReleased()  {
   if (key == 's' || key == 'S') saveFrame(timestamp()+"_##.png");
   if (key == 'p' || key == 'P') savePDF = true;
 
@@ -187,7 +197,7 @@ void keyReleased() {
   if (key == '3') showCircle = !showCircle;
 }
 
-void keyPressed() {
+void keyPressed(){
   // mouseRect ctrls arrowkeys up/down 
   if (keyCode == UP) mouseRect += 4;
   if (keyCode == DOWN) mouseRect -= 4; 

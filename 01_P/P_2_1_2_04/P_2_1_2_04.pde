@@ -65,7 +65,7 @@ void draw() {
       
       int posX = width/tileCount * gridX;
       int posY = height/tileCount * gridY;
-
+      //生成四个跟随鼠标坐标 正相关幅度的 随机偏移坐标
       float shiftX1 = mouseX/20 * random(-1, 1);
       float shiftY1 = mouseY/20 * random(-1, 1);
       float shiftX2 = mouseX/20 * random(-1, 1);
@@ -74,7 +74,7 @@ void draw() {
       float shiftY3 = mouseY/20 * random(-1, 1);
       float shiftX4 = mouseX/20 * random(-1, 1);
       float shiftY4 = mouseY/20 * random(-1, 1);
-     
+     //画一个Shape,是一个带有顶点随机抖动的矩形
       beginShape();
       vertex(posX+shiftX1, posY+shiftY1);
       vertex(posX+rectSize+shiftX2, posY+shiftY2);
@@ -106,5 +106,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-

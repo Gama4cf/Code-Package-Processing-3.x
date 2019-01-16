@@ -15,7 +15,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+// 听了一天的<让青春继续> 无尽的悔恨
 /**
  * generating a drawing with 3 brushes by analysing live video
  * 
@@ -68,8 +68,8 @@ void draw() {
   if (video.available()) video.read();
   video.loadPixels();
 
-
-  // first line
+  //接下来一次性画好几条线 
+  // first line: 幅度(-50,50),线宽与色调相关
   pixelIndex = (int) ((video.width-1-int(x1)) + int(y1)*video.width);
   c = video.pixels[pixelIndex];
   float hueValue = hue(c);
@@ -90,7 +90,7 @@ void draw() {
   y1 = curvePointY;
 
 
-  // second line
+  // second line: 幅度(-50,50) 线宽与饱和度相关
   pixelIndex = (int) ((video.width-1-int(x2)) + int(y2)*video.width);
   c = video.pixels[pixelIndex];
   float saturationValue = saturation(c);
@@ -111,7 +111,7 @@ void draw() {
   y2 = curvePointY;
 
 
-  // third line
+  // third line: 幅度:(-50,50), 线宽亮度
   pixelIndex = (int) ((video.width-1-int(x3)) + int(y3)*video.width);
   c = video.pixels[pixelIndex];
   float brightnessValue = brightness(c);
@@ -168,10 +168,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-

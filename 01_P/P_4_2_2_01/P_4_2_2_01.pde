@@ -30,7 +30,7 @@ Movie movie;
 
 // horizontal and vertical grid count
 // take care of the aspect ratio ... here 4:3
-int tileCountX = 12;
+int tileCountX = 16;
 int tileCountY = 16;
 float tileWidth, tileHeight;
 int imageCount = tileCountX*tileCountY; 
@@ -40,40 +40,45 @@ int gridY = 0;
 
 
 void setup() {
-  size(1024, 1024);
+  size(720, 720);
   smooth();
   background(0); 
 
   // specify a path or use selectInput() to load a video
   // or simply put it into the data folder
-  String path = "your/path/to/video";
+  String path = sketchPath()+"\\data\\1.mov";
+  // 打开movie
   movie = new Movie(this, path);
   movie.play();
-
+  // 瓷砖尺寸
   tileWidth = width / (float)tileCountX;
   tileHeight = height / (float)tileCountY;
 }
 
 
 void draw() {
-  float posX = tileWidth*gridX;
-  float posY = tileHeight*gridY;
-
-  // calculate the current time in movieclip
-  float moviePos = map(currentImage, 0,imageCount, 0,movie.duration());
-  movie.jump(moviePos);
-  movie.read();
-  image(movie, posX, posY, tileWidth, tileHeight);
-
-  // new grid position
-  gridX++;
-  if (gridX >= tileCountX) {
-    gridX = 0;
-    gridY++;
+  if (movie.available()){  //读取到了新的帧,才开始画
+    float posX = tileWidth*gridX;
+    float posY = tileHeight*gridY;
+  
+    // calculate the current time in movieclip
+    float moviePos = map(currentImage, 0,imageCount, 0,movie.duration());
+    // Jumps to a specific location within a movie. The parameter where is in terms of seconds. 
+    movie.jump(moviePos);
+  // Reads the current frame of the movie.
+    movie.read();
+    image(movie, posX, posY, tileWidth, tileHeight);
+  
+    // new grid position
+    gridX++;
+    if (gridX >= tileCountX) {
+      gridX = 0;
+      gridY++;
+    }
+  
+    currentImage++;
+    if (currentImage >= imageCount) noLoop();
   }
-
-  currentImage++;
-  if (currentImage >= imageCount) noLoop();
 }
 
 

@@ -111,9 +111,8 @@ class CollageItem {
 }
 
 // ------ collage items helper functions ------
-CollageItem[] generateCollageItems(String thePrefix, int theCount, 
-float theAngle, float theLength, float theRangeA, float theRangeL, 
-float theScaleStart, float theScaleEnd, float theRotationStart, float theRotationEnd) {
+CollageItem[] generateCollageItems(String thePrefix, int theCount,  float theAngle, float theLength, float theRangeA, float theRangeL, 
+     float theScaleStart, float theScaleEnd, float theRotationStart, float theRotationEnd) {
   // collect all images with the specified prefix
   int[] indexes = new int[0];
   for (int i = 0 ; i < imageNames.length; i++) {
@@ -128,9 +127,11 @@ float theScaleStart, float theScaleEnd, float theRotationStart, float theRotatio
   for (int i = 0 ; i < items.length; i++) {
     items[i] = new CollageItem();
     items[i].indexToImage = indexes[i%indexes.length];
+    // 这个旋角 决定 图片围绕中心旋转的角度
     items[i].a = theAngle + random(-theRangeA/2,theRangeA/2);
     items[i].l = theLength + random(-theRangeL/2,theRangeL/2);
     items[i].scaling = random(theScaleStart,theScaleEnd);
+    // 这个旋角 决定 图片的自身旋转
     items[i].rotation = items[i].a + HALF_PI + random(theRotationStart,theRotationEnd);
   }
   return items;

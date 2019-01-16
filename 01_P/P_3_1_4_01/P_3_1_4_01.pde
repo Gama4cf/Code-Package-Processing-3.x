@@ -29,6 +29,7 @@
  * s                    : save png
  * p                    : save pdf
  */
+// 看废了 
 
 import treemap.*;
 import processing.pdf.*;
@@ -66,9 +67,9 @@ void setup() {
 
   // add all words to the treemap
   for (int i = 0; i < words.length; i++) {
-    // translate all to UPPERCASE
+    // translate all to LowerCASE
     String word = words[i].toLowerCase();
-    mapData.addWord(word);     
+    mapData.addWord(word);
   }
 
   //  ------ treemap data is ready ------
@@ -117,21 +118,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

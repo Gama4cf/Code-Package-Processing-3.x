@@ -47,22 +47,26 @@ void setup(){
 }
 
 void draw(){
+  //空,仅在鼠标移动的时候才触发事件
 }
 
 void mouseMoved(){
   background(255);
+  //鼠标x坐标控制字号
   textSize((mouseX-width/2)*5+1);
   text(letter, width/2, mouseY);
 }
 
 void mouseDragged(){
+  // 拖动也控制字号,但因为拖动时连续的动作,导致背景没有刷新
+  // 书上示例就是这么拖出来的...我手抖
   textSize((mouseX-width/2)*5+1);
   text(letter, width/2, mouseY);
 }
 
 void keyReleased() {
   if (keyCode == CONTROL) saveFrame(timeStamp()+"_##.png");
-
+  // 按键更换字符
   if (key != CODED && (int)key > 32) letter = str(key);
 }
 
@@ -72,5 +76,3 @@ String timeStamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-

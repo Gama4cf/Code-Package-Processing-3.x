@@ -49,7 +49,7 @@ void draw() {
   strokeWeight(1);
   strokeJoin(ROUND);
   noFill();
-
+  // 及时每次都random() 但是因为每次的种子都强制置于相同, 所以图形并不会变化
   randomSeed(actRandomSeed);
   beginShape();
   for (int x = 0; x < width; x+=10) {
@@ -62,7 +62,7 @@ void draw() {
   // dots
   noStroke();
   fill(0);
-
+  // 连描点的时候都在使用一遍...明明可以一次搞定
   randomSeed(actRandomSeed);
   for (int x = 0; x < width; x+=10) {
     float y = random(0,height);   
@@ -76,7 +76,7 @@ void draw() {
   }
 
 }
-
+// 只有当鼠标按下的时候,才会生成一个新的种子
 void mouseReleased() {
   actRandomSeed = (int) random(100000);
 }
@@ -90,11 +90,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-

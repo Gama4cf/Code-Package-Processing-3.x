@@ -49,7 +49,8 @@ boolean drawAlpha = true;
 
 
 void setup() {
-  size(670, 800);
+  size(670, 600);
+  // 读取文本,并拼接到一起
   String[] lines = loadStrings("faust_kurz.txt");
   joinedText = join(lines, " ");
 
@@ -71,6 +72,8 @@ void draw() {
   posY = 40;
 
   // go through all characters in the text to draw them  
+  // 每一次draw 都会产生文本中位置 但随着鼠标x的运动 这个文本中位置并不会画出来
+  // 真正画出来的是 中间的插值位置 所以是鼠标左右移动 对应 是否排序 是可逆的
   for (int i = 0; i < joinedText.length(); i++) {
     // again, find the index of the current letter in the alphabet
     String s = str(joinedText.charAt(i)).toUpperCase();
@@ -78,19 +81,20 @@ void draw() {
     int index = alphabet.indexOf(uppercaseChar);
     if (index < 0) continue;
 
-    if (drawAlpha) fill(87, 35, 129, counters[index]*3);
+    if (drawAlpha) fill(87, 35, 129, counters[index]*3);  //数量越多不透明度越大
     else fill(87, 35, 129);
     textSize(18);
+    // 用来排序
+    float sortY = index*20+40;  //每个字符的Y都以固定,这样排完序一行都是一个字母
+    float m = map(mouseX, 50,width-50, 0,1);  //求步进
+    m = constrain(m, 0, 1);  //步进限制在0-1之间
+    float interY = lerp(posY, sortY, m);  // 求中间状态下Y坐标值
 
-    float sortY = index*20+40;
-    float m = map(mouseX, 50,width-50, 0,1);
-    m = constrain(m, 0, 1);
-    float interY = lerp(posY, sortY, m);
-
-    text(joinedText.charAt(i), posX, interY);
-
+    text(joinedText.charAt(i), posX, interY);  //显示中间状态文字
+    //下一个字符的 x坐标 位置
     posX += textWidth(joinedText.charAt(i));
-    if (posX >= width-200 && uppercaseChar == ' ') {
+    // 判断是否需要另起一行
+    if (posX >= width-150 && uppercaseChar == ' ') {
       posY += 30;
       posX = 20;
     }
@@ -102,7 +106,7 @@ void draw() {
   }
 }
 
-
+// 统计各个字符的数量
 void countCharacters(){
   for (int i = 0; i < joinedText.length(); i++) {
     // get one char from the text, convert it to a string and turn it to uppercase
@@ -134,30 +138,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

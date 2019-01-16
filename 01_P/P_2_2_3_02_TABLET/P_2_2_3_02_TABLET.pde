@@ -53,6 +53,7 @@ float[] x = new float[formResolution];
 float[] y = new float[formResolution];
 
 boolean filled = false;
+// 冻结
 boolean freeze = false;
 int mode = 0;
 
@@ -78,7 +79,11 @@ void setup(){
 
 
 void draw(){
-  // gamma values optimized for wacom intuos 3
+  /* 对步进使用gamma优化, 观察表现为:越远越快,越近越慢
+   *public float getPressure()
+   *    Returns the current pressure.
+   * gamma values optimized for wacom intuos 3
+   */
   float pressure = gamma(tablet.getPressure()*1.1, 2.5);
   // map tablet pressure to step size
   stepSize = map(pressure, 0,1, 1,10);
@@ -204,6 +209,7 @@ void keyReleased() {
 
 // gamma ramp, non linaer mapping ...
 float gamma(float theValue, float theGamma) {
+  // theValue^theGamma
   return pow(theValue, theGamma);
 }
 
@@ -212,32 +218,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

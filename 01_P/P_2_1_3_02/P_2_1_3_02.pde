@@ -37,8 +37,9 @@ boolean savePDF = false;
 
 float tileCountX = 5;
 float tileCountY = 5;
-
+//每一侧线的数量
 int count = 10;
+//每一步颜色差
 int colorStep = 20;
 
 int lineWeight = 0;
@@ -56,34 +57,37 @@ void draw() {
   if (savePDF) beginRecord(PDF, timestamp()+".pdf");
 
   colorMode(HSB, 360, 100, 100); 
+  //线型
   strokeWeight(0.5);
   strokeCap(ROUND);
-
+  //瓷砖数量,根据鼠标的坐标控制
   tileCountX = mouseX/30+1;
   tileCountY = mouseY/30+1;
 
   background(backgroundColor);
-
+  //注意:这里开始网格内划线
   for (int gridY=0; gridY<= tileCountY; gridY++) {
     for (int gridX=0; gridX<= tileCountX; gridX++) {  
-
+      //计算瓷砖 宽高位置
       float tileWidth = width/tileCountX;
       float tileHeight = height/tileCountY;
       float posX = tileWidth*gridX;
       float posY = tileHeight*gridY;
-
+      //第一个点:瓷砖的中心点,第二个确定边上的交点,后面用来画线
       float x1 = tileWidth/2;
       float y1 = tileHeight/2;
       float x2 = 0;
       float y2 = 0;
 
       pushMatrix();
+      //平移坐标到瓷砖左上点
       translate(posX, posY);
-
+      //这里是 对每个瓷砖 中绘制出每一条线
       for(int side = 0; side < 4; side++) {
+        //没一条瓷砖的边的方向,都绘制count数量的线
         for(int i=0; i< count; i++) {
 
-           // move end point around the four sides of the tile
+           // 在瓷砖的四条边上移动第二个坐标
           if(side == 0){     
             x2 += tileWidth/count;
             y2 = 0;
@@ -148,7 +152,7 @@ void draw() {
 void keyPressed() {
   if (key == 's' || key == 'S') saveFrame(timestamp()+"_##.png");
   if (key == 'p' || key == 'P') savePDF = true;
-
+  //根据输入键 重置变量 drawMode
   if (key == '1') drawMode = 1;
   if (key == '2') drawMode = 2;
   if (key == '3') drawMode = 3;

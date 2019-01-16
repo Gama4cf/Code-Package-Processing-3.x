@@ -47,7 +47,7 @@ void draw() {
   strokeWeight(1);
   strokeJoin(ROUND);
   noFill();
-
+  // 鼠标X轴控制噪声的幅度
   int noiseXRange = mouseX/10;
   println("noiseXRange: 0-"+noiseXRange);
 
@@ -91,12 +91,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-

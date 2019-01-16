@@ -37,10 +37,9 @@ String inputText = "Ihr naht euch wieder, schwankende Gestalten, Die früh sich 
 float fontSizeMax = 20;
 float fontSizeMin = 10;
 float spacing = 12; // line height
-float kerning = 0.5; // between letters
-
-boolean fontSizeStatic = false;
-boolean blackAndWhite = false;
+float kerning = 0.5; // 字间距
+boolean fontSizeStatic = false;  // 固定字体大小
+boolean blackAndWhite = false;   // 黑白文字
 
 PFont font;
 PImage img;
@@ -71,6 +70,7 @@ void draw() {
     int imgY = (int) map(y, 0,height, 0,img.height);
     // get current color
     color c = img.pixels[imgY*img.width+imgX];
+    // 计算灰度
     int greyscale = round(red(c)*0.222 + green(c)*0.707 + blue(c)*0.071);
 
     pushMatrix();
@@ -141,33 +141,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

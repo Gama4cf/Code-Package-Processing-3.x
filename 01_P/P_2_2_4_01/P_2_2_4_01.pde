@@ -31,9 +31,11 @@ boolean savePDF = false;
 
 int maxCount = 5000; //max count of the cirlces
 int currentCount = 1;
+//生成数组用来保存每一个圆的位置
+//后面方便计算距离,使用像素数组会慢很多 600*600=360000
 float[] x = new float[maxCount];
 float[] y = new float[maxCount];
-float[] r = new float[maxCount]; // radius
+float[] r = new float[maxCount]; // 半径
 
 void setup() {
   size(600,600);
@@ -57,12 +59,13 @@ void draw() {
 
   // create a radom set of parameters
   float newR = random(1, 7);
+  //保证了圆可以在画布中完整呈现
   float newX = random(0+newR, width-newR);
   float newY = random(0+newR, height-newR);
-
+  //指示最近的距离和最近的圆在数组中的位置
   float closestDist = 100000000;
   int closestIndex = 0;
-  // which circle is the closest?
+  // 循环求出最近的
   for(int i=0; i < currentCount; i++) {
     float newDist = dist(newX,newY, x[i],y[i]);
     if (newDist < closestDist) {
@@ -77,14 +80,17 @@ void draw() {
   // line(newX,newY,x[closestIndex],y[closestIndex]);
 
   // aline it to the closest circle outline
+  // atan2():Calculates the angle (in radians) 
+  //         from a specified point to the coordinate origin as measured from the positive x-axis.
+  // 书上清晰描绘了这是一个和x轴正方向的夹角
   float angle = atan2(newY-y[closestIndex], newX-x[closestIndex]);
-
+  // 使用三角函数公式计算出 线性平移之后的位置
   x[currentCount] = x[closestIndex] + cos(angle) * (r[closestIndex]+newR);
   y[currentCount] = y[closestIndex] + sin(angle) * (r[closestIndex]+newR);
   r[currentCount] = newR;
   currentCount++;
 
-  // draw them
+  // draw them, 到目前为止,全部画出
   for (int i=0 ; i < currentCount; i++) {
     //fill(50,150);
     fill(50);

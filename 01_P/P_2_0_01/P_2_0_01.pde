@@ -39,21 +39,24 @@ void setup(){
 
 void draw(){
   if (savePDF) beginRecord(PDF, timestamp()+".pdf");
-
+  //线尾型是正方形；strokeCap：Sets the style for rendering line endings. ROUND,SQUARE,PROJECT
   strokeCap(SQUARE);
-  smooth();
+  //smooth();
   noFill();
   background(255);
   translate(width/2,height/2);
-
+  //mouseY控制线数量，mouseX控制线的长度
   int circleResolution = (int) map(mouseY, 0,height, 2,80);
   float radius = mouseX-width/2 + 0.5;
   float angle = TWO_PI/circleResolution;
 
+  //mouseY控制线的宽度
+  //当靠近x轴的时候，宽度无限接近0
   strokeWeight(mouseY/20);
 
   beginShape();
   for (int i=0; i<=circleResolution; i++){
+    //根据半径和圆心角计算圆上的点
     float x = cos(angle*i) * radius;
     float y = sin(angle*i) * radius;
     line(0, 0, x, y);
@@ -77,6 +80,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-

@@ -48,7 +48,7 @@ boolean randomMode = false;
 
 
 void setup() {
-  size(1600, 1200); 
+  size(800, 600); 
   img = loadImage("image.jpg");
   image(img, 0, 0);
   noCursor();
@@ -62,14 +62,16 @@ void draw() {
   if (selectMode == true) {
     // in selection mode, a white selection rectangle is drawn over the image
     cropX = constrain(mouseX, 0, width-tileWidth);
-    cropY = constrain(mouseY, 0, height-tileHeight);    
+    cropY = constrain(mouseY, 0, height-tileHeight);   
+    // 把img画出来
     image(img, 0, 0);
     noFill();
     stroke(255);
+    // 画出选择框
     rect(cropX, cropY, tileWidth, tileHeight);
   } 
   else {
-    // reassemble image
+    // 画出瓷砖数组
     int i = 0;
     for (int gridY = 0; gridY < tileCountY; gridY++){
       for (int gridX = 0; gridX < tileCountX; gridX++){
@@ -77,9 +79,7 @@ void draw() {
         i++;
       }
     }
-
   }
-
 }
 
 void cropTiles() {
@@ -91,12 +91,15 @@ void cropTiles() {
   int i = 0;
   for (int gridY = 0; gridY < tileCountY; gridY++){
     for (int gridX = 0; gridX < tileCountX; gridX++){
+      // 随机模式
       if (randomMode){
         cropX = (int) random(mouseX-tileWidth/2, mouseX+tileWidth/2);
         cropY = (int) random(mouseY-tileHeight/2, mouseY+tileHeight/2);
       }
+      // 不可以出边界了,限制在边界里面
       cropX = constrain(cropX, 0, width-tileWidth);
       cropY = constrain(cropY, 0, height-tileHeight);
+      // 获取选定的方块,把瓷砖数组全部重置为选定的方块
       imageTiles[i++] = img.get(cropX, cropY, tileWidth, tileHeight);
     }
   }
@@ -116,9 +119,10 @@ void mouseReleased(){
 
 void keyReleased(){
   if (key == 's' || key == 'S') saveFrame(timestamp()+"_##.png");
-
+  // 随机模式开关
   if (key == 'r' || key == 'R') {
     randomMode = !randomMode;
+    // 重新获取方块
     cropTiles();
   }
 
@@ -145,27 +149,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

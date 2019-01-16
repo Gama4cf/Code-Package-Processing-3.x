@@ -51,7 +51,7 @@ float posX, posY;
 
 
 void setup() {
-  size(800, 800);
+  size(800, 600);
   background(255);
   smooth();
   noStroke();
@@ -61,9 +61,11 @@ void setup() {
 
 
 void draw() {
+  //mouseX控制每次画的圆的数量,尴尬的是源直径为1
   for (int i=0; i<=mouseX; i++) {
+    //随机的方向
     direction = (int) random(0, 8);
-
+    //定义各个方向的坐标运动
     if (direction == NORTH) {  
       posY -= stepSize;  
     } 
@@ -92,12 +94,12 @@ void draw() {
       posX -= stepSize;
       posY -= stepSize;
     }
-
+    //超过边界的时候,从对面开始
     if (posX > width) posX = 0;
     if (posX < 0) posX = width;
     if (posY < 0) posY = height;
     if (posY > height) posY = 0;
-
+    //圆的颜色填充
     fill(0, 40);
     ellipse(posX+stepSize/2, posY+stepSize/2, diameter, diameter);
   }

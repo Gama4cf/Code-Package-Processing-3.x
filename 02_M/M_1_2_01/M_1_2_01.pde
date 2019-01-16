@@ -46,18 +46,19 @@ void draw() {
   if (savePDF) beginRecord(PDF, timestamp()+".pdf");
   background(255);
   noStroke();
-
+  // 生成用作迭代步进的, 这个值很无关紧要了
   float faderX = (float)mouseX/width;
-
+  // 尽管看起来是随机的,但因为每次都是相同的种子,所以每次随机点位置也都是相同的
   randomSeed(actRandomSeed);
   float angle = radians(360/float(count));
   for (int i=0; i<count; i++){
-    // positions
+    // 位置是随机的
     float randomX = random(0,width);  
     float randomY = random(0,height);
-    float circleX = width/2 + cos(angle*i)*300;
-    float circleY = height/2 + sin(angle*i)*300;
-
+    // 改成半径和mouse坐标相关更好玩,哈哈
+    float circleX = width/2 + cos(angle*i)*mouseX/2;
+    float circleY = height/2 + sin(angle*i)*mouseY/2;
+    // 目标位置是固定的  以中心点为圆心,以mouseX/2 mouseY/2 为两轴
     float x = lerp(randomX,circleX, faderX);
     float y = lerp(randomY,circleY, faderX);
 
@@ -84,8 +85,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-

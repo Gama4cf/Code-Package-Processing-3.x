@@ -24,12 +24,12 @@
  * 
  * KEYS
  * a-z                 : text input (keyboard)
- * ,.!? and return     : curves
- * space               : small curve with random direction
+ * ,.!? and return     : curves, 一个曲线
+ * space               : small curve with random direction, 一个随机方向的小曲线
  * del, backspace      : remove last letter
  * arrow up            : zoom canvas +
  * arrow down          : zoom canvas -
- * alt                 : new random layout
+ * alt                 : new random layout 新的随机的一层
  * ctrl                : save png + pdf
  */
 
@@ -41,12 +41,12 @@ boolean savePDF = false;
 
 PFont font;
 String textTyped = "";
-
+// 把各个图形都实例化
 PShape shapeSpace, shapeSpace2, shapePeriod, shapeComma;
 PShape shapeQuestionmark, shapeExclamationmark, shapeReturn;
-
+// 定义坐标 中心和偏移
 int centerX = 0, centerY = 0, offsetX = 0, offsetY = 0;
-float zoom = 0.75;
+float zoom = 0.75;  // 放缩尺寸
 
 
 int actRandomSeed = 6;
@@ -68,13 +68,13 @@ void setup() {
   textTyped += "Und subtrahiere, \n\n";
   textTyped += "Kontrolliere\nUnd komponiere\nUnd wenn ich diese Taste drück,\nSpielt er ein kleines Musikstück?\n\n";
   
-
+  // 定义中心位置
   centerX = width/2;
   centerY = height/2;  
 
   font = createFont("miso-bold.ttf",10);
   //font = createFont("Arial",10);
-
+  // 载入图形
   shapeSpace = loadShape("space.svg");
   shapeSpace2 = loadShape("space2.svg");
   shapePeriod = loadShape("period.svg");
@@ -82,7 +82,7 @@ void setup() {
   shapeExclamationmark = loadShape("exclamationmark.svg");
   shapeQuestionmark = loadShape("questionmark.svg");
   shapeReturn = loadShape("return.svg");
-
+  // 手型鼠标
   cursor(HAND);
 }
 
@@ -95,7 +95,7 @@ void draw() {
   smooth();
   noStroke();
   textAlign(LEFT);
-
+  //计算偏移之后的中心位置
   if (mousePressed == true) {
     centerX = mouseX-offsetX;
     centerY = mouseY-offsetY;
@@ -103,11 +103,12 @@ void draw() {
 
   // allways produce the same sequence of random numbers
   randomSeed(actRandomSeed);
-
+  // 原点转移到心在的中心位置
   translate(centerX,centerY);
   scale(zoom);
 
   for (int i = 0; i < textTyped.length(); i++) {
+    // 字符尺寸,字符,宽度
     float fontSize = 25;
     textFont(font,fontSize);
     char letter = textTyped.charAt(i);
@@ -179,7 +180,7 @@ void draw() {
   }
 }
 
-
+// 计算偏移
 void mousePressed(){
   offsetX = mouseX-centerX;
   offsetY = mouseY-centerY;

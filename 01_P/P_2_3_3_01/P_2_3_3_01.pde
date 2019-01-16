@@ -37,11 +37,14 @@ import java.util.Calendar;
 boolean recordPDF = false;
 
 float x = 0, y = 0;
+// 步进
 float stepSize = 5.0;
-
+// 字体实例
 PFont font;
 String letters = "Sie hören nicht die folgenden Gesänge, Die Seelen, denen ich die ersten sang, Zerstoben ist das freundliche Gedränge, Verklungen ach! der erste Wiederklang.";
+// 最小字号
 int fontSizeMin = 3;
+// 弯曲角
 float angleDistortion = 0.0;
 
 int counter = 0;
@@ -56,7 +59,7 @@ void setup() {
 
   x = mouseX;
   y = mouseY;
-
+  // 初始字体的设置
   font = createFont("American Typewriter",10);
   //font = createFont("ArnhemFineTT-Normal",10);
   textFont(font,fontSizeMin);
@@ -75,22 +78,28 @@ void setup() {
 void draw() {
   if (mousePressed) {
     float d = dist(x,y, mouseX,mouseY);
+    // 文本的字号 = 半径的一半加上最小字号
     textFont(font,fontSizeMin+d/2);
+    // 新的字符
     char newLetter = letters.charAt(counter);
+    // 新的步进 = 新字符的字号相同
     stepSize = textWidth(newLetter);
-
+    // 生成文字
     if (d > stepSize) {
+      // 计算 原来点到鼠标点向量 与 x轴正方向 夹角
       float angle = atan2(mouseY-y, mouseX-x); 
 
       pushMatrix();
       translate(x, y);
+      // 给每一个字符一个随机的 弯曲角度: 
+      // 每个字符并非按照鼠标方向排列,而是有了自己的旋角
       rotate(angle + random(angleDistortion));
       text(newLetter, 0, 0);
       popMatrix();
-
+      // 在letters文本中循环
       counter++;
       if (counter > letters.length()-1) counter = 0;
-
+      // 按 有角度的步进 获取下一字符的点
       x = x + cos(angle) * stepSize;
       y = y + sin(angle) * stepSize; 
     }
@@ -126,7 +135,7 @@ void keyReleased() {
       recordPDF = false;
       background(255); 
     }
-  } 
+  }
 }
 
 void keyPressed() {
@@ -140,20 +149,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

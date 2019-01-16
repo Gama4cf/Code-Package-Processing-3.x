@@ -40,6 +40,7 @@ int drawMode = 1;
 void setup() {
   size(603, 873); //size should be multiple of img width and height
   smooth();
+  // 导入原图
   img = loadImage("pic.png");
   println(img.width+" x "+img.height);
 }
@@ -48,10 +49,10 @@ void setup() {
 void draw() {
   if (savePDF) beginRecord(PDF, timestamp()+".pdf");
   background(255);
-
+  // 鼠标坐标控制影响因数
   float mouseXFactor = map(mouseX, 0,width, 0.05,1);
   float mouseYFactor = map(mouseY, 0,height, 0.05,1);
-
+  // 描点
   for (int gridX = 0; gridX < img.width; gridX++) {
     for (int gridY = 0; gridY < img.height; gridY++) {
       // grid position + tile size
@@ -61,9 +62,10 @@ void draw() {
       float posY = tileHeight*gridY;
 
       // get current color
+      // pixels[] 是一行的
       color c = img.pixels[gridY*img.width+gridX];
-      // greyscale conversion
-      int greyscale =round(red(c)*0.222+green(c)*0.707+blue(c)*0.071);
+      // 灰度范围转换
+      int greyscale = round(red(c)*0.222+green(c)*0.707+blue(c)*0.071);
 
       switch(drawMode) {
       case 1:
@@ -71,6 +73,7 @@ void draw() {
         float w1 = map(greyscale, 0,255, 15,0.1);
         stroke(0);
         strokeWeight(w1 * mouseXFactor);
+        // 小短线
         line(posX, posY, posX+5, posY+5); 
         break;
       case 2:
@@ -79,21 +82,26 @@ void draw() {
         noStroke();
         float r2 = 1.1284 * sqrt(tileWidth*tileWidth*(1-greyscale/255.0));
         r2 = r2 * mouseXFactor * 3;
+        // 小圆点
         ellipse(posX, posY, r2, r2);
         break;
       case 3:
         // greyscale to line length
         float l3 = map(greyscale, 0,255, 30,0.1);
+        // I3受鼠标横坐标控制
         l3 = l3 * mouseXFactor;   
         stroke(0);
+        // 线的宽度受鼠标纵坐标控制
         strokeWeight(10 * mouseYFactor);
         line(posX, posY, posX+l3, posY+l3);
         break;
       case 4:
         // greyscale to rotation, line length and stroke weight
         stroke(0);
+        // w4控制线宽
         float w4 = map(greyscale, 0,255, 10,0);
         strokeWeight(w4 * mouseXFactor + 0.1);
+        // I4控制线长
         float l4 = map(greyscale, 0,255, 35,0);
         l4 = l4 * mouseYFactor;
         pushMatrix();
@@ -109,6 +117,7 @@ void draw() {
         // get neighbour pixel, limit it to image width
         color c2 = img.get(min(gridX+1,img.width-1), gridY);
         stroke(c2);
+        // 灰度越大,越凸
         int greyscale2 = int(red(c2)*0.222 + green(c2)*0.707 + blue(c2)*0.071);
         float h5 = 50 * mouseXFactor;
         float d1 = map(greyscale, 0,255, h5,0);
@@ -119,6 +128,7 @@ void draw() {
         // pixel color to fill, greyscale to ellipse size
         float w6 = map(greyscale, 0,255, 25,0);
         noStroke();
+        // 填充原色
         fill(c);
         ellipse(posX, posY, w6 * mouseXFactor, w6 * mouseXFactor); 
         break;
@@ -126,16 +136,19 @@ void draw() {
         stroke(c);
         float w7 = map(greyscale, 0,255, 5,0.1);
         strokeWeight(w7);
+        // 鼠标X控制亮度 
         fill(255,255* mouseXFactor);
         pushMatrix();
         translate(posX, posY);
+        // 灰度越大,鼠标Y坐标越大,转角越大 
         rotate(greyscale/255.0 * PI* mouseYFactor);
-        rect(0,0,15,15);
-        popMatrix();
+        // 画方
         break;
       case 8:
         noStroke();
+        // RGB 使用灰度影响
         fill(greyscale,greyscale * mouseXFactor,255* mouseYFactor);
+        // 画方
         rect(posX,posY,3.5,3.5);
         rect(posX+4,posY,3.5,3.5);
         rect(posX,posY+4,3.5,3.5);
@@ -146,6 +159,7 @@ void draw() {
         noFill();
         pushMatrix();
         translate(posX, posY);
+        // 转角仅仅影响到了rect???
         rotate(greyscale/255.0 * PI);
         strokeWeight(1);
         rect(0,0,15* mouseXFactor,15* mouseYFactor);
@@ -156,7 +170,6 @@ void draw() {
         popMatrix();
         break;
       }
-
     }
   }
 
@@ -170,7 +183,7 @@ void draw() {
 void keyReleased() {
   if (key == 's' || key == 'S') saveFrame(timestamp()+"_##.png");
   if (key == 'p' || key == 'P') savePDF = true;
-
+  // 切换各种模式
   if (key == '1') drawMode = 1;
   if (key == '2') drawMode = 2;
   if (key == '3') drawMode = 3;
@@ -188,32 +201,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

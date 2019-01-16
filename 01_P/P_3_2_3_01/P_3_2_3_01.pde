@@ -84,6 +84,8 @@ void setup() {
   //RCommand.setSegmentator(RCommand.ADAPTATIVE);
 
   grp = font.toGroup(typedKey+"");
+  // getWidth(): Use this method to get the width of the element
+  // Returns:float, the width of the element
   textW = grp.getWidth();
   pnts = grp.getPoints(); 
 
@@ -105,8 +107,10 @@ void draw() {
   if (grp.getWidth() > 0) {
     // let the points dance
     for (int i = 0; i < pnts.length; i++ ) {
+      // 这就导致各个点都会在周围随机移动
+      // 迭代数次之后,有点飘悠悠
       pnts[i].x += random(-stepSize,stepSize)*danceFactor;
-      pnts[i].y += random(-stepSize,stepSize)*danceFactor;  
+      pnts[i].y += random(-stepSize,stepSize)*danceFactor;
     }
 
     //  ------ lines: connected rounded  ------
@@ -129,6 +133,7 @@ void draw() {
     stroke(0);
     beginShape();
     for (int i=0; i<pnts.length; i++){
+      // 连接各个点, 把原来点变成圆
       vertex(pnts[i].x, pnts[i].y);
       ellipse(pnts[i].x, pnts[i].y, 7, 7);
     }

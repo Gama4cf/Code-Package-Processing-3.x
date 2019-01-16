@@ -51,7 +51,7 @@ int posX, posY;
 int tracking = 29;
 
 int actRandomSeed = 0;
-
+// 定义四个开关:alpha,线,圆,文本
 boolean drawAlpha = true;
 boolean drawLines = true;
 boolean drawEllipses = true;
@@ -59,7 +59,7 @@ boolean drawText = false;
 
 
 void setup() {
-  size(1400, 800);
+  size(1200, 700);
   lines = loadStrings("faust_kurz.txt");
   joinedText = join(lines, " ");
 
@@ -91,22 +91,26 @@ void draw() {
     int index = alphabet.indexOf(uppercaseChar);
     if (index < 0) continue;
 
-    // ------ calculate parameters ------
+    // ------ 计算参数 ------
     float charAlpha = 100;
     if (drawAlpha) charAlpha = counters[index];
 
     float my = map(mouseY, 50,height-50, 0,1);
     my = constrain(my, 0, 1);
+    // mouseY控制charSize
     float charSize = counters[index] * my * 3;
-
+    // mouseX控制mx
     float mx = map(mouseX, 50,width-50, 0,1);
     mx = constrain(mx, 0, 1);
+    // charSize控制线长
     float lineLength = charSize;
+    // mx 控制角度的发散程度 
     float lineAngle = random(-PI, PI) * mx - HALF_PI;
+    // 定义新点, 后面用来画线
     float newPosX = lineLength * cos(lineAngle);
     float newPosY = lineLength * sin(lineAngle);
 
-    // ------ draw elements ------
+    // ------ 画基本元素:线 圆 ------
     pushMatrix();
     translate(posX, posY);
     stroke(273, 73, 51, charAlpha);
@@ -115,7 +119,7 @@ void draw() {
     fill(52, 100, 71, charAlpha);
     if (drawEllipses) ellipse(0, 0, charSize/10, charSize/10);
     popMatrix();
-
+    // 生成下一个字符的默认坐标
     posX += textWidth(joinedText.charAt(i));
     if (posX >= width-200 && uppercaseChar == ' ') {
       posY += int(tracking*my+30);
@@ -123,7 +127,7 @@ void draw() {
     }
   }
 
-  // ------ draw letters ------
+  // ------ 画字符 ------
   if (drawText) {
     posX = 80;
     posY = 300;
@@ -136,7 +140,7 @@ void draw() {
       int index = alphabet.indexOf(uppercaseChar);
       if (index < 0) continue;
 
-      // ------ calculate parameters ------
+      // ------ 计算参数:搞了两遍???感觉两个整合到上面一个里面就行了 ------
       float charAlpha = 100;
       if (drawAlpha) charAlpha = counters[index];
 
@@ -151,7 +155,7 @@ void draw() {
       float newPosX = lineLength * cos(lineAngle);
       float newPosY = lineLength * sin(lineAngle);
 
-      // ------ draw elements ------
+      // ------ 画基本元素:  字符 ------
       pushMatrix();
       translate(posX, posY);
       fill(0, charAlpha);
@@ -210,26 +214,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

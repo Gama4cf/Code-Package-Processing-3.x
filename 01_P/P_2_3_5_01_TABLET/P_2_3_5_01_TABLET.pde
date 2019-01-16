@@ -36,7 +36,8 @@
  * r                   : start pdf recording
  * e                   : stop pdf recording
  */
-
+// 鼠标没压力没法画
+// 考虑增加一个Timer,根据鼠标按下时间判断压力 导致:宽的画的慢,细的画的快XXX
 import generativedesign.*;
 import processing.pdf.*;
 import java.util.Calendar;
@@ -67,15 +68,17 @@ void setup() {
 
 void draw() {
   // gamma values optimized for wacom intuos 3
+  // 到现在书上才对压力有介绍...笔尖对画板的力
   float pressure = gamma(tablet.getPressure(), 2.5);
   float angle = tablet.getAzimuth();
+  // Altitude高度,海拔, 笔触长度
   float penLength = cos(tablet.getAltitude());
 
   if (pressure > 0.0 && penLength > 0.0) {
     pushMatrix();
     translate(mouseX,mouseY);
     rotate(angle);
-
+    // 对象的长度
     float elementLength = penLength*250;
     float h1 = random(10)*(1.2+penLength);
     float h2 = (-10+random(10))*(1.2+penLength);
@@ -107,7 +110,7 @@ void draw() {
 
     float[] pointsX = new float[5];
     float[] pointsY = new float[5];
-
+    // 感觉画出来像一片羽毛
     pointsX[0] = 0; 
     pointsY[0] = 0;
     pointsX[1] = elementLength*0.77; 
@@ -118,7 +121,7 @@ void draw() {
     pointsY[3] = h2;
     pointsX[4] = 0; 
     pointsY[4] = -5;
-
+    // 用曲线画图形, 开始和结尾两个点用于定义弯曲率
     beginShape();
     // start controlpoint
     curveVertex(pointsX[3],pointsY[3]); 
@@ -141,7 +144,7 @@ void keyReleased() {
   if (key == '1') drawMode = 1;
   if (key == '2') drawMode = 2;
   if (key == '3') drawMode = 3;
-
+  // 不一样的颜色
   if (key == '6') {
     fromColor = color(181, 157, 0);
     toColor = color(181, 157, 0);
@@ -193,64 +196,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -72,12 +72,14 @@ void draw() {
 
       pushMatrix();
       translate(posX, posY);
-
+      //和P_2_1_3_03仅仅下面部分有差异
       // switch between modules
       switch (drawMode) {
       case 1:
         for(int i=0; i < count; i++) {
+          //画一个矩形,矩形CENTER模式画
           rect(0, 0, tileWidth, tileHeight);
+          //后面每次缩小一些,并且旋转一些
           scale(1 - 3.0/count);
           rotate(para*0.1);
         }
@@ -86,11 +88,15 @@ void draw() {
       case 2:
         for(float i=0; i< count; i++) {
           noStroke();
+          //添加了颜色的差值递增
           color gradient = lerpColor(color(0), color(52, 100, 71), i/count);
           fill(gradient, i/count*200);
+          //初始角度变为90°
           rotate(PI/4);
           rect(0, 0, tileWidth, tileHeight);
+          //缩小一些
           scale(1 - 3.0/count);
+          //再旋转一些角度
           rotate(para*1.5);
         }
         break;
@@ -103,7 +109,9 @@ void draw() {
           fill(gradient,170);
 
           pushMatrix();
+          //横向的偏移
           translate(4*i,0);
+          //绘制圆形
           ellipse(0, 0, tileWidth/4, tileHeight/4);
           popMatrix();
 
@@ -111,8 +119,9 @@ void draw() {
           translate(-4*i,0);
           ellipse(0, 0, tileWidth/4, tileHeight/4);
           popMatrix();
-
+          //尺寸和旋角
           scale(1 - 1.5/count);
+          //最小转0°,最大转1.5弧度
           rotate(para*1.5);
         }
 
@@ -150,14 +159,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-

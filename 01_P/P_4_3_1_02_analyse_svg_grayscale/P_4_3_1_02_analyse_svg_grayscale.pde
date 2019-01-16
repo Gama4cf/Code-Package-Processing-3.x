@@ -32,24 +32,24 @@ import java.io.File;
 
 
 void setup() {
-  size(256, 256);
+  size(1280, 720);
   smooth();
   // ------ load shapes ------
   // replace this location with a folder on your machine
-  dir = new File("your/path/to/folder");
-  //File dir = new File(sketchPath,"data");
+  //dir = new File("you/path/to/dir");
+  File dir = new File(sketchPath(),"data");
   if (dir.isDirectory()) {
     String[] contents = dir.list();
     shapes = new PShape[contents.length]; 
     fileNames = new String[contents.length];
-    for (int i = 0 ; i < contents.length; i++) {
+    for (int i = 0; i < contents.length; i++) {
       // skip hidden files and folders starting with a dot, load .png files only
       if (contents[i].charAt(0) == '.') continue;
       else if (contents[i].toLowerCase().endsWith(".svg")) {
-        File childFile = new File(dir, contents[i]);        
+        File childFile = new File(dir, contents[i]);
         shapes[shapeCount] = loadShape(childFile.getPath());
         fileNames[shapeCount] = contents[i];
-        shapeCount++;             
+        shapeCount++;
       }
     }
   }
@@ -64,7 +64,7 @@ void draw() {
   float sumR = 0, sumG = 0, sumB = 0;
 
   for (int i = 0 ; i < pixels.length; i++) {
-    // extract red, green, and blue components from pixels[i]
+     //extract red, green, and blue components from pixels[i]
     int r = (pixels[i] >> 16) & 0xFF;
     int g = (pixels[i] >> 8) & 0xFF;
     int b = pixels[i] & 0xFF;
@@ -78,7 +78,8 @@ void draw() {
   sumB /= (float)pixels.length;
   float averageGreyScale = sumR*0.222 + sumG*0.707 + sumB*0.071;
 
-  println(counter+"  "+fileNames[counter]+"  average greyscale -> "+round(averageGreyScale)+"  "+((1-averageGreyScale/255.0)*100)+ " %");
+  println(counter+"  "+fileNames[counter]+"  average greyscale -> "
+    +round(averageGreyScale)+"  "+((1-averageGreyScale/255.0)*100)+ " %");
 
   // rename files
   String namePrefix = nf(round(averageGreyScale), 3);
@@ -91,14 +92,3 @@ void draw() {
   counter++;
   if (counter >= shapeCount) noLoop();
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -39,7 +39,7 @@ import java.util.Calendar;
 boolean savePDF = false;
 
 PShape currentShape;
-
+//全局的变量，瓷砖数量，宽高，大小，旋转角
 int tileCount = 10;
 float tileWidth, tileHeight;
 float shapeSize = 50;
@@ -59,6 +59,7 @@ void setup(){
 
   tileWidth = width/float(tileCount);
   tileHeight = height/float(tileCount);
+  //最大距离
   maxDist = sqrt(sq(width)+sq(height));
 
   currentShape = loadShape("module_1.svg");
@@ -73,33 +74,33 @@ void draw(){
 
   for (int gridY=0; gridY<tileCount; gridY++) {
     for (int gridX=0; gridX<tileCount; gridX++) {
-
+      //每个瓷砖的中心坐标
       float posX = tileWidth*gridX + tileWidth/2;
       float posY = tileHeight*gridY + tileWidth/2;
 
       // calculate angle between mouse position and actual position of the shape
       float angle = atan2(mouseY-posY, mouseX-posX) + radians(shapeAngle);
-
+      //尺寸模式
       if (sizeMode == 0) newShapeSize = shapeSize;
-      if (sizeMode == 1) newShapeSize = shapeSize*1.5-map(dist(mouseX,mouseY,posX,posY),0,500,5,shapeSize);
-      if (sizeMode == 2) newShapeSize = map(dist(mouseX,mouseY,posX,posY),0,500,5,shapeSize);
-
+      if (sizeMode == 1) newShapeSize = shapeSize*1.5-map(dist(mouseX,mouseY,posX,posY),0,500,5,shapeSize);  //越近的越大
+      if (sizeMode == 2) newShapeSize = map(dist(mouseX,mouseY,posX,posY),0,500,5,shapeSize);  //越近的越大
+      //填充模式
       if (fillMode == 0) currentShape.enableStyle();
       if (fillMode == 1) {
         currentShape.disableStyle();
         fill(shapeColor);      
       }
-      if (fillMode == 2) {
+      if (fillMode == 2) { //透明度与距离成反比
         currentShape.disableStyle();
         float a = map(dist(mouseX,mouseY,posX,posY), 0,maxDist, 255,0);
         fill(shapeColor, a);      
       }
-      if (fillMode == 3) {
+      if (fillMode == 3) { //成正比
         currentShape.disableStyle();
         float a = map(dist(mouseX,mouseY,posX,posY), 0,maxDist, 0,255);
         fill(shapeColor, a);      
       }
-
+      //转换坐标画图
       pushMatrix();
       translate(posX, posY);
       rotate (angle);
@@ -123,7 +124,7 @@ void keyPressed() {
   if (key == 'p' || key == 'P') savePDF = true;
   if (key == 'c' || key == 'C') fillMode = (fillMode+1) % 4;
   if (key == 'd' || key == 'D') sizeMode = (sizeMode+1) % 3;
-
+  //快捷键增加形状的数量
   if (key == 'g' || key == 'G') {
     tileCount = tileCount+5;
     if (tileCount > 20) {
@@ -132,7 +133,7 @@ void keyPressed() {
     tileWidth = width/float(tileCount);
     tileHeight = height/float(tileCount);
   }
-
+  //改变导入的形状
   if (key == '1') currentShape = loadShape("module_1.svg");
   if (key == '2') currentShape = loadShape("module_2.svg");
   if (key == '3') currentShape = loadShape("module_3.svg");
@@ -140,7 +141,7 @@ void keyPressed() {
   if (key == '5') currentShape = loadShape("module_5.svg");
   if (key == '6') currentShape = loadShape("module_6.svg");
   if (key == '7') currentShape = loadShape("module_7.svg");
-
+  //改变形状的大小，初始方向
   if (keyCode == UP) shapeSize +=5;
   if (keyCode == DOWN) shapeSize = max(shapeSize-5, 5);
   if (keyCode == LEFT) shapeAngle -=5;
@@ -152,13 +153,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-

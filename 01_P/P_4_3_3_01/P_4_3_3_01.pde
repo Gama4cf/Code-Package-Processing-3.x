@@ -63,24 +63,25 @@ void draw() {
   colorMode(HSB, 360, 100, 100);
   smooth();
   noFill();
-
+  // 画速和 mouseX 正相关
   for (int j=0; j<=mouseX/50; j++) {
     // get actual web cam image
     if (video.available()) video.read();
     video.loadPixels();
 
-    // first line
+    // 算出在 pixels[] 中的位置
     int pixelIndex = ((video.width-1-x) + y*video.width);
     color c = video.pixels[pixelIndex];
     //float hueValue = hue(c);
-    strokeWeight(hue(c)/50);
-    stroke(c);
-
+    strokeWeight(hue(c)/50);  //线条粗细根据色调决定
+    stroke(c);  
+    // 扩散程度和鼠标Y坐标相关
     diffusion = map(mouseY, 0,height, 5,100);
 
     beginShape();
     curveVertex(x, y);
     curveVertex(x, y);
+    // 每次循环的连接的点数 越多看起来越想毛线球...
     for (int i = 0; i < pointCount; i++) {
       int rx = (int) random(-diffusion, diffusion);
       curvePointX = constrain(x+rx, 0, width-1);
@@ -130,11 +131,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-

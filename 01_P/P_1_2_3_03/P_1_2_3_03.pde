@@ -1,24 +1,6 @@
-// P_1_2_3_03.pde
-// 
-// Generative Gestaltung, ISBN: 978-3-87439-759-9
-// First Edition, Hermann Schmidt, Mainz, 2009
-// Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
-// Copyright 2009 Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
-//
-// http://www.generative-gestaltung.de
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 /**
  * generates a specific color palette and some random "rect-tilings"
- * 
+ * 与 P_1_2_3_02 处绘制图形部分非常相似
  * MOUSE
  * left click          : new composition
  * 
@@ -35,8 +17,9 @@ int colorCount = 20;
 int[] hueValues = new int[colorCount];
 int[] saturationValues = new int[colorCount];
 int[] brightnessValues = new int[colorCount];
+//增加了α通道，这样下层的颜色在上面也可以看到
 int alphaValue = 27;
-
+//伪随机数的种子
 int actRandomSeed = 0;
 
 void setup() {
@@ -95,18 +78,23 @@ void draw() {
     // add all subparts
     float sumPartsTotal = 0;
     for(int ii=0; ii<partCount; ii++) sumPartsTotal += parts[ii];
-
-    // draw rects
+    //↑以上可参照P_1_2_3_02，极其类似
+    // 绘制瓷砖
     float sumPartsNow = 0;
     for(int ii=0; ii<parts.length; ii++) {
       sumPartsNow += parts[ii];
-
+      //使用当前行 前面块总宽度 映射到 宽度
       float x = map(sumPartsNow, 0,sumPartsTotal, 0,width);
       float y = rowHeight*i;
+      //宽度：因为 x 的映射的值位于图形右上角，×-1 表示向左方向画
       float w = map(parts[ii], 0,sumPartsTotal, 0,width)*-1;
+      //高度是行宽的1.5倍
       float h = rowHeight*1.5;
-
+      
       beginShape();  
+      //一开始填充的是黑的？？？
+      //效果：每个瓷砖的上面一部分会更暗一些，会有点层叠的效果
+      //在另一个标签中可以看到效果
       fill(0,0,0);
       vertex(x,y);
       vertex(x+w,y);
@@ -144,8 +132,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-

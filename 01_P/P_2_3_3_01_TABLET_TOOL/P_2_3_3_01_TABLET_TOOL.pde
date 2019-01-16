@@ -97,6 +97,7 @@ void draw() {
 
   if (mousePressed) {
     // gamma values optimized for wacom intuos 3
+    // 鼠标压力为0
     float pressure = gamma(tablet.getPressure()*1.1, 2.5);
 
     float d = dist(x,y, mouseX,mouseY);
@@ -116,6 +117,7 @@ void draw() {
       angle += random(angleDistortion);
 
       drawItem drw = new drawItem();
+      // 可以在 drawItem 类中写一个构造函数
       drw.angle = angle;
       drw.x = x;
       drw.y = y; 
@@ -156,7 +158,7 @@ void keyReleased() {
     undoIndex = 0;
   }
   if (key == 'u' || key == 'U') showUndelay = !showUndelay; 
-
+  // 重做
   if (showUndelay) {
     background(255);
     reDrawAllDrawItems();
@@ -166,9 +168,9 @@ void keyReleased() {
   else {
     reDrawAllDrawItems();
   }
-
+  // 撤销
   if (key == 'z' || key == 'Z') {
-    undoIndex = undoDrawItems(undoIndex);
+    undoDrawItems(undoIndex);
     reDrawAllDrawItems();
   }
 }
@@ -189,7 +191,7 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
+// 重做全部, 从头到尾画一遍
 void reDrawAllDrawItems() {
   background(255);
   for (int i = 0; i < drawItems.size(); i++) { 
@@ -197,14 +199,12 @@ void reDrawAllDrawItems() {
     tmp.draw();
   } 
 }
-
-int undoDrawItems(int theUndoIndex) {
+// 从 ArrayList drawItems 中移除最后一个
+void undoDrawItems(int theUndoIndex) {
   theUndoIndex -= 1; 
   if (drawItems.size() > 0 && theUndoIndex >= 0) {
     for (int i = drawItems.size()-1; i > theUndoIndex; i--) {
       drawItems.remove(i);
     }
   }
-  
-  return theUndoIndex;
 }

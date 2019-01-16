@@ -55,12 +55,16 @@ void setup() {
 }
 
 void draw() {
+  // 鼠标点击状态下 画图
   if (mousePressed) {
+    // 开始状态下push, 那么,最终pop之后的状态就是 默认坐标
     pushMatrix();
     strokeWeight(1.0); 
     noFill();
     stroke(col);
+	// 跟随鼠标
     translate(mouseX, mouseY);
+    // 转换一个角速度
     rotate(radians(angle));
     line(0, 0, lineLength, 0);
     popMatrix();
@@ -70,7 +74,7 @@ void draw() {
 }
 
 void mousePressed() {
-  // create a new random line length
+  // 点击鼠标,生成随机线长
   lineLength = random(70, 200);
 }
 
@@ -85,10 +89,10 @@ void keyReleased() {
     angleSpeed = angleSpeed * -1;
   }
 
-  // r g b alpha
+  // 空格键生成新的随机的 r g b alpha
   if (key == ' ') col = color(random(255), random(255), random(255), random(80, 150));
 
-  //default colors from 1 to 4 
+  // 1-4 分别显示四种颜色
   if (key == '1') col = color(181, 157, 0, 100);
   if (key == '2') col = color(0, 130, 164, 100);
   if (key == '3') col = color(87, 35, 129, 100);
@@ -114,8 +118,10 @@ void keyReleased() {
 }
 
 void keyPressed() {
+  //上下键控制线长
   if (keyCode == UP) lineLength += 5;
   if (keyCode == DOWN) lineLength -= 5; 
+  //左右键控制角速度
   if (keyCode == LEFT) angleSpeed -= 0.5;
   if (keyCode == RIGHT) angleSpeed += 0.5;
 }

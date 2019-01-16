@@ -60,7 +60,6 @@ void setup() {
       }
     }
   }
-  
   println(shapeCount);
 }
 
@@ -68,8 +67,8 @@ void draw() {
   if (savePDF) beginRecord(PDF, timestamp()+".pdf");
   background(255);
 
-  float mouseXFactor = map(mouseX, 0,width, 0.05,1);
-  float mouseYFactor = map(mouseY, 0,height, 0.05,1);
+  //float mouseXFactor = map(mouseX, 0,width, 0.05,1);
+  //float mouseYFactor = map(mouseY, 0,height, 0.05,1);
 
   for (int gridX = 0; gridX < img.width; gridX++) {
     for (int gridY = 0; gridY < img.height; gridY++) {
@@ -83,12 +82,11 @@ void draw() {
       color c = img.pixels[gridY*img.width+gridX];
       // greyscale conversion
       int greyscale = round(red(c)*0.222+green(c)*0.707+blue(c)*0.071);
-
+      // 图片的选择 依靠灰度值
       int gradientToIndex = round(map(greyscale, 0,255, 0,shapeCount-1));
       shape(shapes[gradientToIndex], posX,posY, tileWidth,tileHeight);
     }
   }
-
   if (savePDF) {
     savePDF = false;
     endRecord();

@@ -64,17 +64,23 @@ void setup() {
 
 void draw() {
   if (mousePressed) {
+    // 算距离
     float d = dist(x,y, mouseX,mouseY);
 
     if (d > stepSize) {
+      // 算角度
       float angle = atan2(mouseY-y, mouseX-x); 
-
+      // 画图形
       pushMatrix();
       translate(mouseX, mouseY);
+      // 现在要画的图形长为d,宽为moduleSize
+      // 在趋近于鼠标的基础angle上转pi之后,是在鼠标移动的方向拉长
       rotate(angle+PI);
+      // 图形的长和宽分别根据 距离d和模型尺寸moduleSize 控制
       shape(lineModule, 0, 0, d, moduleSize);
       popMatrix();
-
+      // 下一个开始绘制的点
+      // 是按照鼠标方向的步进来生成的
       x = x + cos(angle) * stepSize;
       y = y + sin(angle) * stepSize;
     }
@@ -139,14 +145,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -51,12 +51,17 @@ void draw(){
 
   float angleStep = 360/segmentCount;
 
+  //开始构造一个 Shape，使用 三角风扇 （TRIANGLE_FAN）的类型
   beginShape(TRIANGLE_FAN);
   vertex(width/2, height/2);
   for (float angle=0; angle<=360; angle+=angleStep){
+    //在原点偏移的基础上 加 r*cos(α)、r*sin(α)
+    //这样相当于把圆按圆心角的大小进行了切分
     float vx = width/2 + cos(radians(angle))*radius;
     float vy = height/2 + sin(radians(angle))*radius;
+    //绘制点
     vertex(vx, vy);
+    //填充色调=角度，饱和度=mouseX，亮度=mouseY
     fill(angle, mouseX, mouseY);
   }
   endShape();
@@ -95,11 +100,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-

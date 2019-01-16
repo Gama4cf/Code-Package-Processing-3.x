@@ -74,6 +74,7 @@ void setup() {
 
 void draw() {
   // gamma values optimized for wacom intuos 3
+  // 获取压力值
   if (pressureOn == true) {
     pressure = gamma(tablet.getPressure()*1.1, 2.5);
   }
@@ -96,6 +97,7 @@ void draw() {
     translate(x, y);
     rotate(radians(angle));
     // gamma values optimized for wacom intuos 3
+    // 当前的线长 和 压力值相关   不知为何很短???
     float lineModuleSizeNow = 5 + lineModuleSize * pressure;
 
     if (lineModule != null) {
@@ -152,7 +154,7 @@ void keyReleased() {
   if (lineModule != null) {
     lineModule.disableStyle();
   }
-
+  // 打开压力开关
   if (key=='p') pressureOn = !pressureOn;
 
 
@@ -191,30 +193,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

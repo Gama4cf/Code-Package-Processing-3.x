@@ -44,7 +44,7 @@ void draw() {
 
   int w = (int) random(35, 50);
   int h = height;
-
+  // 就是一复制...
   copy(x1,y1, w,h, x2,y2, w,h);
 }
 
@@ -61,4 +61,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-

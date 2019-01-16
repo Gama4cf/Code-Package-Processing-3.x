@@ -65,6 +65,7 @@ void draw() {
   if (mousePressed) {
     int x = mouseX;
     int y = mouseY;
+    // SHIFT 键: 在哪个方向上 距离点击点 偏移更小,将哪个方向重置为点击坐标
     if (keyPressed && keyCode == SHIFT) {
       if (abs(clickPosX-x) > abs(clickPosY-y)) y = clickPosY; 
       else x = clickPosX;
@@ -77,9 +78,11 @@ void draw() {
     translate(x, y);
     rotate(radians(angle));
     if (lineModule != null) {
+      // 画线形图像
       shape(lineModule, 0, 0, lineModuleSize, lineModuleSize);
     } 
     else {
+      // 没有线型图像载入  那就画线
       line(0, 0, lineModuleSize, lineModuleSize);
     }
     angle = angle + angleSpeed;
@@ -92,7 +95,7 @@ void mousePressed() {
   // create a new random color and line length
   lineModuleSize = random(50,160);
 
-  // remember click position
+  // 记住点击位置
   clickPosX = mouseX;
   clickPosY = mouseY;
 }
@@ -116,7 +119,7 @@ void keyReleased() {
   if (key == '3') col = color(87,35,129,100);
   if (key == '4') col = color(197,0,123,100);
 
-  // load svg for line module
+  // 5-9 按键 分别载入不同的图像
   if (key=='5') lineModule = null;
   if (key=='6') lineModule = loadShape("02.svg");
   if (key=='7') lineModule = loadShape("03.svg");
@@ -159,23 +162,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

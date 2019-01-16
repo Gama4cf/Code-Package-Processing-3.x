@@ -54,21 +54,26 @@ void draw() {
   noStroke();
   background(360); 
   randomSeed(actRandomSeed);
+  //鼠标x坐标控制stepSize, y坐标控制endSize
   stepSize = mouseX/10;
   endSize = mouseY/10;
+  //开始画瓷砖内的图案
   for (int gridY=0; gridY<= tileCountY; gridY++) {
     for (int gridX=0; gridX<= tileCountX; gridX++) {  
 
-      // kachelgr?ssen und positionen
+      // 计算瓷砖的坐标尺寸
       float tileWidth = width / tileCountX;
       float tileHeight = height / tileCountY;
       float posX = tileWidth*gridX;
       float posY = tileHeight*gridY;
+      //方向随机
       switch(int(random(4))) {
       case 0: 
-        // modul
+        //stepSize控制图案数量
         for(int i=0; i< stepSize; i++) {
-          float diameter = map(i,0,stepSize,tileWidth,endSize);
+          //endSize控制最小半径
+          float diameter = map(i,0,stepSize, tileWidth,endSize);
+          //按照步进填充颜色
           fill(360-(i*colorStep));
           ellipse(posX+i, posY, diameter,diameter);
         }
@@ -121,7 +126,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-

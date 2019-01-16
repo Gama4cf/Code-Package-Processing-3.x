@@ -38,6 +38,7 @@ boolean recordPDF = false;
 
 void setup(){
   size(720, 720);
+  //smooth()默认执行
   smooth();
   noFill();
   background(255);
@@ -46,14 +47,20 @@ void setup(){
 void draw(){
   if(mousePressed){
     pushMatrix();
+    //坐标系原点 tarnslate 到中心位置
+    // the transformation is reset when the loop begins again. 
     translate(width/2,height/2);
-
+    //内接 circleResolution 边形。map注意 mouseY＋100
+    //mouseY控制边的数量
+	//另注意：书上此处代码有误
     int circleResolution = (int)map(mouseY+100,0,height,2, 10);
+    //mouseX控制半径长度，这里算出来的值可以是 负数 
+    //因为后面无论正负对圆上点的求解都没有影响。
     float radius = mouseX-width/2 + 0.5;
     float angle = TWO_PI/circleResolution;
 
     strokeWeight(2);
-    stroke(0, 25);
+    stroke(0, 25);   //透明度不高，浅灰
 
     beginShape();
     for (int i=0; i<=circleResolution; i++){
@@ -68,6 +75,7 @@ void draw(){
 }
 
 void keyReleased(){
+  //重置画布key
   if (key == DELETE || key == BACKSPACE) background(255);
   if (key=='s' || key=='S') saveFrame(timestamp()+"_##.png");
 
@@ -99,7 +107,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-

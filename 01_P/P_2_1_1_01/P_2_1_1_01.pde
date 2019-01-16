@@ -60,17 +60,20 @@ void draw() {
 
   for (int gridY=0; gridY<tileCount; gridY++) {
     for (int gridX=0; gridX<tileCount; gridX++) {
-
+      //计算左上点的坐标
       int posX = width/tileCount*gridX;
       int posY = height/tileCount*gridY;
 
       int toggle = (int) random(0,2);
 
       if (toggle == 0) {
+        //反向斜线：宽度和mouseX相关
         strokeWeight(mouseX/20);
+        //宽度是width/tileCount，高度是height/tileCount
         line(posX, posY, posX+width/tileCount, posY+height/tileCount);
       }
       if (toggle == 1) {
+        //正向斜线：宽度和mouseY相关
         strokeWeight(mouseY/20);
         line(posX, posY+width/tileCount, posX+height/tileCount, posY);
       }
@@ -91,14 +94,17 @@ void mousePressed() {
 void keyReleased(){
   if (key == 's' || key == 'S') saveFrame(timestamp()+"_##.png");
   if (key == 'p' || key == 'P') savePDF = true;
-
+  //改变线尾型
   if (key == '1'){
+    //端点椭圆，与其他线段连接处正常过渡
     actStrokeCap = ROUND;
   }
   if (key == '2'){
+    //端点方正，无法与其他线段正常过渡
     actStrokeCap = SQUARE;
   }
   if (key == '3'){
+    //端点方正，与其他线段连接处正常过渡
     actStrokeCap = PROJECT;
   }
 }
@@ -110,11 +116,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-

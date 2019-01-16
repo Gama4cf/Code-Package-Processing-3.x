@@ -55,7 +55,7 @@ boolean drawText = true;
 
 
 void setup() {
-  size(1200, 800);
+  size(1200, 700);
   lines = loadStrings("faust_kurz.txt");  //laden des zu analysierenden textes
   joinedText = join(lines, " ");
 
@@ -79,6 +79,7 @@ void draw() {
 
   posX = 20;
   posY = 200;
+  // 定义了两个变量,用来存放上一个字符的位置
   float oldX = 0;
   float oldY = 0;
 
@@ -97,7 +98,7 @@ void draw() {
     float m = map(mouseX, 50,width-50, 0,1);
     m = constrain(m, 0, 1);
     float interY = lerp(posY, sortY, m);
-
+    // 判断条件:是否划线
     if (drawLetters[index]) {
       if (drawLines) {
         if (oldX!=0 && oldY!=0) {
@@ -107,7 +108,7 @@ void draw() {
         oldX = posX;
         oldY = interY;
       }
-
+      // 显示文字与否
       if (drawText) text(joinedText.charAt(i), posX, interY);
     } 
     else {
@@ -180,32 +181,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

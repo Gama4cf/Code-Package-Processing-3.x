@@ -26,9 +26,12 @@
  */
 
 import processing.pdf.*;
+// 把点的边框变为许多点
 import geomerative.*;
 import java.util.Calendar;
-
+// RShape is a reduced interface for creating, holding and drawing text from TrueType Font files. 
+// It's a basic interpreter of TrueType fonts enabling to access any String in the form of a group of shapes. 
+// Enabling us in this way to access their geometry.
 RFont font;
 String textTyped = "Type ...!";
 
@@ -42,6 +45,7 @@ void setup() {
   smooth();
 
   // allways initialize the library in setup
+  // Initialize the library
   RG.init(this);
   font = new RFont("FreeSans.ttf", 200, RFont.LEFT);
 
@@ -50,8 +54,9 @@ void setup() {
 
   //RCommand.setSegmentStep(11);
   //RCommand.setSegmentator(RCommand.UNIFORMSTEP);
-
+  // Use this to set the segmentator length for the UNIFORMLENGTH segmentator and set the segmentator to UNIFORMLENGTH
   RCommand.setSegmentLength (11);
+  // Use this to set the segmentator type
   RCommand.setSegmentator(RCommand.UNIFORMLENGTH);
 
   //RCommand.setSegmentAngle(random(0,HALF_PI));
@@ -68,9 +73,13 @@ void draw() {
 
   if (textTyped.length() > 0) {
     // get the points on font outline
+    // RGroup is a holder for a group of geometric elements that can be drawn and transformed, such as shapes, polygons or meshes
     RGroup grp;
+    // Use this method to get the outlines of a string in the form of an RGroup.
     grp = font.toGroup(textTyped);
+    // Use this method to get the outlines of a character in the form of an RPolygon.
     grp = grp.toPolygonGroup();
+    // Use this to return the points of the group.
     RPoint[] pnts = grp.getPoints();
 
     // lines
@@ -78,6 +87,7 @@ void draw() {
     strokeWeight(1.0);
     for (int i = 0; i < pnts.length; i++ ) {
       float l = 5;
+      // 变成线
       line(pnts[i].x-l, pnts[i].y-l, pnts[i].x+l, pnts[i].y+l);
     }
 
@@ -88,6 +98,7 @@ void draw() {
       float diameter = 7;
       // on ervery second point
       if (i%2 == 0) {
+        // 点编程圆
         ellipse(pnts[i].x, pnts[i].y, diameter, diameter);
       }
     }
@@ -107,6 +118,7 @@ void keyPressed() {
     switch(key) {
     case DELETE:
     case BACKSPACE:
+      // 取子字符串 , 删掉最后一个字符
       textTyped = textTyped.substring(0,max(0,textTyped.length()-1));
       break;
     case TAB:   
@@ -115,6 +127,7 @@ void keyPressed() {
     case ESC:
       break;
     default:
+      // 添加键入的字符
       textTyped += key;
     }
   }

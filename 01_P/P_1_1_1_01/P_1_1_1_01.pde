@@ -44,12 +44,14 @@ void draw(){
   if (savePDF) beginRecord(PDF, timestamp()+".pdf");
 
   noStroke();
-  colorMode(HSB, width, height, 100);
+  colorMode(HSB, width, height, 100);  
 
   stepX = mouseX+2;
   stepY = mouseY+2;
+  //绘制网格，数量和鼠标坐标相关，坐标越小，分割越细
   for (int gridY=0; gridY<height; gridY+=stepY){
     for (int gridX=0; gridX<width; gridX+=stepX){
+      //填充色：色调=cornerx 饱和度=高度-cornery 亮度=100
       fill(gridX, height-gridY, 100);
       rect(gridX, gridY, stepX, stepY);
     }
@@ -69,7 +71,6 @@ void keyPressed() {
 // timestamp
 String timestamp() {
   Calendar now = Calendar.getInstance();
+  //这里注意 format 的调用格式，java.lang.String.format 中有详细内容
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-

@@ -20,13 +20,14 @@
  * timelapse camera. after each intervalTime a picture is saved to the sketch folder
  * 
  */
-
+// 每隔intervalTime创建一个截图,放在文件夹下面
 import processing.video.*; 
 import java.util.Calendar;
 
 Capture myCam; 
 
 // intervalTime in sec. here 5 min
+// interval:间隔
 int intervalTime = 5*60;
 
 int secondsSinceStart = 0;
@@ -36,7 +37,7 @@ boolean doSave = true;
 
 void setup() { 
   size(640, 480); 
-  println(Capture.list());
+  printArray(Capture.list());
   //String s = "Logitech QuickCam Messenger-WDM"; 
   //myCam = new Capture(this, s, width, height, 30);
   myCam = new Capture(this, width, height, 30);
@@ -46,14 +47,15 @@ void setup() {
 } 
 
 void draw() { 
-  if(myCam.available()) { 
+  if(myCam.available()) {  // 这里加上了
     myCam.read();
     image(myCam, 0, 0); 
 
-    secondsSinceStart = millis() / 1000; 
+    secondsSinceStart = millis() / 1000;
     int interval = secondsSinceStart % intervalTime;
 
     if (interval == 0 && doSave == true) {
+      // nf():Utility function for formatting numbers into strings. 
       String saveFileName = startTime+"-"+nf(counter,5);
       saveFrame(saveFileName+".png");
       doSave = false;

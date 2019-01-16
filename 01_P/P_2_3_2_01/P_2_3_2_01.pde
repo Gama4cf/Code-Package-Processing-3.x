@@ -44,6 +44,7 @@ color col = color(random(255),random(255),random(255),random(100));
 float x = 0, y = 0;
 //float newX = 0, newY = 0;
 float stepSize = 5.0;
+// 默认线长25
 float lineLength = 25;
 
 
@@ -54,6 +55,7 @@ void setup() {
   smooth();
   x = mouseX;
   y = mouseY;
+  // 鼠标显示为交叉的十字
   cursor(CROSS);
 }
 
@@ -61,18 +63,21 @@ void setup() {
 void draw() {
   if (mousePressed) {
     float d = dist(x,y, mouseX,mouseY);
-
+    // 仅当距离大于步进才画图
     if (d > stepSize) {
+      // 旋角 原来点到鼠标点的向量 与x轴正方向的夹角
       float angle = atan2(mouseY-y, mouseX-x); 
 
       pushMatrix();
       translate(x,y);
       rotate(angle);
       stroke(col);
+      // 隔一帧就会有一帧填充为灰色
       if (frameCount % 2 == 0) stroke(150);
+      // 线长和距离 正相关的
       line(0,0,0,lineLength*random(0.95,1.0)*d/10);
       popMatrix();
-
+      // 下一帧位置的获得, 根据角度计算或者直接使用鼠标坐标
       if (drawMode == 1) {
         x = x + cos(angle) * stepSize;
         y = y + sin(angle) * stepSize; 
@@ -130,7 +135,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-

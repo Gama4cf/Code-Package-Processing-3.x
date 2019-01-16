@@ -45,13 +45,13 @@ color[] colors;
 
 String sortMode = null;
 
-
+//图片的在不同分辨率下展示，用鼠标控制分辨率
 
 void setup(){
   size(600, 600);
   colorMode(HSB, 360, 100, 100, 100);
   noStroke();
-  noCursor();
+  noCursor();   //隐藏鼠标
   img = loadImage("pic1.jpg"); 
 }
 
@@ -62,7 +62,7 @@ void draw(){
     colorMode(HSB, 360, 100, 100, 100);
     noStroke();
   }
-
+  //  宽度/坐标x = 瓦片数量，瓦片的尺寸需要根须瓦片是数量求得
   int tileCount = width / max(mouseX, 5);
   float rectSize = width / float(tileCount);
 
@@ -73,12 +73,15 @@ void draw(){
     for (int gridX=0; gridX<tileCount; gridX++) {
       int px = (int) (gridX * rectSize);
       int py = (int) (gridY * rectSize);
+      //Reads the color of any pixel or grabs a section of an image.
+      //Use the x and y parameters to get the value of one pixel.
+      //Get a section of the display window by specifying additional w and h parameters. 
       colors[i] = img.get(px, py);
       i++;
     }
   }
 
-  // sort colors
+  // sort colors,使用GenerativeDesign.sortColors函数对像素重新排列
   if (sortMode != null) colors = GenerativeDesign.sortColors(this, colors, sortMode);
   
 
@@ -121,15 +124,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-

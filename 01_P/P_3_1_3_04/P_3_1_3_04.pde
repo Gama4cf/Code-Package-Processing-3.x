@@ -44,6 +44,7 @@ String joinedText;
 
 String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜß,.;:!? ";
 int[] counters = new int[alphabet.length()];
+// 
 boolean[] drawLetters = new boolean[alphabet.length()];
 
 float charSize;
@@ -86,6 +87,7 @@ void draw() {
   posX = 0;
   posY = 200;
   float[] sortPositionsX = new float[alphabet.length()];
+  // 存储上一个位置
   float[] oldPositionsX = new float[alphabet.length()];
   float[] oldPositionsY = new float[alphabet.length()];
   float oldX = 0;
@@ -112,10 +114,10 @@ void draw() {
     char uppercaseChar = s.charAt(0);
     int index = alphabet.indexOf(uppercaseChar);
     if (index < 0) continue;
-
+    // 差值步进
     float m = map(mouseX, 50,width-50, 0,1);
     m = constrain(m, 0, 1);
-
+    // 获取插值位置
     float sortX = sortPositionsX[index];
     float interX = lerp(posX, sortX, m);
 
@@ -135,8 +137,10 @@ void draw() {
       if (drawColoredLines) {
         if (oldPositionsX[index]!=0 && oldPositionsY[index]!=0) {
           stroke(index*10, 80, 60, 50);
+          // interXY, 中间状态点
           line(oldPositionsX[index],oldPositionsY[index], interX,interY);
         }
+        // 当前位置放在旧位置数组
         oldPositionsX[index] = interX;
         oldPositionsY[index] = interY;
       }
@@ -164,7 +168,7 @@ void draw() {
   }
 }
 
-
+// 统计数量
 void countCharacters() {
   for (int i = 0; i < joinedText.length(); i++) {
     // get one char from the text, convert it to a string and turn it to uppercase
@@ -213,57 +217,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

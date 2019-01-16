@@ -43,21 +43,19 @@ import java.util.Calendar;
 boolean savePDF = false;
 
 int tileCount = 20;
-
+//左右两个朝向的颜色
 color colorLeft = color(197, 0, 123);
 color colorRight = color(87, 35, 129);
-
-int alphaLeft = 100;
-int alphaRight = 100;
+//增加alpha通道
+int alphaLeft = 40;
+int alphaRight = 40;
 
 int actRandomSeed = 0;
 int actStrokeCap = ROUND;
 
-
 void setup() {
   size(600, 600);
 }
-
 
 void draw() {
   if (savePDF) beginRecord(PDF, timestamp()+".pdf");
@@ -69,7 +67,7 @@ void draw() {
   strokeCap(actStrokeCap);
   
   randomSeed(actRandomSeed);
-
+  //下面绘制对角线的方法和 P_2_1_1_01 基本相同
   for (int gridY=0; gridY<tileCount; gridY++) {
     for (int gridX=0; gridX<tileCount; gridX++) {
 
@@ -79,11 +77,13 @@ void draw() {
       int toggle = (int) random(0,2);
 
       if (toggle == 0) {
+        //增加线的alpha通道
         stroke(colorLeft, alphaLeft);
         strokeWeight(mouseX/10);
         line(posX, posY, posX+width/tileCount, posY+height/tileCount);
       }
       if (toggle == 1) {
+        //增加线的alpha通道
         stroke(colorRight, alphaRight);
         strokeWeight(mouseY/10);
         line(posX, posY+width/tileCount, posX+height/tileCount, posY);
@@ -106,11 +106,11 @@ void mousePressed() {
 void keyReleased(){
   if (key == 's' || key == 'S') saveFrame(timestamp()+"_##.png");
   if (key == 'p' || key == 'P') savePDF = true;
-  
+  //改变线尾型
   if (key == '1') actStrokeCap = ROUND;  
   if (key == '2') actStrokeCap = SQUARE;
   if (key == '3') actStrokeCap = PROJECT; 
-  
+  //改变线的颜色
   if (key == '4'){
     if (colorLeft == color(0)) {
       colorLeft = color(323, 100, 77);
@@ -156,9 +156,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-

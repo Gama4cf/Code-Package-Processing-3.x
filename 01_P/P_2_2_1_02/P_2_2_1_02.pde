@@ -73,10 +73,11 @@ void draw() {
 
     // random number for the direction of the next step
     if (drawMode == 2) {
-      direction = round(random(0, 3));    // only NORTH, NORTHEAST, EAST possible
+      //round() 求最接近参数的整数
+      direction = round(random(0, 3));    // only NORTH, NORTHEAST, EAST possible,限定方向
     }
     else {
-      direction = (int) random(0, 7);    // all directions without NORTHWEST
+      direction = (int) random(0, 7);    // all directions without NORTHWEST,不忘东北走,走其他方向
     }
 
     if (direction == NORTH) {  
@@ -114,14 +115,18 @@ void draw() {
     if (posY > height) posY = 0;
 
     if (drawMode == 3) {
+      //每100个有一个带篮圈的
       if (counter >= 100){
         counter = 0;
+        //填充色改变了
         fill(192, 100, 64, 80);
+        //将直径变为5+7=14,这样setpSize=10
         ellipse(posX+stepSize/2, posY+stepSize/2, diameter+7, diameter+7);
       } 
     }
-
+    //原来的还继续画,填色黑色
     fill(0, 40);
+    //直径要小很多是5
     ellipse(posX+stepSize/2, posY+stepSize/2, diameter, diameter);
   }
 }
@@ -130,7 +135,7 @@ void draw() {
 void keyReleased(){
   if (key == DELETE || key == BACKSPACE) background(360);
   if (key == 's' || key == 'S') saveFrame(timestamp()+"_##.png");
-
+  //对于三种模式,分别有不同的步进和半径
   if (key == '1') {
     drawMode = 1;
     stepSize = 1;
@@ -178,10 +183,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-

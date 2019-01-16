@@ -101,6 +101,7 @@ void draw() {
     float diameter = 30;
     for (int i=0; i < pnts.length-1; i++ ) {
       // on every third point
+      // 原来的点变成形状1
       if (i%3 == 0) {
         // rotate the module facing to the next one (i+1)
         pushMatrix();
@@ -118,6 +119,7 @@ void draw() {
     diameter = 18;
     for (int i=0; i < pnts.length-1; i++ ) {
       // on every third point
+      // 原来的点变成 形状2
       if (i%3 == 0) {
         // rotate the module facing to the next one (i+1)
         pushMatrix();
@@ -163,6 +165,7 @@ void keyPressed() {
   }
 
   if (keyCode == ALT) {
+    // 按ALT键 切换字体点样式
     shapeSet = (shapeSet+1) % 4;
     switch(shapeSet) {
     case 0: 
@@ -182,6 +185,7 @@ void keyPressed() {
       module2 = loadShape("D_02.svg");
       break; 
     }
+    // 去除原来样式
     module1.disableStyle();
     module2.disableStyle();
   }
