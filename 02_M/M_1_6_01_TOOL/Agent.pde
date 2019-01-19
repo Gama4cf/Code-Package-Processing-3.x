@@ -1,6 +1,6 @@
 // M_1_6_01_TOOL.pde
 // Agent.pde, GUI.pde, Ribbon3d.pde, TileSaver.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -21,6 +21,7 @@ class Agent {
   boolean isOutside = false;
   PVector p;
   float offset, stepSize, angleY, angleZ;
+  // 每个中间件都有一个 Ribbon3d 对象, 用这个它来画线
   Ribbon3d ribbon;
 
   Agent() {
@@ -28,13 +29,15 @@ class Agent {
     setRandomPostition();
     offset = 10000;
     stepSize = random(1, 8);
-    // how many points has the ribbon
+    // how many points has the ribbon: 随机数
     ribbon = new Ribbon3d(p, (int)random(50, 300));
   }
 
   void update(){
-    angleY = noise(p.x/noiseScale, p.y/noiseScale, p.z/noiseScale) * noiseStrength; 
-    angleZ = noise(p.x/noiseScale+offset, p.y/noiseScale, p.z/noiseScale) * noiseStrength; 
+    // 使用噪声 生成一个 Y Z 轴角度
+    angleY = noise(p.x/noiseScale, p.y/noiseScale, p.z/noiseScale) * noiseStrength;
+    // 加一个偏移, 防止生成相同的noise
+    angleZ = noise(p.x/noiseScale+offset, p.y/noiseScale, p.z/noiseScale) * noiseStrength;
 
     /* convert polar to cartesian coordinates
      stepSize is distance of the point to the last point
@@ -49,25 +52,26 @@ class Agent {
     if (p.x<-spaceSizeX || p.x>spaceSizeX ||
       p.y<-spaceSizeY || p.y>spaceSizeY ||
       p.z<-spaceSizeZ || p.z>spaceSizeZ) {
+      // 出了范围 产生一个随机位置
       setRandomPostition();
+      // 标记已出边界
       isOutside = true;
     }
 
-    // create ribbons
+    // 更新 ribbon
     ribbon.update(p,isOutside);
     isOutside = false;
   }
 
   void draw() {
+    // 仅画线
     ribbon.drawLineRibbon(agentColor,2.0);
     //ribbon.drawMeshRibbon(agentColor,10.0);
   }
-
+  // 生成一个随机位置
   void setRandomPostition() {
     p.x=random(-spaceSizeX,spaceSizeX);
     p.y=random(-spaceSizeY,spaceSizeY);
     p.z=random(-spaceSizeZ,spaceSizeZ);
   }
 }
-
-

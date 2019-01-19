@@ -3,6 +3,14 @@
 
 神书 <Generative Design: Visualize, Program, and Create with Processing > 代码丰富,由浅入深,为以后再读方便,记录代码注释于此.
 
+因为代码前后连贯性比较强, 个别重复部分, 注意翻看!!!
+
+注意:比较难,尤其是第二部分,有没搞清楚地方, **???** 表示出来.
+
+此外,很多代码细节/参数丰富,值得细细探究!!!
+
+---------------------------------------------------------
+
 This code package still needs to be updated to Processing 3.x and is work in progress! Most of it should work by now.
 ===============================================
 

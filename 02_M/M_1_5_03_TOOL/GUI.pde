@@ -1,6 +1,6 @@
 // M_1_5_03_TOOL.pde
 // Agent.pde, GUI.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -64,6 +64,7 @@ void setupGUI(){
     sliders[i].getCaptionLabel().getStyle().marginTop = -4;
     sliders[i].getCaptionLabel().getStyle().marginLeft = 0;
     sliders[i].getCaptionLabel().getStyle().marginRight = -14;
+    // public Label setColorBackground(int theColor)  R G B α
     sliders[i].getCaptionLabel().setColorBackground(0x99ffffff);
   }
 
@@ -80,15 +81,7 @@ void controlEvent(ControlEvent theEvent) {
   // noiseSticking changed -> set new values
   if(theEvent.isController()) {
     if (theEvent.getController().getId() == 3) {
-      for(int i=0; i<agentsCount; i++) agents[i].setNoiseZRange(noiseZRange);  
+      for(int i=0; i<agentsCount; i++) agents[i].setNoiseZRange(noiseZRange);
     }
   }
 }
-
-
-
-
-
-
-
-

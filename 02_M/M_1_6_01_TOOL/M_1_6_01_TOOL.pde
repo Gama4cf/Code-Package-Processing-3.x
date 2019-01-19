@@ -1,6 +1,6 @@
 // M_1_6_01_TOOL.pde
 // Agent.pde, GUI.pde, Ribbon3d.pde, TileSaver.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -20,17 +20,17 @@
 /**
  * noise values (noise 3d) are used to animate the movement of agents.
  * each agent is visualizing its position history with a ribbon (line style).
- * 
+ *
  * MOUSE
  * position x/y + right drag  : camera controls
- * 
+ *
  * KEYS
  * m                          : toogle menu open/close
  * f                          : toogle freeze noise animation
  * space                      : new noise seed
  * arrow up                   : zoom in
  * arrow down                 : zoom out
- * p                          : high resolution export (please update to processing 1.0.8 or 
+ * p                          : high resolution export (please update to processing 1.0.8 or
  *                              later. otherwise this will not work properly)
  * s                          : save png
  */
@@ -43,7 +43,7 @@ import java.util.Calendar;
 // ------ agents ------
 int agentsCount = 600;
 Agent[] agents = new Agent[1000];
-float noiseScale = 150, noiseStrength = 20; 
+float noiseScale = 150, noiseStrength = 20;
 float agentAlpha = 76;
 color agentColor;
 
@@ -56,10 +56,11 @@ Range[] ranges;
 
 
 // ------ mouse interaction ------
+// 使用鼠标拖拽旋转, 控制 X Y 两方向
 int offsetX = 0, offsetY = 0, clickX = 0, clickY = 0, zoom = -100;
-float rotationX = 0, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY; 
+float rotationX = 0, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY;
 int spaceSizeX = 200, spaceSizeY = 300, spaceSizeZ = 200;
-
+// 冻结开关
 boolean freeze = false;
 
 
@@ -69,54 +70,58 @@ int qualityFactor = 3;
 TileSaver tiler;
 
 void setup() {
-  size(800, 800, P3D);
-  setupGUI(); 
+  size(800, 720, P3D);
+  setupGUI();
   colorMode(HSB, 360, 100, 100);
   for (int i=0; i<agents.length; i++) agents[i]=new Agent();
   tiler=new TileSaver(this);
 }
 
 void draw() {
-  hint(ENABLE_DEPTH_TEST);
+  // 声明在哪里?
+  //hint(ENABLE_DEPTH_TEST);
 
   // for high quality output
-  if (tiler==null) return; 
+  if (tiler==null) return;
   tiler.pre();
 
   background(0, 0, 100);
   smooth();
   lights();
 
-  pushMatrix(); 
+  pushMatrix();
 
   // ------ set view ------
-  translate(width/2, height/2, zoom); 
-  println(mousePressed + ", " + mouseButton + ", " + RIGHT);
+  // 鼠标控制旋转  这部分的代码和 M_1_4_01 是相同的
+  translate(width/2, height/2, zoom);
+  if(mousePressed)
+    println(mousePressed + ", " + mouseButton + ", " + RIGHT);
   if (mousePressed && mouseButton==RIGHT) {
     offsetX = mouseX-clickX;
     offsetY = mouseY-clickY;
     targetRotationX = min(max(clickRotationX + offsetY/float(width) * TWO_PI, -HALF_PI), HALF_PI);
     targetRotationY = clickRotationY + offsetX/float(height) * TWO_PI;
   }
-  rotationX += (targetRotationX-rotationX)*0.25; 
-  rotationY += (targetRotationY-rotationY)*0.25;  
+  rotationX += (targetRotationX-rotationX)*0.25;
+  rotationY += (targetRotationY-rotationY)*0.25;
   rotateX(-rotationX);
-  rotateY(rotationY); 
-
-  noFill();
+  // 这里 Y 轴正方向是朝下的, 所有不必 *-1
+  rotateY(rotationY);
+  // 长方体
+  noFill();  // 不填充
   stroke(192, 100, 64);
-  strokeWeight(1); 
+  strokeWeight(1);
   box(spaceSizeX*2, spaceSizeY*2, spaceSizeZ*2);
 
   // ------ update and draw agents ------
   agentColor = color(0, 0, 0, agentAlpha);
   for (int i=0; i<agentsCount; i++) {
-    if (freeze == false) agents[i].update(); 
+    if (freeze == false) agents[i].update();
     agents[i].draw();
   }
   popMatrix();
 
-  hint(DISABLE_DEPTH_TEST);
+  //hint(DISABLE_DEPTH_TEST);
   noLights();
   drawGUI();
 
@@ -127,6 +132,7 @@ void draw() {
 
 // ------ interactions ------
 void keyPressed() {
+  // 镜头拉近拉远
   if (keyCode == UP) zoom += 20;
   if (keyCode == DOWN) zoom -= 20;
 }
@@ -148,7 +154,7 @@ void keyReleased() {
   if (showGUI) controlP5.getGroup("menu").open();
   else controlP5.getGroup("menu").close();
 }
-
+// 鼠标控制部分的代码和 M_1_4_01 是相同的
 void mousePressed() {
   clickX = mouseX;
   clickY = mouseY;
@@ -159,4 +165,3 @@ void mousePressed() {
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-

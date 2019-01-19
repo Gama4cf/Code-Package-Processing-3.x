@@ -32,8 +32,9 @@
  */
 
 import java.util.Calendar;
-
+// 八度音; 八度音阶
 int octaves = 4;
+// 下降或减退
 float falloff = 0.5;
 
 int noiseMode = 1;
@@ -46,12 +47,12 @@ void setup() {
 
 void draw() {
   background(0);
-
+  //Adjusts the character and level of detail produced by the Perlin noise function.
   noiseDetail(octaves,falloff);
-
+  // 鼠标横纵坐标控制 噪声范围
   int noiseXRange = mouseX/10;
   int noiseYRange = mouseY/10;
-
+  // 对像素进行操作
   loadPixels();
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
@@ -63,6 +64,11 @@ void draw() {
         noiseValue = noise(noiseX,noiseY) * 255;
       } 
       else if (noiseMode == 2) {
+        // Perlin noise is a random sequence generator producing a more natural, 
+        //   harmonic succession of numbers than that of the standard random() function. 
+        // if the random value is first multiplied by a number and only the result's fractional digits are used, 
+        //  a whole new visual effect emerges.
+        // 为什么出现了全新的形状???
         float n = noise(noiseX,noiseY) * 24;
         noiseValue = (n-(int)n) * 255;
       }
@@ -72,7 +78,7 @@ void draw() {
   }
   updatePixels();
 
-  println("octaves: "+octaves+" falloff: "+falloff+" noiseXRange: 0-"+noiseXRange+" noiseYRange: 0-"+noiseYRange); 
+  println("octaves: "+octaves+" falloff: "+falloff+" noiseXRange: 0-"+noiseXRange+" noiseYRange: 0-"+noiseYRange);
 }
 
 void keyReleased() {  
@@ -87,7 +93,7 @@ void keyPressed() {
   if (keyCode == DOWN) falloff -= 0.05;
   if (falloff > 1.0) falloff = 1.0;
   if (falloff < 0.0) falloff = 0.0;
-
+  // 八度音 增减
   if (keyCode == LEFT) octaves--;
   if (keyCode == RIGHT) octaves++;
   if (octaves < 0) octaves = 0;
@@ -98,20 +104,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

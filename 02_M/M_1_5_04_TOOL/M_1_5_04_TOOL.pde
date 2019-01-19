@@ -1,6 +1,6 @@
 // M_1_5_04_TOOL.pde
 // Agent.pde, GUI.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -19,7 +19,7 @@
 
 /**
  * noise values (noise 3d) are used to animate a bunch of agents.
- * 
+ *
  * KEYS
  * m                   : toogle menu open/close
  * 1                   : draw style line
@@ -36,6 +36,7 @@ import java.util.Calendar;
 Agent[] agents = new Agent[10000]; // create more ... to fit max slider agentsCount
 int agentsCount = 2000;
 float noiseScale = 100, noiseStrength = 10, noiseStickingRange = 0.4;
+// 增加控制 agent 尺寸
 float overlayAlpha = 8, agentsAlpha = 90, strokeWidth = 2, agentWidthMin = 1.5, agentWidthMax = 15;
 int drawMode = 1;
 
@@ -47,7 +48,7 @@ Range[] ranges;
 
 
 void setup() {
-  size(1280,800,P2D);
+  size(1280,720,P2D);
 
   setupGUI();
   smooth();
@@ -88,13 +89,3 @@ void keyReleased(){
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 // M_1_6_02_TOOL.pde
 // Agent.pde, GUI.pde, Ribbon3d.pde, TileSaver.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -23,7 +23,7 @@ class Ribbon3d {
   boolean[] isGap;
 
   Ribbon3d (PVector theP, int theCount) {
-    count = theCount; 
+    count = theCount;
     p = new PVector[count];
     isGap = new boolean[count];
     for(int i=0; i<count; i++) {
@@ -46,7 +46,7 @@ class Ribbon3d {
     // draw the ribbons with meshes
     fill(theMeshCol);
     noStroke();
-
+    // 画方形组成的条带
     beginShape(QUAD_STRIP);
     for(int i=0; i<count-1; i++) {
       // if the point was wraped -> finish the mesh an start a new one
@@ -55,16 +55,23 @@ class Ribbon3d {
         vertex(p[i].x, p[i].y, p[i].z);
         endShape();
         beginShape(QUAD_STRIP);
-      } 
-      else {        
+      }
+      // 没有到边界:
+      else {
+        // 下面的向量具体什么意义 要算一下看
+        // 向量之差
         PVector v1 = PVector.sub(p[i],p[i+1]);
+        // 向量之和
         PVector v2 = PVector.add(p[i+1],p[i]);
-        PVector v3 = v1.cross(v2);      
+        // 	相邻两矢量的 和与差 的 矢量积 ×乘
+        PVector v3 = v1.cross(v2);
+        // 求目标 v2
         v2 = v1.cross(v3);
         //v1.normalize();
         v2.normalize();
         //v3.normalize();
         //v1.mult(theWidth);
+        // Multiply a vector by a scalar
         v2.mult(theWidth);
         //v3.mult(theWidth);
         vertex(p[i].x+v2.x,p[i].y+v2.y,p[i].z+v2.z);
@@ -74,7 +81,7 @@ class Ribbon3d {
         if (i%5==0) {
           vertex(p[i].x, p[i].y, p[i].z);
           vertex(p[i].x, p[i].y, p[i].z);
-        } 
+        }
 */
       }
 
@@ -95,9 +102,8 @@ class Ribbon3d {
       if (isGap[i] == true) {
         endShape();
         beginShape();
-      } 
+      }
     }
     endShape();
   }
 }
-

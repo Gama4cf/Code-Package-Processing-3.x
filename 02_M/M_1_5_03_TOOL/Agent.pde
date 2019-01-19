@@ -1,6 +1,6 @@
 // M_1_5_03_TOOL.pde
 // Agent.pde, GUI.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -31,6 +31,7 @@ class Agent {
   }
 
   void update1(){
+    // noise 根据三维位置生成
     angle = noise(p.x/noiseScale, p.y/noiseScale, noiseZ) * noiseStrength;
 
     p.x += cos(angle) * stepSize;
@@ -46,6 +47,7 @@ class Agent {
     line(pOld.x,pOld.y, p.x,p.y);
 
     pOld.set(p);
+    // noiseZ 增加
     noiseZ += noiseZVelocity;
   }
 
@@ -75,9 +77,3 @@ class Agent {
     noiseZ = random(theNoiseZRange);
   }
 }
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 // M_1_6_01_TOOL.pde
 // Agent.pde, GUI.pde, Ribbon3d.pde, TileSaver.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -18,14 +18,18 @@
 // limitations under the License.
 
 class Ribbon3d {
+  // 也可以理解为: 记忆多少个点
   int count; // how many points has the ribbon
+  // 向量数组
   PVector[] p;
+  // 裂开
   boolean[] isGap;
 
   Ribbon3d (PVector theP, int theCount) {
-    count = theCount; 
+    count = theCount;
     p = new PVector[count];
     isGap = new boolean[count];
+    // 全部赋值为 传入的向量
     for (int i=0; i<count; i++) {
       p[i] = new PVector(theP.x, theP.y, theP.z);
       isGap[i] = false;
@@ -33,12 +37,12 @@ class Ribbon3d {
   }
 
   void update(PVector theP, boolean theIsGap) {
-    // shift the values to the right side
-    // simple queue
+    // 把每一个向量向前推进一步
     for (int i=count-1; i>0; i--) {
       p[i].set(p[i-1]);
       isGap[i] = isGap[i-1];
     }
+    // 第一个向量赋值为 传入的参数
     p[0].set(theP);
     isGap[0] = theIsGap;
   }
@@ -47,7 +51,7 @@ class Ribbon3d {
     // draw the ribbons with meshes
     fill(theMeshCol);
     noStroke();
-
+    // 方形条带
     beginShape(QUAD_STRIP);
     for (int i=0; i<count-1; i++) {
       // if the point was wraped -> finish the mesh an start a new one
@@ -56,11 +60,11 @@ class Ribbon3d {
         vertex(p[i].x, p[i].y, p[i].z);
         endShape();
         beginShape(QUAD_STRIP);
-      } 
-      else {        
+      }
+      else {
         PVector v1 = PVector.sub(p[i], p[i+1]);
         PVector v2 = PVector.add(p[i+1], p[i]);
-        PVector v3 = v1.cross(v2);      
+        PVector v3 = v1.cross(v2);
         v2 = v1.cross(v3);
         //v1.normalize();
         v2.normalize();
@@ -88,7 +92,7 @@ class Ribbon3d {
     strokeWeight(theWidth);
     stroke(theStrokeCol);
     for (int i=0; i<count-1; i++) {
-      // if the point was wraped -> finish the line an start a new one
+      // if the point was wraped -> finish the line and start a new one
       if (!isGap[i] == true) {
         beginShape(LINES);
         vertex(p[i].x, p[i].y, p[i].z);
@@ -98,4 +102,3 @@ class Ribbon3d {
     }
   }
 }
-

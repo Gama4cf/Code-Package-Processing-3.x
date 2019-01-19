@@ -1,6 +1,6 @@
 // M_2_5_02_TOOL.pde
 // GUI.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -18,7 +18,7 @@
 // limitations under the License.
 
 /**
- * explore different parameters of drawing lissajous figures 
+ * explore different parameters of drawing lissajous figures
  *
  * KEYS
  * m                   : menu open/close
@@ -34,17 +34,17 @@ import java.util.Calendar;
 
 
 // ------ initial parameters and declarations ------
-
+// 参数好多...
 int pointCount = 1500;
 PVector[] lissajousPoints = new PVector[0];
-
+// 频率1
 int freqX = 13;
 int freqY = 11;
 float phi = 97;
-
+// 频率1
 int modFreqX = 0;
 int modFreqY = 0;
-
+// 频率2
 int modFreq2X = 11;
 int modFreq2Y = 17;
 float modFreq2Strength = 0.0;
@@ -57,7 +57,7 @@ float lineAlpha = 20;
 
 boolean connectAllPoints = true;
 float connectionRadius = 110;
-int i1 = 0;
+int i1 = 0;  // 计步器
 float minHueValue = 0;
 float maxHueValue = 100;
 float saturationValue = 80;
@@ -81,8 +81,6 @@ Bang[] bangs;
 
 boolean saveOneFrame = false;
 boolean savePDF = false;
-
-
 
 void setup() {
   size(800, 800);
@@ -108,13 +106,13 @@ void draw() {
   color bgColor = color(255);
   if (invertBackground) {
     bgColor = color(0);
-  } 
+  }
 
   // calculate points whenever something has changed via the gui and start drawing again
   if (guiEvent || saveOneFrame || savePDF || i1 == 0) {
     calculateLissajousPoints();
     background(bgColor);
-    i1 = 0; 
+    i1 = 0;
     guiEvent = false;
   }
 
@@ -129,10 +127,10 @@ void draw() {
       drawLine(lissajousPoints[i], lissajousPoints[i+1]);
       i1++;
     }
-  } 
+  }
   else {
     // drawing method where all points are connected with each other
-    // alpha depends on distance of the points  
+    // alpha depends on distance of the points
 
     // draw lines not all at once, just the next 100 milliseconds to keep performance
     int drawEndTime = millis() + 100;
@@ -179,24 +177,27 @@ void draw() {
 
 
 void calculateLissajousPoints() {
+  // 重置点的数量
   if (pointCount != lissajousPoints.length-1) {
     lissajousPoints = new PVector[pointCount+1];
   }
 
   randomSeed(0);
 
-  float t, x, y, rx, ry;
+  float x, y, rx, ry;
 
   for (int i=0; i<=pointCount; i++) {
     float angle = map(i, 0, pointCount, 0, TWO_PI);
 
     // an additional modulation of the osscillations
+    // The parameters modulate the frequencies of the harmonic osscillations
+    // This means the frequencies freqX and FreqY are no longer constant, but sometimes higher or lower.
     float fmx = sin(angle*modFreq2X) * modFreq2Strength + 1;
     float fmy = sin(angle*modFreq2Y) * modFreq2Strength + 1;
 
     x = sin(angle * freqX * fmx + radians(phi)) * cos(angle * modFreqX);
     y = sin(angle * freqY * fmy) * cos(angle * modFreqY);
-
+    // the value of randomOffset offsets the x- and y-coodrdinates of all points by a random value in (-randomOffset, randomOffset)
     rx = random(-randomOffset, randomOffset);
     ry = random(-randomOffset, randomOffset);
 
@@ -215,9 +216,10 @@ void drawLine(PVector p1, PVector p2) {
   a = pow(1/(d/connectionRadius+1), 6);
 
   if (d <= connectionRadius) {
+    // 距离影响色调
     if (!invertHue) {
       h = map(a, 0, 1, minHueValue, maxHueValue) % 360;
-    } 
+    }
     else {
       h = map(1-a, 0, 1, minHueValue, maxHueValue) % 360;
     }
@@ -242,8 +244,8 @@ void keyPressed() {
     saveOneFrame = true;
   }
   if (key=='p' || key=='P') {
-    savePDF = true; 
-    saveOneFrame = true; 
+    savePDF = true;
+    saveOneFrame = true;
     println("saving to pdf - starting");
   }
 }
@@ -255,35 +257,3 @@ void mouseReleased() {
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

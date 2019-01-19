@@ -1,5 +1,5 @@
 // M_2_5_01.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -20,8 +20,8 @@
  * draw lissajous figures with all points connected
  *
  * KEYS
- * 1/2               : frequency x -/+ 
- * 3/4               : frequency y -/+ 
+ * 1/2               : frequency x -/+
+ * 3/4               : frequency y -/+
  * arrow left/right  : phi -/+
  * 7/8               : modulation frequency x -/+
  * 9/0               : modulation frequency y -/+
@@ -52,16 +52,16 @@ float lineWeight = 1;
 color lineColor = color(0);
 //color lineColor = color(0, 130, 164);
 float lineAlpha = 50;
-
+// 连接的直径
 float connectionRadius = 100;
+// 连接坡道
 float connectionRamp = 6;
-
 
 
 void setup() {
   size(800, 800);
   smooth();
-
+  // 计算坐标
   calculateLissajousPoints();
   drawLissajous();
 }
@@ -94,6 +94,7 @@ void drawLissajous() {
   colorMode(RGB, 255, 255, 255, 100);
   background(255);
   strokeWeight(lineWeight);
+  // 	Sets the style for rendering line endings
   strokeCap(ROUND);
   noFill();
 
@@ -106,8 +107,10 @@ void drawLissajous() {
       PVector p2 = lissajousPoints[i2];
 
       d = PVector.dist(p1, p2);
+      // 用参数a影响 alpha 通道: 距离越远->a越小->α越小->颜色越淡
+      // 书上详细说明了这里的原因
       a = pow(1/(d/connectionRadius+1), 6);
-
+      // 当距离在连接范围之内时 画出连线
       if (d <= connectionRadius) {
         stroke(lineColor,  a*lineAlpha);
         line(p1.x, p1.y, p2.x, p2.y);
@@ -116,10 +119,6 @@ void drawLissajous() {
   }
   popMatrix();
 }
-
-
-
-
 
 void keyPressed(){
   if(key == 's' || key == 'S') saveFrame(timestamp()+".png");
@@ -146,11 +145,11 @@ void keyPressed(){
 
   if (keyCode == LEFT) phi -= 15;
   if (keyCode == RIGHT) phi += 15;
-  
+
   if(key == '7') modFreqX--;
   if(key == '8') modFreqX++;
   modFreqX = max(modFreqX, 1);
-  
+
   if(key == '9') modFreqY--;
   if(key == '0') modFreqY++;
   modFreqY = max(modFreqY, 1);
@@ -158,46 +157,9 @@ void keyPressed(){
   calculateLissajousPoints();
   drawLissajous();
 
-  println("freqX: " + freqX + ", freqY: " + freqY + ", phi: " + phi + ", modFreqX: " + modFreqX + ", modFreqY: " + modFreqY); 
+  println("freqX: " + freqX + ", freqY: " + freqY + ", phi: " + phi + ", modFreqX: " + modFreqX + ", modFreqY: " + modFreqY);
 }
-
 
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

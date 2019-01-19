@@ -1,6 +1,6 @@
 // M_2_4_01.pde
 // TileSaver.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -30,7 +30,7 @@
  * arrow left/right    : phi x -/+
  * arrow down/up       : phi y -/+
  * s                   : save png
- * p                   : high resolution export (please update to processing 1.0.8 or 
+ * p                   : high resolution export (please update to processing 1.0.8 or
  *                       later. otherwise this will not work properly)
  */
 
@@ -43,13 +43,14 @@ int freqY = 4;
 int freqZ = 2;
 float phiX = 0;
 float phiY = 0;
-
+// 为了方便访问第二个邻居 向量都存数组里面吧
 PVector lissajousPoints[];
 
 
 // ------ mouse interaction ------
+// 又是一个鼠标控制旋转
 int offsetX = 0, offsetY = 0, clickX = 0, clickY = 0, zoom=-400;
-float rotationX = 0, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY; 
+float rotationX = 0, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY;
 
 // ------ image output ------
 boolean saveOneFrame = false;
@@ -61,50 +62,53 @@ void setup() {
   size(600, 600, P3D);
 
   tiler = new TileSaver(this);
-
+  // 计算坐标
   calculateLissajousPoints();
 }
 
 
 void draw() {
   // for high quality output
-  if(tiler==null) return; 
+  if(tiler==null) return;
   tiler.pre();
 
   background(255);
   lights();
 
   // ------ set view ------
-  translate(width/2, height/2, zoom); 
+  // 右键控制旋转
+  translate(width/2, height/2, zoom);
   if (mousePressed && mouseButton==RIGHT) {
     offsetX = mouseX-clickX;
     offsetY = mouseY-clickY;
     targetRotationX = min(max(clickRotationX + offsetY/float(width) * TWO_PI, -HALF_PI), HALF_PI);
     targetRotationY = clickRotationY + offsetX/float(height) * TWO_PI;
   }
-  rotationX += (targetRotationX-rotationX)*0.25; 
-  rotationY += (targetRotationY-rotationY)*0.25;  
+  rotationX += (targetRotationX-rotationX)*0.25;
+  rotationY += (targetRotationY-rotationY)*0.25;
   rotateX(-rotationX);
-  rotateY(rotationY); 
+  rotateY(rotationY);
 
 
   // ------ draw triangles ------
   noStroke();
-  beginShape(TRIANGLE_FAN);  
+  // 三角扇形 Shape
+  beginShape(TRIANGLE_FAN);
   for(int i=0; i<pointCount-2; i++) {
+    // 隔三个点一个三角形
     if (i%3 == 0) {
       //gradient for every trinangle to lissajou path
       fill(50);
       vertex(0, 0, 0);
       fill(200);
       vertex(lissajousPoints[i].x,lissajousPoints[i].y,lissajousPoints[i].z);
+      // 第二个邻居
       vertex(lissajousPoints[i+2].x,lissajousPoints[i+2].y,lissajousPoints[i+2].z);
     }
   }
   endShape();
 
-
-  // ------ draw lissajous path ------
+  // ------ 利萨佐斯图形路径 ------
   stroke(0);
   strokeWeight(1);
   noFill();
@@ -119,7 +123,7 @@ void draw() {
   tiler.post();
 }
 
-
+// 计算三维利萨佐斯图形坐标
 void calculateLissajousPoints(){
   lissajousPoints = new PVector[pointCount+1];
   float f = width/2;
@@ -157,10 +161,10 @@ void keyPressed(){
 
   if (keyCode == DOWN) phiY -= 15;
   if (keyCode == UP) phiY += 15;
-
+  // 快捷键修改 参数 之后, 再次生成新的坐标
   calculateLissajousPoints();
 
-  println("freqX: " + freqX + ", freqY: " + freqY + ", freqZ: " + freqZ + ", phiX: " + phiX + ", phiY: " + phiY); 
+  println("freqX: " + freqX + ", freqY: " + freqY + ", freqZ: " + freqZ + ", phiX: " + phiX + ", phiY: " + phiY);
 }
 
 
@@ -171,35 +175,6 @@ void mousePressed(){
   clickRotationY = rotationY;
 }
 
-
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

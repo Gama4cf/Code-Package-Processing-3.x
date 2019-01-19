@@ -1,6 +1,6 @@
 // M_1_6_02_TOOL.pde
 // Agent.pde, GUI.pde, Ribbon3d.pde, TileSaver.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -33,7 +33,7 @@ class Agent {
     stepSize = random(5, 20);
     // how many points has the ribbon
     ribbon = new Ribbon3d(p, (int)random(50, 150));
-
+    // 比起 01 颜色丰富了
     float r = random(1.0);
     if (r < 0.4) col = color(random(190,200),random(80,100),random(50,70));
     else if (r < 0.5) col = color(52,100,random(50,80));
@@ -42,9 +42,9 @@ class Agent {
     strokeW = random(1.0);
   }
 
-  void update1(){ 
-    angleY = noise(p.x/noiseScale, p.y/noiseScale, p.z/noiseScale) * noiseStrength; 
-    angleZ = noise(p.x/noiseScale+offset, p.y/noiseScale, p.z/noiseScale) * noiseStrength; 
+  void update1(){
+    angleY = noise(p.x/noiseScale, p.y/noiseScale, p.z/noiseScale) * noiseStrength;
+    angleZ = noise(p.x/noiseScale+offset, p.y/noiseScale, p.z/noiseScale) * noiseStrength;
 
     /* convert polar to cartesian coordinates
      stepSize is distance of the point to the last point
@@ -68,15 +68,16 @@ class Agent {
     isOutside = false;
   }
 
-  void update2(){ 
-    angleY = noise(p.x/noiseScale, p.y/noiseScale, p.z/noiseScale) * noiseStrength; 
-    angleZ = noise(p.x/noiseScale+offset, p.y/noiseScale, p.z/noiseScale) * noiseStrength; 
+  void update2(){
+    angleY = noise(p.x/noiseScale, p.y/noiseScale, p.z/noiseScale) * noiseStrength;
+    angleZ = noise(p.x/noiseScale+offset, p.y/noiseScale, p.z/noiseScale) * noiseStrength;
 
     p.x += cos(angleZ) * cos(angleY) * stepSize;
     p.y += sin(angleZ) * stepSize;
     p.z += cos(angleZ) * sin(angleY) * stepSize;
 
     // boundingbox wrap
+    // 这里挨个判断的 因为想要实现首尾相连的效果
     if(p.x<-spaceSizeX) {
       p.x=spaceSizeX;
       isOutside = true;
@@ -88,7 +89,7 @@ class Agent {
     if(p.y<-spaceSizeY) {
       p.y=spaceSizeY;
       isOutside = true;
-    }  
+    }
     if(p.y>spaceSizeY) {
       p.y=-spaceSizeY;
       isOutside = true;
@@ -109,6 +110,7 @@ class Agent {
   }
 
   void draw() {
+    // 画Mesh
     ribbon.drawMeshRibbon(col,map(strokeW,0,1,minStroke,maxStroke));
     //ribbon.drawLineRibbon(col,map(strokeW,0,1,minStroke,maxStroke));
   }
@@ -119,25 +121,3 @@ class Agent {
     p.z=random(-spaceSizeZ,spaceSizeZ);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

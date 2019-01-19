@@ -1,6 +1,6 @@
 // M_1_5_04_TOOL.pde
 // Agent.pde, GUI.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -26,14 +26,15 @@ class Agent {
   Agent() {
     p = new PVector(random(width),random(height));
     pOld = new PVector(p.x,p.y);
+    // 随机选择器
     randomizer = random(1);
     stepSize = 1+randomizer*4;
-    
-    // colors
+
+    // 颜色的选在两种 随机 颜色之间
     if (randomizer < 0.5) col = color((int)random(170,190), 70, (int)random(0,100));
     else col = color((int)random(40,60), 70, (int)random(0,100));
-    
-    // init zNoise
+
+    // init zNoise 也是随机生成的
     setNoiseSticking(0.4);
   }
 
@@ -48,15 +49,18 @@ class Agent {
     if(p.x>width+10) p.x=pOld.x=-10;
     if(p.y<-10) p.y=pOld.y=height+10;
     if(p.y>height+10) p.y=pOld.y=-10;
-    
+
     stroke(col, agentsAlpha);
     strokeWeight(strokeWidth);
     line(pOld.x,pOld.y, p.x,p.y);
-    
+
     float agentWidth = map(randomizer,0,1,agentWidthMin,agentWidthMax);
     pushMatrix();
-    translate(pOld.x,pOld.y);    
+    translate(pOld.x,pOld.y);
+    // 计算向量与X轴正方向的夹角 并 X轴旋转这个角度
+    // 这样 X 轴方向和向量方向相同
     rotate(atan2(p.y-pOld.y,p.x-pOld.x));
+    // 然后在 y 轴方向上画线
     line(0,-agentWidth,0,agentWidth);
     popMatrix();
 
@@ -78,7 +82,7 @@ class Agent {
 
     stroke(col);
     strokeWeight(2);
-    float agentWidth = map(randomizer,0,1,agentWidthMin,agentWidthMax)*2;   
+    float agentWidth = map(randomizer,0,1,agentWidthMin,agentWidthMax)*2;
     ellipse(pOld.x,pOld.y,agentWidth,agentWidth);
 
     pOld.set(p);
@@ -91,12 +95,3 @@ class Agent {
     zNoise = random(stickingRange);
   }
 }
-
-
-
-
-
-
-
-
-

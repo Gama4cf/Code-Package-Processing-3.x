@@ -1,5 +1,5 @@
 // M_2_3_01.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -20,9 +20,9 @@
  * draws an amplitude modulated oscillator
  *
  * KEYS
- * i                 : toggle draw info signal 
+ * i                 : toggle draw info signal
  * c                 : toggle draw carrier signal
- * 1/2               : info signal frequency -/+ 
+ * 1/2               : info signal frequency -/+
  * arrow left/right  : info signal phi -/+
  * 7/8               : carrier signal frequency -/+ (modulation frequency)
  * s                 : save png
@@ -38,20 +38,21 @@ boolean savePDF = false;
 int pointCount;
 int freq = 2;
 float phi = 0;
+// 固定的频率
 float modFreq = 12;
-
+// 开关
 boolean drawFrequency = true;
 boolean drawModulation = true;
 boolean drawCombination = true;
 
 float angle;
-float y; 
+float y;
 
 
 void setup() {
   size(800, 400);
   smooth();
-
+  // 又是描点
   pointCount = width;
 }
 
@@ -62,16 +63,17 @@ void draw() {
   background(255);
   strokeWeight(1);
   noFill();
-
+  // 从(0, height/2) 开始画图
   translate(0, height/2);
 
-  // draw oscillator with freq and phi
+  // 用初相和频率画谐波振荡
   if (drawFrequency) {
     stroke(0, 130, 164);
     beginShape();
     for (int i=0; i<=pointCount; i++) {
       angle = map(i, 0,pointCount, 0,TWO_PI);
       y = sin(angle * freq + radians(phi));
+      // 振幅固定 height/4
       y = y * (height/4);
       vertex(i, y);
     }
@@ -85,23 +87,24 @@ void draw() {
     for (int i=0; i<=pointCount; i++) {
       angle = map(i, 0,pointCount, 0,TWO_PI);
       y = cos(angle * modFreq);
+      // 固定的振幅 height/4
       y = y * (height/4);
       vertex(i, y);
     }
     endShape();
   }
 
-  // draw both combined
+  // 画两个曲线的合并
   stroke(0);
   strokeWeight(2);
   beginShape();
   for (int i=0; i<=pointCount; i++) {
     angle = map(i, 0,pointCount, 0,TWO_PI);
-    
+    // 竟然是吧两个×起来
     float info = sin(angle * freq + radians(phi));
     float carrier = cos(angle * modFreq);
     y = info * carrier;
-    
+
     y = y * (height/4);
     vertex(i, y);
   }
@@ -119,10 +122,10 @@ void draw() {
 void keyPressed(){
   if(key == 's' || key == 'S') saveFrame(timestamp()+".png");
   if(key == 'p' || key == 'P') {
-    savePDF = true; 
+    savePDF = true;
     println("saving to pdf - starting");
   }
-
+  // 控制频率曲线和
   if (key == 'i' || key == 'I') drawFrequency = !drawFrequency;
   if (key == 'c' || key == 'C') drawModulation = !drawModulation;
 
@@ -136,30 +139,11 @@ void keyPressed(){
   if(key == '7') modFreq--;
   if(key == '8') modFreq++;
   modFreq = max(modFreq, 1);
-  
-  println("freq: " + freq + ", phi: " + phi + ", modFreq: " + modFreq); 
+
+  println("freq: " + freq + ", phi: " + phi + ", modFreq: " + modFreq);
 }
 
 
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 // M_1_5_02_TOOL.pde
 // Agent.pde, GUI.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -19,7 +19,7 @@
 
 /**
  * noise values (noise 2d) are used to animate a bunch of agents.
- * 
+ *
  * KEYS
  * m                   : toogle menu open/close
  * 1-2                 : switch noise mode
@@ -33,31 +33,38 @@ import java.util.Calendar;
 
 
 // ------ agents ------
-Agent[] agents = new Agent[10000]; // create more ... to fit max slider agentsCount
+Agent[] agents = new Agent[10000]; // 这创建的相当多了
+// 中间件数量
 int agentsCount = 4000;
-float noiseScale = 300, noiseStrength = 10; 
+// 噪声范围 强度
+float noiseScale = 300, noiseStrength = 10;
+// 覆盖层 α 通道 中间件α通道 边框宽度
 float overlayAlpha = 10, agentsAlpha = 90, strokeWidth = 0.3;
 int drawMode = 1;
 
 // ------ ControlP5 ------
 ControlP5 controlP5;
+// 控制 Group menu 的 open 和 close
 boolean showGUI = false;
+// 滑杆数组
 Slider[] sliders;
 
 
 void setup(){
-  size(1280,800,P2D);
+  size(1280,720,P2D);
   smooth();
-
+  // 初始化 Agent (中间件???)
   for(int i=0; i<agents.length; i++) {
     agents[i] = new Agent();
   }
-
+  // 初始化GUI
   setupGUI();
 }
 
 
 void draw(){
+  // 这里的alpha通道很重要, 形成了拖尾的效果
+  // 也导致 menu 消失缓慢
   fill(255, overlayAlpha);
   noStroke();
   rect(0,0,width,height);
@@ -66,7 +73,7 @@ void draw(){
   //draw agents
   if (drawMode == 1) {
     for(int i=0; i<agentsCount; i++) agents[i].update1();
-  } 
+  }
   else {
     for(int i=0; i<agentsCount; i++) agents[i].update2();
   }
@@ -75,16 +82,18 @@ void draw(){
 
 
 void keyReleased(){
+  // 快捷键控制 菜单开关
   if(key=='m' || key=='M') {
     showGUI = controlP5.getGroup("menu").isOpen();
     showGUI = !showGUI;
   }
   if (showGUI) controlP5.getGroup("menu").open();
   else controlP5.getGroup("menu").close();
-
+  // 鼠标也是可以控制 controlP5.getGroup("menu") open和close的, 这部分 **猜测** 在库中完成
   if (key == '1') drawMode = 1;
   if (key == '2') drawMode = 2;
   if (key=='s' || key=='S') saveFrame(timestamp()+".png");
+  // 空格键 重置 噪声种子
   if (key == ' ') {
     int newNoiseSeed = (int) random(100000);
     println("newNoiseSeed: "+newNoiseSeed);

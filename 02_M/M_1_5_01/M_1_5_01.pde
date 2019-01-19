@@ -1,5 +1,5 @@
 // M_1_5_01.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -18,10 +18,10 @@
 
 /**
  * how to transform noise values into directions (angles) and brightness levels
- * 
+ *
  * MOUSE
  * position x/y        : specify noise input range
- * 
+ *
  * KEYS
  * d                   : toogle display brightness circles on/off
  * arrow up            : noise falloff +
@@ -46,10 +46,11 @@ color arcColor = color(0,130,164,100);
 float tileSize = 40;
 int gridResolutionX, gridResolutionY;
 boolean debugMode = true;
+// 箭头
 PShape arrow;
 
 void setup() {
-  size(800,800); 
+  size(800,800);
   cursor(CROSS);
   gridResolutionX = round(width/tileSize);
   gridResolutionY = round(height/tileSize);
@@ -65,17 +66,17 @@ void draw() {
   float noiseXRange = mouseX/100.0;
   float noiseYRange = mouseY/100.0;
 
-  for (int gY=0; gY<= gridResolutionY; gY++) {  
+  for (int gY=0; gY<= gridResolutionY; gY++) {
     for (int gX=0; gX<= gridResolutionX; gX++) {
       float posX = tileSize*gX;
       float posY = tileSize*gY;
 
-      // get noise value
+      // get noise value, 把网格位置作为参数生成的 noise
       float noiseX = map(gX, 0,gridResolutionX, 0,noiseXRange);
       float noiseY = map(gY, 0,gridResolutionY, 0,noiseYRange);
       float noiseValue = noise(noiseX,noiseY);
       float angle = noiseValue*TWO_PI;
-
+      // 因为在循环里面, 注意加pushMatrix() popMatrix()
       pushMatrix();
       translate(posX,posY);
 
@@ -87,16 +88,19 @@ void draw() {
         ellipse(0,0,tileSize*0.25,tileSize*0.25);
       }
 
-      // arc
+      // 画弧/角
       noFill();
       strokeCap(SQUARE);
       strokeWeight(1);
       stroke(arcColor);
+      // 画出转过的角
+      // 中间两个参数: 弧的宽度和高度
       arc(0,0,tileSize*0.75,tileSize*0.75,0,angle);
 
-      // arrow
+      // 画箭头
       stroke(0);
       strokeWeight(0.75);
+      // 旋转角度
       rotate(angle);
       shape(arrow,0,0,tileSize*0.75,tileSize*0.75);
       popMatrix();
@@ -107,10 +111,10 @@ void draw() {
     savePDF = false;
     endRecord();
   }
-  println("octaves: "+octaves+" falloff: "+falloff+" noiseXRange: 0-"+noiseXRange+" noiseYRange: 0-"+noiseYRange); 
+  println("octaves: "+octaves+" falloff: "+falloff+" noiseXRange: 0-"+noiseXRange+" noiseYRange: 0-"+noiseYRange);
 }
 
-void keyReleased() {  
+void keyReleased() {
   if (key == 's' || key == 'S') saveFrame(timestamp()+"_####.png");
   if (key == 'p' || key == 'P') savePDF = true;
   if (key == 'd' || key == 'D') debugMode = !debugMode;
@@ -132,6 +136,3 @@ String timestamp() {
   Calendar now = Calendar.getInstance();
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
-
-
-
