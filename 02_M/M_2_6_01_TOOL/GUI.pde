@@ -1,6 +1,6 @@
 // M_2_6_01_TOOL.pde
 // GUI.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -34,8 +34,12 @@ void setupGUI(){
 
 
   sliders = new Slider[30];
+  // A range slider works just like a slider but can be adjusted on both ends.
   ranges = new Range[30];
+  // a toggle can have two states, true and false, where true has the value 1 and false is 0.
   toggles = new Toggle[30];
+  // The Bang controller triggers an event when pressed.
+  // A bang can only be assigned to a function in your program but not to a field like other controllers.
   bangs = new Bang[30];
 
   int left = 0;
@@ -49,7 +53,7 @@ void setupGUI(){
   int posY = 0;
 
   bangs[bi] = controlP5.addBang("selectFile",left,top+posY,45,15);
-  bangs[bi++].setLabel("Load Image"); 
+  bangs[bi++].setLabel("Load Image");
   sliders[si++] = controlP5.addSlider("imageAlpha",0,100,left+120,top+posY,len-120,15);
   sliders[si++] = controlP5.addSlider("eraserRadius",1,50,left,top+posY+20,len,15);
   sliders[si++] = controlP5.addSlider("minDistance",0,30,left,top+posY+40,len,15);
@@ -79,7 +83,7 @@ void setupGUI(){
   posY += 30;
 
   bangs[bi] = controlP5.addBang("reset",left,top+posY,45,15);
-  bangs[bi++].setLabel("Reset"); 
+  bangs[bi++].setLabel("Reset");
   posY += 30;
 
   for (int i = 0; i < si; i++) {
@@ -160,7 +164,7 @@ void updateColors(boolean stat) {
     if (stat == false) {
       sliders[i].setColorCaptionLabel(color(50));
       sliders[i].getCaptionLabel().setColorBackground(0x99ffffff);
-    } 
+    }
     else {
       sliders[i].setColorCaptionLabel(color(200));
       sliders[i].getCaptionLabel().setColorBackground(0x99000000);
@@ -171,7 +175,7 @@ void updateColors(boolean stat) {
     if (stat == false) {
       ranges[i].setColorCaptionLabel(color(50));
       ranges[i].getCaptionLabel().setColorBackground(0x99ffffff);
-    } 
+    }
     else {
       ranges[i].setColorCaptionLabel(color(200));
       ranges[i].getCaptionLabel().setColorBackground(0x99000000);
@@ -182,7 +186,7 @@ void updateColors(boolean stat) {
     if (stat == false) {
       toggles[i].setColorCaptionLabel(color(50));
       toggles[i].getCaptionLabel().setColorBackground(0x99ffffff);
-    } 
+    }
     else {
       toggles[i].setColorCaptionLabel(color(200));
       toggles[i].getCaptionLabel().setColorBackground(0x99000000);
@@ -193,15 +197,10 @@ void updateColors(boolean stat) {
     if (stat == false) {
       bangs[i].setColorCaptionLabel(color(50));
       bangs[i].getCaptionLabel().setColorBackground(0x99ffffff);
-    } 
+    }
     else {
       bangs[i].setColorCaptionLabel(color(200));
       bangs[i].getCaptionLabel().setColorBackground(0x99000000);
     }
   }
 }
-
-
-
-
-

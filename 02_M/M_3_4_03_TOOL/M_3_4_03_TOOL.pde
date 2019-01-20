@@ -1,6 +1,6 @@
 // M_3_4_03_TOOL.pde
 // GUI.pde, Mesh.pde, TileSaver.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -27,7 +27,7 @@
  * KEYS
  * m                   : menu open/close
  * s                   : save png
- * p                   : high resolution export (please update to processing 1.0.8 or 
+ * p                   : high resolution export (please update to processing 1.0.8 or
  *                       later. otherwise this will not work properly)
  * d                   : 3d export (dxf format - will not export colors)
  */
@@ -46,7 +46,7 @@ import java.util.Calendar;
 int qualityFactor = 3;                   //// 2 - 10
 boolean saveOneFrame = false;
 TileSaver tiler;
-boolean saveDXF = false; 
+boolean saveDXF = false;
 
 
 // ------ initial parameters and declarations ------
@@ -86,6 +86,8 @@ float randomVCenterRange = TWO_PI;
 float randomVRange = 5;
 
 float paramExtra = 1;
+// What is new here is the parameter “randomScaleRange” that defines
+//  how much the indi­vidual grid sections arc scaled.
 float randomScaleRange = 1.0;
 float meshDistortion = 0;
 
@@ -93,7 +95,7 @@ float meshDistortion = 0;
 // ------ mouse interaction ------
 
 int offsetX = 0, offsetY = 0, clickX = 0, clickY = 0;
-float rotationX = -0.5, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY; 
+float rotationX = -0.5, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY;
 
 
 // ------ ControlP5 ------
@@ -110,9 +112,9 @@ Toggle[] toggles;
 
 
 void setup() {
-  size(1000, 1000, P3D);
+  size(720, 720, P3D);
 
-  setupGUI(); 
+  setupGUI();
 
   noStroke();
 
@@ -124,10 +126,12 @@ void draw() {
   hint(ENABLE_DEPTH_TEST);
 
   // for high quality output
-  if (tiler==null) return; 
+  if (tiler==null) return;
   tiler.pre();
 
   // dxf output
+  // Data can be exported to a 30 program using the DSF format,
+  //  which allows even more Impressive rendering effects to be generated.
   if (saveDXF) beginRaw(DXF, timestamp()+".dxf");
 
 
@@ -135,15 +139,15 @@ void draw() {
   if (useBlendBlack) background(0);
   else background(255);
 
-  if (useBlendWhite || useBlendBlack) {
-  }
+  // if (useBlendWhite || useBlendBlack) {
+  // }
 
 
   // Set lights
-  lightSpecular(255, 255, 255); 
-  directionalLight(255, 255, 255, 1, 1, -1); 
-  specular(meshSpecular, meshSpecular, meshSpecular); 
-  shininess(5.0); 
+  lightSpecular(255, 255, 255);
+  directionalLight(255, 255, 255, 1, 1, -1);
+  specular(meshSpecular, meshSpecular, meshSpecular);
+  shininess(5.0);
 
   // Set view
   pushMatrix();
@@ -157,11 +161,11 @@ void draw() {
     targetRotationX = clickRotationX + offsetX/float(width) * TWO_PI;
     targetRotationY = min(max(clickRotationY + offsetY/float(height) * TWO_PI, -HALF_PI), HALF_PI);
 
-    rotationX += (targetRotationX-rotationX)*0.25; 
+    rotationX += (targetRotationX-rotationX)*0.25;
     rotationY += (targetRotationY-rotationY)*0.25;
   }
-  rotateX(-rotationY); 
-  rotateY(rotationX); 
+  rotateX(-rotationY);
+  rotateY(rotationX);
 
   scale(meshScale);
 
@@ -175,7 +179,7 @@ void draw() {
     for (int i = 0; i < meshCount; i++) {
       myMeshes[i] = new Mesh();
     }
-  } 
+  }
 
 
   // Set parameters and draw meshes
@@ -185,9 +189,9 @@ void draw() {
 
   for (int i = 0; i < meshCount; i++) {
     pushMatrix();
-
+    // 每个 Mesh 都不同程度缩放
     scale(random(1/randomScaleRange, randomScaleRange));
-
+    //  U V 坐标的中西和范围都是随机生成的
     float uCenter = random(randomUCenter-randomUCenterRange/2, randomUCenter+randomUCenterRange/2);
     float uRange = random(randomURange);
     float vCenter = random(randomVCenter-randomVCenterRange/2, randomVCenter+randomVCenterRange/2);
@@ -226,8 +230,8 @@ void draw() {
 
   popMatrix();
 
-  if (useBlendWhite || useBlendBlack) {
-  }
+  // if (useBlendWhite || useBlendBlack) {
+  // }
 
   // Image output
   if (saveOneFrame) {
@@ -242,15 +246,15 @@ void draw() {
 
   // Draw GUI
   if (tiler.checkStatus() == false) {
-    if (useBlendBlack || useBlendWhite) {
-    }
+    // if (useBlendBlack || useBlendWhite) {
+    // }
 
     hint(DISABLE_DEPTH_TEST);
     noLights();
     drawGUI();
 
-    if (useBlendBlack || useBlendWhite) {
-    }
+    // if (useBlendBlack || useBlendWhite) {
+    // }
   }
 
 

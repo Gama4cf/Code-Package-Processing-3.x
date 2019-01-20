@@ -1,6 +1,6 @@
 // M_3_5_01.pde
 // Mesh.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -19,10 +19,10 @@
 
 /**
  * morphes between two different forms
- * 
+ *
  * MOUSE
  * position x          : morphing between the forms
- * 
+ *
  * KEYS
  * s                   : save png
  */
@@ -37,13 +37,14 @@ MyOwnMesh myMesh;
 
 
 void setup() {
-  size(1000,1000,P3D);
+  size(720,720,P3D);
 
-  // setup drawing style 
+  // setup drawing style
   colorMode(HSB, 360, 100, 100, 100);
   noStroke();
 
   // initialize mesh
+  // new 一个自定的对象
   myMesh = new MyOwnMesh();
   myMesh.setUCount(100);
   myMesh.setVCount(100);
@@ -57,29 +58,31 @@ void draw() {
 
   // setup lights
   colorMode(RGB, 255, 255, 255, 100);
-  lightSpecular(255, 255, 255); 
-  directionalLight(255, 255, 255, 1, 1, -1); 
-  shininess(5.0); 
+  lightSpecular(255, 255, 255);
+  directionalLight(255, 255, 255, 1, 1, -1);
+  shininess(5.0);
 
   // setup view
   translate(width*0.5, height*0.5);
   scale(90);
-  rotateX(radians(-50)); 
-  rotateY(radians(40)); 
+  // 转到一个方便查看的角度
+  rotateX(radians(-50));
+  rotateY(radians(40));
 
   // recalculate points and draw mesh
+  // params 受鼠标mouseX控制
   myMesh.setParam(1, float(mouseX)/width);
   myMesh.update();
   myMesh.draw();
 }
 
 
-
+// 重写了 calculatePoints 是 SteinbachScrew 和 Bow 和 params 的结合
 class MyOwnMesh extends Mesh {
   PVector calculatePoints(float u, float v) {
     PVector p1 = SteinbachScrew(u, v);
     PVector p2 = Bow(u, v);
-    
+    // 步进受mouseX控制, 这样其实也就是一个放大的功能
     float x = lerp(p1.x, p2.x, params[1]);
     float y = lerp(p1.y, p2.y, params[1]);
     float z = lerp(p1.z, p2.z, params[1]);
@@ -88,19 +91,11 @@ class MyOwnMesh extends Mesh {
   }
 }
 
-
-
-
 void keyPressed(){
   if(key == 's' || key == 'S') saveFrame(timestamp()+".png");
-
 }
 
 
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-

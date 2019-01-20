@@ -1,6 +1,6 @@
 // M_3_4_01_TOOL.pde
 // GUI.pde, Mesh.pde, TileSaver.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -32,7 +32,9 @@ void setupGUI(){
   ctrl.close();
 
   sliders = new Slider[30];
+  // A range slider works just like a slider but can be adjusted on both ends.
   ranges = new Range[30];
+  // a toggle can have two states, true and false, where true has the value 1 and false is 0.
   toggles = new Toggle[30];
 
   int left = 0;
@@ -59,9 +61,9 @@ void setupGUI(){
   toggles[ti] = controlP5.addToggle("useNoBlend",useNoBlend,left+0,top+posY,15,15);
   toggles[ti++].setLabel("No Blend");
   toggles[ti] = controlP5.addToggle("useBlendWhite",useBlendWhite,left+0,top+posY+20,15,15);
-  toggles[ti++].setLabel("Blend on White"); 
+  toggles[ti++].setLabel("Blend on White");
   toggles[ti] = controlP5.addToggle("useBlendBlack",useBlendBlack,left+0,top+posY+40,15,15);
-  toggles[ti++].setLabel("Blend on Black"); 
+  toggles[ti++].setLabel("Blend on Black");
   posY += 70;
 
   sliders[si++] = controlP5.addSlider("meshAlpha",0,100,left,top+posY+0,len,15);
@@ -118,7 +120,7 @@ void setupGUI(){
 
 void drawGUI(){
   controlP5.show();
-  //controlP5.hide();  
+  //controlP5.hide();
   controlP5.draw();
 }
 
@@ -131,7 +133,7 @@ void updateColors(int stat) {
     if (stat == 0) {
       sliders[i].setColorCaptionLabel(color(50));
       sliders[i].getCaptionLabel().setColorBackground(0x99ffffff);
-    } 
+    }
     else {
       sliders[i].setColorCaptionLabel(color(200));
       sliders[i].getCaptionLabel().setColorBackground(0x99000000);
@@ -142,7 +144,7 @@ void updateColors(int stat) {
     if (stat == 0) {
       ranges[i].setColorCaptionLabel(color(50));
       ranges[i].getCaptionLabel().setColorBackground(0x99ffffff);
-    } 
+    }
     else {
       ranges[i].setColorCaptionLabel(color(200));
       ranges[i].getCaptionLabel().setColorBackground(0x99000000);
@@ -153,7 +155,7 @@ void updateColors(int stat) {
     if (stat == 0) {
       toggles[i].setColorCaptionLabel(color(50));
       toggles[i].getCaptionLabel().setColorBackground(0x99ffffff);
-    } 
+    }
     else {
       toggles[i].setColorCaptionLabel(color(200));
       toggles[i].getCaptionLabel().setColorBackground(0x99000000);
@@ -246,7 +248,7 @@ void useNoBlend() {
       useBlendBlack = false;
       toggles[5].setState(useBlendWhite);
       toggles[6].setState(useBlendBlack);
-    } 
+    }
     else {
       useBlendWhite = true;
       useBlendBlack = false;
@@ -266,7 +268,7 @@ void useBlendWhite() {
       useBlendBlack = false;
       toggles[4].setState(useNoBlend);
       toggles[6].setState(useBlendBlack);
-    } 
+    }
     else {
       useNoBlend = true;
       useBlendBlack = false;
@@ -287,7 +289,7 @@ void useBlendBlack() {
       toggles[4].setState(useNoBlend);
       toggles[5].setState(useBlendWhite);
       updateColors(1);
-    } 
+    }
     else {
       useNoBlend = true;
       useBlendWhite = false;
@@ -297,5 +299,3 @@ void useBlendBlack() {
     }
   }
 }
-
-

@@ -1,6 +1,6 @@
 // M_3_3_04.pde
 // Mesh.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -28,31 +28,32 @@ import java.util.Calendar;
 void setup() {
   size(1000,1000,P3D);
 
-  // setup drawing style 
+  // setup drawing style
   background(255);
   noStroke();
   fill(0);
 
   // setup lights
-  lightSpecular(230, 230, 230); 
-  directionalLight(200, 200, 200, 0.5, 0.5, -1); 
-  directionalLight(200, 200, 200, -0.5, -0.5, 1); 
-  specular(color(200)); 
-  shininess(5.0); 
+  lightSpecular(230, 230, 230);
+  directionalLight(200, 200, 200, 0.5, 0.5, -1);
+  directionalLight(200, 200, 200, -0.5, -0.5, 1);
+  specular(color(200));
+  shininess(5.0);
 
   // setup view
   translate(width*0.5, height*0.5);
-  rotateX(0.5); 
-  rotateY(-0.4); 
+  rotateX(0.5);
+  rotateY(-0.4);
   scale(100);
 
 
-  // setup Mesh, set colors and draw  
+  // setup Mesh, set colors and draw
+  // 8环面
   Mesh myMesh = new Mesh(Mesh.FIGURE8TORUS, 200, 200, -PI, PI, -PI, PI);
   myMesh.setColorRange(192, 192, 50, 50, 50, 50, 100);
   myMesh.draw();
-  
-  
+
+
   // save image
   saveFrame(timestamp()+".png");
 }

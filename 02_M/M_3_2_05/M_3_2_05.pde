@@ -1,5 +1,5 @@
 // M_3_2_05.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -17,12 +17,14 @@
 // limitations under the License.
 
 /**
- * optimized code for calculating and drawing a mesh.  
- * 
+ * optimized code for calculating and drawing a mesh.
+ *
  * MOUSE
  * click + drag        : rotate
  */
-
+// 优化代码: 空间换时间
+// 竟然是03改过来的, 不是04..., 考虑04的话把计算独立出来, 修改范围重新计算
+// 期待加入颜色的功能,其实就是根据z轴映射填充颜色, 要网格小一点才好看吧
 import processing.opengl.*;
 import java.util.Calendar;
 
@@ -38,15 +40,16 @@ float vMax = 1;
 
 // array for the grid points
 // initialize array
+// 二维的PVector数组中每一个元素都是一个Pvector实例
 PVector[][] points = new PVector[vCount+1][uCount+1];
 
 // view rotation
 int offsetX = 0, offsetY = 0, clickX = 0, clickY = 0;
-float rotationX = 0, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY; 
+float rotationX = 0, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY;
 
 
 void setup() {
-  size(800,800,P3D);
+  size(720,720,P3D);
   smooth(8);
   fill(255);
   strokeWeight(1/400.0);
@@ -77,6 +80,7 @@ void draw() {
 
   // draw mesh
   for (int iv = 0; iv < vCount; iv++) {
+    // 好处就是, 即使是弯曲的条带,也都会自己画好,好666
     beginShape(QUAD_STRIP);
     for (int iu = 0; iu <= uCount; iu++) {
       vertex(points[iv][iu].x, points[iv][iu].y, points[iv][iu].z);
@@ -103,11 +107,11 @@ void setView() {
     offsetY = mouseY-clickY;
     targetRotationX = clickRotationX + offsetX/float(width) * TWO_PI;
     targetRotationY = min(max(clickRotationY + offsetY/float(height) * TWO_PI, -HALF_PI), HALF_PI);
-    rotationX += (targetRotationX-rotationX)*0.25; 
-    rotationY += (targetRotationY-rotationY)*0.25;  
+    rotationX += (targetRotationX-rotationX)*0.25;
+    rotationY += (targetRotationY-rotationY)*0.25;
   }
-  rotateX(-rotationY); 
-  rotateY(rotationX); 
+  rotateX(-rotationY);
+  rotateY(rotationX);
 }
 
 

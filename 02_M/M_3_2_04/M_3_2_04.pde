@@ -1,5 +1,5 @@
 // M_3_2_04.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -18,17 +18,17 @@
 
 /**
  * draws a mesh using u-v-coordinates. change u and v ranges using different keys
- * 
+ *
  * MOUSE
  * click + drag        : rotate
- * 
+ *
  * KEYS
  * 1/2                 : uMin -/+
  * 3/4                 : uMax -/+
  * 5/6                 : vMin -/+
  * 7/8                 : vMax -/+
- * arrow left/right    : uMin, uMax -/+ 
- * arrow down/up       : vMin, vMax -/+ 
+ * arrow left/right    : uMin, uMax -/+
+ * arrow down/up       : vMin, vMax -/+
  * p                   : save pdf (may not look correctly due to missing depth sorting)
  */
 
@@ -48,14 +48,14 @@ float vMax = 1;
 
 // view rotation
 int offsetX = 0, offsetY = 0, clickX = 0, clickY = 0;
-float rotationX = 1, rotationY = 0.3, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY; 
+float rotationX = 1, rotationY = 0.3, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY;
 
 // image output
 boolean savePDF = false;
 
 
 void setup() {
-  size(800, 800, P3D);
+  size(720, 720, P3D);
   smooth(8);
 }
 
@@ -66,7 +66,7 @@ void draw() {
 
   background(255);
   fill(255);
-  strokeWeight(1/200.0);  
+  strokeWeight(1/200.0);
 
   setView();
 
@@ -78,7 +78,7 @@ void draw() {
     for (float iu = 0; iu <= uCount; iu++) {
       float u = map(iu, 0, uCount, uMin, uMax);
       float v = map(iv, 0, vCount, vMin, vMax);
-
+      // 换了计算公式
       float x = 0.75*v;
       float y = sin(u)*v;
       float z = cos(u)*cos(v);
@@ -102,35 +102,35 @@ void draw() {
 
 
 void keyPressed(){
-  if(key=='p' || key=='P') savePDF = true; 
-
-  if(key=='1') uMin -= 0.1; 
-  if(key=='2') uMin += 0.1; 
-  if(key=='3') uMax -= 0.1; 
-  if(key=='4') uMax += 0.1; 
-  if(key=='5') vMin -= 0.1; 
-  if(key=='6') vMin += 0.1; 
-  if(key=='7') vMax -= 0.1; 
-  if(key=='8') vMax += 0.1; 
-
-  if (keyCode == LEFT) { 
+  if(key=='p' || key=='P') savePDF = true;
+  // 1-8控制 u v 范围
+  if(key=='1') uMin -= 0.1;
+  if(key=='2') uMin += 0.1;
+  if(key=='3') uMax -= 0.1;
+  if(key=='4') uMax += 0.1;
+  if(key=='5') vMin -= 0.1;
+  if(key=='6') vMin += 0.1;
+  if(key=='7') vMax -= 0.1;
+  if(key=='8') vMax += 0.1;
+  // 上下左右键控制 u v 范围
+  if (keyCode == LEFT) {
     uMin -= 0.1;
     uMax -= 0.1;
   }
-  if (keyCode == RIGHT) { 
+  if (keyCode == RIGHT) {
     uMin += 0.1;
     uMax += 0.1;
   }
-  if (keyCode == DOWN) { 
+  if (keyCode == DOWN) {
     vMin -= 0.1;
     vMax -= 0.1;
   }
-  if (keyCode == UP) { 
+  if (keyCode == UP) {
     vMin += 0.1;
     vMax += 0.1;
   }
 
-  println("U Range: " + nf(uMin,0,1) + " - " + nf(uMax,0,1) + " | V Range: " + nf(vMin,0,1) + " - " + nf(vMax,0,1)); 
+  println("U Range: " + nf(uMin,0,1) + " - " + nf(uMax,0,1) + " | V Range: " + nf(vMin,0,1) + " - " + nf(vMax,0,1));
 }
 
 
@@ -151,11 +151,11 @@ void setView() {
     offsetY = mouseY-clickY;
     targetRotationX = clickRotationX + offsetX/float(width) * TWO_PI;
     targetRotationY = min(max(clickRotationY + offsetY/float(height) * TWO_PI, -HALF_PI), HALF_PI);
-    rotationX += (targetRotationX-rotationX)*0.25; 
-    rotationY += (targetRotationY-rotationY)*0.25;  
+    rotationX += (targetRotationX-rotationX)*0.25;
+    rotationY += (targetRotationY-rotationY)*0.25;
   }
-  rotateX(-rotationY); 
-  rotateY(rotationX); 
+  rotateX(-rotationY);
+  rotateY(rotationX);
 }
 
 

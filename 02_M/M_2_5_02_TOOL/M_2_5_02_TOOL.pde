@@ -175,7 +175,7 @@ void draw() {
   }
 }
 
-
+// 计算利萨佐斯图形中的点
 void calculateLissajousPoints() {
   // 重置点的数量
   if (pointCount != lissajousPoints.length-1) {
@@ -208,7 +208,7 @@ void calculateLissajousPoints() {
   }
 }
 
-
+// 画线函数
 void drawLine(PVector p1, PVector p2) {
   float d, a, h;
 
@@ -223,6 +223,7 @@ void drawLine(PVector p1, PVector p2) {
     else {
       h = map(1-a, 0, 1, minHueValue, maxHueValue) % 360;
     }
+    // 还影响 透明度
     stroke(h, saturationValue, brightnessValue, a*lineAlpha + (i1%2 * 2));
     line(p1.x, p1.y, p2.x, p2.y);
   }

@@ -1,6 +1,6 @@
 // M_3_3_01.pde
 // Mesh.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -26,33 +26,42 @@ import java.util.Calendar;
 
 
 void setup() {
-  size(1000,1000,P3D);
+  size(720, 720,P3D);
 
-  // setup drawing style 
+  // setup drawing style
   background(255);
   noStroke();
   fill(0);
 
   // setup lights
-  lightSpecular(230, 230, 230); 
-  directionalLight(200, 200, 200, -0.25, -0.25, 1); 
-  directionalLight(200, 200, 200, 0.25, 0.25, -1); 
-  specular(color(200)); 
-  shininess(5.0); 
+  // Sets the specular color for lights.
+  // Like fill(), it affects only the elements which are created after it in the code.
+  lightSpecular(230, 230, 230);
+  // Adds a directional light. Directional light comes from one direction:
+  //  it is stronger when hitting a surface squarely, and weaker if it hits at a gentle angle.
+  directionalLight(200, 200, 200, -0.25, -0.25, 1);
+  directionalLight(200, 200, 200, 0.25, 0.25, -1);
+  // Sets the specular color of the materials used for shapes drawn to the screen, which sets the color of highlights.
+  specular(color(200));
+  // Sets the amount of gloss in the surface of shapes.
+  //  Used in combination with ambient(), specular(), and emissive() in setting the material properties of shapes.
+  shininess(5.0);
 
   // setup view
   translate(width*0.5, height*0.5);
-  rotateX(-0.2); 
-  rotateY(-0.5); 
+  rotateX(-0.2);
+  rotateY(-0.5);
   scale(100);
 
 
-  // setup Mesh, set colors and draw  
+  // setup Mesh, set colors and draw
+  // Mesh(int theForm, int theUNum, int theVNum, float theUMin, float theUMax, float theVMin, float theVMax)
+  // Steinbach Screw: http://mathworld.wolfram.com/SteinbachScrew.html
   Mesh myMesh = new Mesh(Mesh.STEINBACHSCREW, 200, 200, -3, 3, -PI, PI);
   myMesh.setColorRange(192, 192, 50, 50, 50, 50, 100);
   myMesh.draw();
-  
-  
+
+
   // save image
   saveFrame(timestamp()+".png");
 }

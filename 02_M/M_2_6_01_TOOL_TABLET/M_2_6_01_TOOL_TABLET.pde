@@ -1,6 +1,6 @@
 // M_2_6_01_TOOL_TABLET.pde
 // GUI.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -18,7 +18,7 @@
 // limitations under the License.
 
 /**
- * drawing tool that uses the special drawing method of connecting 
+ * drawing tool that uses the special drawing method of connecting
  * all points with every other.
  * tablet version
  *
@@ -58,7 +58,7 @@ float maxEraserRadius = 30;
 float eraserRadius;
 boolean usePressure = true;
 // minimum distance to previously set point
-float minDistance = 10;    
+float minDistance = 10;
 
 float zoom = 1;
 boolean drawing = false;
@@ -107,7 +107,7 @@ boolean savePDF = false;
 
 
 void setup() {
-  size(800, 800);
+  size(720, 720);
   smooth();
   background(255);
 
@@ -118,7 +118,7 @@ void setup() {
   //surface.setResizable(true);
 
 
-  tablet = new Tablet(this); 
+  tablet = new Tablet(this);
 
   setupGUI();
   guiEvent = false;
@@ -138,19 +138,20 @@ void draw() {
   translate(-width/2 + offsetX, -height/2 + offsetY);
 
 
-  // ------ handle tablet information ------
-  float angle = tablet.getAltitude() * -1;  
+  // ------ 来自平板的信息 ------
+  // 高度, 压力, 笔型
+  float angle = tablet.getAltitude() * -1;
   float pressure = tablet.getPressure();
   int penKind = tablet.getPenKind();
 
   if (penKind == Tablet.ERASER && mousePressed) {
-    erasing = true; 
+    erasing = true;
   }
   if (erasing && !mousePressed) {
     erasing = false;
     i1 = 0;
   }
-
+  // 橡皮尺寸
   eraserRadius = maxEraserRadius;
   if (usePressure) {
     eraserRadius = pow(pressure, 4) * maxEraserRadius;
@@ -168,11 +169,11 @@ void draw() {
   if (invertBackground) {
     bgColor = color(0);
     eraserColor = color(255);
-  } 
+  }
 
   if (guiEvent || saveOneFrame || savePDF || i1 == 0) {
     guiEvent = false;
-    i1 = 0; 
+    i1 = 0;
   }
 
 
@@ -180,7 +181,7 @@ void draw() {
   if (dragging) {
     offsetX = clickOffsetX + (mouseX - clickX) / zoom;
     offsetY = clickOffsetY + (mouseY - clickY) / zoom;
-    i1 = 0; 
+    i1 = 0;
   }
 
 
@@ -202,12 +203,12 @@ void draw() {
 
       i1 = 0;
 
-    } 
+    }
     else {
       // set points
       float x = (mouseX-width/2) / zoom - offsetX + width/2;
       float y = (mouseY-height/2) / zoom -offsetY + height/2;
-      // save pressure information in z-value 
+      // save pressure information in z-value
       float z = 1;
       if (usePressure) {
         z = pressure*0.8 + 0.2;
@@ -218,7 +219,7 @@ void draw() {
         if (dist(x, y, p.x, p.y) > (minDistance)) {
           pointList.add(new PVector(x, y, z));
         }
-      } 
+      }
       else {
         pointList.add(new PVector(x, y, z));
       }
@@ -248,10 +249,10 @@ void draw() {
       i1++;
     }
 
-  } 
+  }
   else {
     // drawing method where all points are connected with each other
-    // alpha depends on distance of the points  
+    // alpha depends on distance of the points
 
     // clear background if drawing of the lines will start from the beginning
     if (i1 == 0) {
@@ -275,7 +276,7 @@ void draw() {
       i1++;
 
       if (savePDF) {
-        println("saving to pdf – step " + i1 + "/" + pointCount); 
+        println("saving to pdf – step " + i1 + "/" + pointCount);
       }
     }
   }
@@ -284,7 +285,7 @@ void draw() {
     stroke(0);
     for (int i=0; i<pointCount; i++) {
       PVector p = (PVector) pointList.get(i);
-      point(p.x, p.y);          
+      point(p.x, p.y);
     }
   }
 
@@ -339,7 +340,7 @@ void drawLine(PVector p1, PVector p2) {
   if (d <= cr) {
     if (!invertHue) {
       h = map(a, 0, 1, minHueValue, maxHueValue) % 360;
-    } 
+    }
     else {
       h = map(1-a, 0, 1, minHueValue, maxHueValue) % 360;
     }
@@ -366,7 +367,7 @@ void reset() {
   if (invertBackground == true) {
     t = (Toggle) controlP5.getController("invertBackground");
     t.setState(false);
-  }  
+  }
   controlP5.getController("lineWeight").setValue(1.0);
   controlP5.getController("lineAlpha").setValue(50.0);
 
@@ -414,7 +415,7 @@ void selectFileLoadPoints() {
 
 void loadPointPathSelected(File selection) {
   if (selection != null) {
-    String loadPointsPath = selection.getAbsolutePath(); 
+    String loadPointsPath = selection.getAbsolutePath();
     String[] pointStrings = loadStrings(loadPointsPath);
     pointCount = 0;
     pointList.clear();
@@ -423,7 +424,7 @@ void loadPointPathSelected(File selection) {
       if (pt.length == 2) {
         pointList.add(new PVector(float(pt[0]), float(pt[1]), 1));
         pointCount++;
-      } 
+      }
       else if (pt.length == 3) {
         pointList.add(new PVector(float(pt[0]), float(pt[1]), float(pt[2])));
         pointCount++;
@@ -445,14 +446,14 @@ void selectFileSavePoints() {
 
 void savePointPathSelected(File selection) {
   if (selection != null) {
-    String savePointsPath = selection.getAbsolutePath(); 
+    String savePointsPath = selection.getAbsolutePath();
     if (!savePointsPath.endsWith(".txt")) savePointsPath += ".txt";
     String[] pointStrings = new String[pointCount];
     for (int i=0; i<pointCount; i++) {
       PVector p = (PVector) pointList.get(i);
       if (p.z > 0) {
         pointStrings[i] = p.x + " " + p.y + " " + p.z;
-      } 
+      }
       else {
         pointStrings[i] = p.x + " " + p.y + " " + 1;
       }
@@ -472,15 +473,15 @@ void keyPressed(){
   else controlP5.getGroup("menu").close();
 
   if(key=='s' || key=='S') {
-    saveOneFrame = true; 
+    saveOneFrame = true;
   }
   if(key=='p' || key=='P') {
-    savePDF = true; 
-    saveOneFrame = true; 
+    savePDF = true;
+    saveOneFrame = true;
     println("saving to pdf - starting");
   }
   if(key=='o' || key=='O') {
-    selectFile(); 
+    selectFile();
   }
   if (keyCode==BACKSPACE) {
     pointCount -= 1;
@@ -489,10 +490,10 @@ void keyPressed(){
     i1 = 0;
   }
   if(key=='e' || key=='E') {
-    selectFileSavePoints(); 
+    selectFileSavePoints();
   }
   if(key=='i' || key=='I') {
-    selectFileLoadPoints(); 
+    selectFileLoadPoints();
   }
 
 }

@@ -1,6 +1,6 @@
 // M_3_4_02.pde
 // Mesh.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -19,7 +19,7 @@
 
 /**
  * draws multiple meshes, all parts of a sphere
- * 
+ *
  * MOUSE
  * click + drag        : rotate
  */
@@ -38,28 +38,29 @@ int vCount = 4;
 
 // rotation
 int offsetX = 0, offsetY = 0, clickX = 0, clickY = 0;
-float rotationX = 0, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY; 
+float rotationX = 0, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY;
 
 // image output
 boolean saveOneFrame = false;
 
 
 void setup() {
-  size(800, 800, P3D);
+  size(720, 720, P3D);
   smooth(8);
-  
+
   // ------ initialize meshes ------
   myMeshes = new Mesh[meshCount];
-
+  // 每次画出来的都一样...
   randomSeed(35976);
 
   for (int i = 0; i < meshCount; i++) {
+    // 限定U V 范围
     float uMin = random(-6, 6);
     float uMax = uMin + random(2, 3);
 
     float vMin = random(-6, 6);
     float vMax = vMin + random(1, 2);
-
+    // 初始化 Mesh
     myMeshes[i] = new Mesh(form, uCount,vCount, uMin,uMax, vMin,vMax);
     myMeshes[i].setDrawMode(QUAD_STRIP);
 
@@ -71,8 +72,9 @@ void setup() {
 
 void draw() {
   // ------ setup canvas, lights and view ------
-  // setup drawing style 
+  // setup drawing style
   background(255);
+  // 这个线宽和后面的放大倍数是相关的
   strokeWeight(1/130.0);
 
   setView();
@@ -84,6 +86,7 @@ void draw() {
   randomSeed(0);
   for (int i = 0; i < meshCount; i++) {
     pushMatrix();
+    // 随机放缩一个不大的倍数
     scale(random(0.9, 1.2));
     myMeshes[i].draw();
     popMatrix();
@@ -108,9 +111,9 @@ void setView() {
     offsetY = mouseY-clickY;
     targetRotationX = clickRotationX + offsetX/float(width) * TWO_PI;
     targetRotationY = min(max(clickRotationY + offsetY/float(height) * TWO_PI, -HALF_PI), HALF_PI);
-    rotationX += (targetRotationX-rotationX)*0.25; 
-    rotationY += (targetRotationY-rotationY)*0.25;  
+    rotationX += (targetRotationX-rotationX)*0.25;
+    rotationY += (targetRotationY-rotationY)*0.25;
   }
-  rotateX(-rotationY); 
-  rotateY(rotationX); 
+  rotateX(-rotationY);
+  rotateY(rotationX);
 }

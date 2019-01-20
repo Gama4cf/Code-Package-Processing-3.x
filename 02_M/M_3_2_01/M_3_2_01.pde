@@ -1,5 +1,5 @@
 // M_3_2_01.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -18,14 +18,14 @@
 
 /**
  * draws a grid with a horizontal wave
- * 
+ *
  * MOUSE
  * click + drag        : rotate
- * 
+ *
  * KEYS
  * p                   : save pdf
  */
- 
+ // elevation contour: 海拔图, 用x,y生成z轴坐标
 import processing.opengl.*;
 import processing.pdf.*;
 import java.util.Calendar;
@@ -37,7 +37,7 @@ int yCount = 5;
 
 // view rotation
 int offsetX = 0, offsetY = 0, clickX = 0, clickY = 0;
-float rotationX = 0, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY; 
+float rotationX = 0, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY;
 
 // image output
 boolean savePDF = false;
@@ -57,14 +57,14 @@ void draw() {
   strokeWeight(1/80.0);
 
   setView();
-
+  // 放大了80倍
   scale(80);
 
   // Draw mesh
   for (int y = 0; y < yCount; y++) {
     beginShape(QUAD_STRIP);
     for (int x = 0; x <= xCount; x++) {
-
+      // z坐标用x来计算
       float z = sin(x);
 
       vertex(x, y, z);
@@ -83,7 +83,7 @@ void draw() {
 
 
 void keyPressed(){
-  if(key=='p' || key=='P') savePDF = true; 
+  if(key=='p' || key=='P') savePDF = true;
 }
 
 
@@ -104,11 +104,11 @@ void setView() {
     offsetY = mouseY-clickY;
     targetRotationX = clickRotationX + offsetX/float(width) * TWO_PI;
     targetRotationY = min(max(clickRotationY + offsetY/float(height) * TWO_PI, -HALF_PI), HALF_PI);
-    rotationX += (targetRotationX-rotationX)*0.25; 
-    rotationY += (targetRotationY-rotationY)*0.25;  
+    rotationX += (targetRotationX-rotationX)*0.25;
+    rotationY += (targetRotationY-rotationY)*0.25;
   }
-  rotateX(-rotationY); 
-  rotateY(rotationX); 
+  rotateX(-rotationY);
+  rotateY(rotationX);
 }
 
 

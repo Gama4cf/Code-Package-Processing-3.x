@@ -1,5 +1,5 @@
 // M_3_2_02.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -18,10 +18,10 @@
 
 /**
  * draws a grid with a radial wave
- * 
+ *
  * MOUSE
  * click + drag        : rotate
- * 
+ *
  * KEYS
  * p                   : save pdf
  */
@@ -37,7 +37,7 @@ int yCount = 30;
 
 // view rotation
 int offsetX = 0, offsetY = 0, clickX = 0, clickY = 0;
-float rotationX = -0.3, rotationY = 0.7, targetRotationX = -0.3, targetRotationY = 0.7, clickRotationX, clickRotationY; 
+float rotationX = -0.3, rotationY = 0.7, targetRotationX = -0.3, targetRotationY = 0.7, clickRotationX, clickRotationY;
 
 // image output
 boolean savePDF = false;
@@ -54,20 +54,21 @@ void draw() {
 
   background(255);
   fill(255);
-  strokeWeight(1/20.0);  
+  strokeWeight(1/20.0);
 
   setView();
-
+  // 放大20倍
   scale(20);
 
   // draw mesh
   //for (int y = yCount-1; y >= 0; y--) { // reversed order, better for pdf output
-  for (int y = 0; y <= yCount; y++) {  
+  for (int y = 0; y <= yCount; y++) {
     beginShape(QUAD_STRIP);
     for (int x = 0; x <= xCount; x++) {
+      // sin(sqrt(x*x+y*y))
       float z = sin(sqrt(x*x+y*y));
       vertex(x, y, z);
-
+      // 下面的点 在下一次循环的时候 还要再画一次
       z = sin(sqrt(x*x+(y+1)*(y+1)));
       vertex(x, y+1, z);
     }
@@ -84,7 +85,7 @@ void draw() {
 
 
 void keyPressed(){
-  if(key=='p' || key=='P') savePDF = true; 
+  if(key=='p' || key=='P') savePDF = true;
 }
 
 
@@ -105,11 +106,11 @@ void setView() {
     offsetY = mouseY-clickY;
     targetRotationX = clickRotationX + offsetX/float(width) * TWO_PI;
     targetRotationY = min(max(clickRotationY + offsetY/float(height) * TWO_PI, -HALF_PI), HALF_PI);
-    rotationX += (targetRotationX-rotationX)*0.25; 
-    rotationY += (targetRotationY-rotationY)*0.25;  
+    rotationX += (targetRotationX-rotationX)*0.25;
+    rotationY += (targetRotationY-rotationY)*0.25;
   }
-  rotateX(-rotationY); 
-  rotateY(rotationX); 
+  rotateX(-rotationY);
+  rotateY(rotationX);
 }
 
 

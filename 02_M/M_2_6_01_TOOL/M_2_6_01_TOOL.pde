@@ -1,6 +1,6 @@
 // M_2_6_01_TOOL.pde
 // GUI.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -18,7 +18,7 @@
 // limitations under the License.
 
 /**
- * drawing tool that uses the special drawing method of connecting 
+ * drawing tool that uses the special drawing method of connecting
  * all points with every other.
  *
  * MOUSE
@@ -35,12 +35,14 @@
  * e                   : export points to a text file
  */
 
+// 就加了一个从平板获取信息, 其他逻辑基本没变
 
 // ------ imports ------
 
 import processing.pdf.*;
 import java.awt.event.*;
 import java.util.Calendar;
+import controlP5.*;
 
 
 // ------ initial parameters and declarations ------
@@ -48,15 +50,18 @@ import java.util.Calendar;
 String backgroundImagePath;
 PImage backgroundImage;
 float imageAlpha = 30;
+// 橡皮的半径
 float eraserRadius = 20;
 // minimum distance to previously set point
-float minDistance = 10;    
+float minDistance = 10;
 
 float zoom = 1;
 boolean drawing = false;
 boolean shiftDown = false;
 
 int pointCount = 0;
+// This is similar to making an array of objects, but with an ArrayList,
+//   items can be easily added and removed from the ArrayList and it is resized dynamically.
 ArrayList pointList = new ArrayList();
 
 boolean invertBackground = false;
@@ -74,14 +79,14 @@ boolean invertHue = false;
 
 
 // ------ mouse interaction ------
-
+// 拖拽指示器
 boolean dragging = false;
+// offSet X Y 这两个偏移为整个坐标系的偏移
 float offsetX = 0, offsetY = 0, clickX = 0, clickY = 0, clickOffsetX = 0, clickOffsetY = 0;
 
 
 // ------ ControlP5 ------
 
-import controlP5.*;
 ControlP5 controlP5;
 boolean GUI = false;
 boolean guiEvent = false;
@@ -92,62 +97,62 @@ Bang[] bangs;
 
 
 // ------ image output ------
-
+//
 boolean saveOneFrame = false;
 boolean savePDF = false;
-
-
-
-
+//
 void setup() {
-  size(800, 800);
+  size(720, 720);
 
   // make window resizable
   // Attention: with Processing 3.0 windows resizing behaves differently than before.
   // You might uncomment the folling line, but the screen will not be updated
   // automativally, when resizing the window.
-  //surface.setResizable(true);
+  surface.setResizable(true);
 
   smooth();
-
+  // 初始化 GUI
   setupGUI();
-
+  // 背景不刷新
   background(255);
-
+  // guiEvent 置为0
   guiEvent = false;
 }
 
 
 void draw() {
+  // 保存静态PDF
   if (savePDF) {
     beginRecord(PDF, timestamp()+".pdf");
   }
-
+  // 颜色模式和范围
   colorMode(RGB, 255, 255, 255, 100);
 
   pushMatrix();
   translate(width/2, height/2);
+  // Increases or decreases the size of a shape by expanding and contracting vertices
   scale(zoom);
+  // 并非从最左上角开始画, 有一点偏移
   translate(-width/2 + offsetX, -height/2 + offsetY);
 
-
+  // drawing 状态开关
   if (guiEvent) {
     drawing = false;
   }
-
+  // 前景背景色翻转
   color bgColor = color(255);
   color eraserColor = color(0);
   if (invertBackground) {
     bgColor = color(0);
     eraserColor = color(255);
-  } 
-
+  }
+  //
   if (guiEvent || saveOneFrame || savePDF || i1 == 0) {
     guiEvent = false;
     i1 = 0;
   }
 
-  // canvas dragging
+  // 图形拖拽,记录偏移
   if (dragging) {
     offsetX = clickOffsetX + (mouseX - clickX) / zoom;
     offsetY = clickOffsetY + (mouseY - clickY) / zoom;
@@ -159,12 +164,12 @@ void draw() {
   if (drawing) {
     if (keyPressed && keyCode == SHIFT) {
       // shift pressed -> delete points
-
+      // 计算偏移之后 橡皮的圆心坐标
+      float x = (mouseX-width/2) / zoom - offsetX + width/2;
+      float y = (mouseY-height/2) / zoom -offsetY + height/2;
+      // 挨个判断是否应该擦除
       for (int i=pointList.size()-1; i >= 0; i--) {
         PVector p = (PVector) pointList.get(i);
-        float x = (mouseX-width/2) / zoom - offsetX + width/2;
-        float y = (mouseY-height/2) / zoom -offsetY + height/2;
-
         if (dist(p.x, p.y, x, y) <= (eraserRadius/zoom)) {
           pointList.remove(i);
         }
@@ -172,8 +177,8 @@ void draw() {
       pointCount = pointList.size();
 
       i1 = 0;
-    } 
-    else {
+    }
+    else {  //否则的话, 在鼠标位置添加新点
       // set points
 
       float x = (mouseX-width/2) / zoom - offsetX + width/2;
@@ -184,7 +189,7 @@ void draw() {
         if (dist(x, y, p.x, p.y) > (minDistance)) {
           pointList.add(new PVector(x, y));
         }
-      } 
+      }
       else {
         pointList.add(new PVector(x, y));
       }
@@ -198,8 +203,9 @@ void draw() {
   stroke(0, lineAlpha);
   strokeCap(ROUND);
   noFill();
+  // 加一个简单的滤镜,看起来有点透明
   tint(255, imageAlpha);
-
+  // 在 不连接所有点 按下shift 拖拽的时候, 简单的画线
   if (!connectAllPoints || shiftDown || dragging) {
     background(bgColor);
     if (backgroundImage != null && !saveOneFrame && !savePDF) image(backgroundImage, 0, 0);
@@ -213,10 +219,10 @@ void draw() {
       drawLine(p1, p2);
       i1++;
     }
-  } 
+  }
   else {
     // drawing method where all points are connected with each other
-    // alpha depends on distance of the points  
+    // alpha depends on distance of the points
 
     // clear background if drawing of the lines will start from the beginning
     if (i1 == 0) {
@@ -229,7 +235,7 @@ void draw() {
     if (saveOneFrame || savePDF) {
       drawEndTime = Integer.MAX_VALUE;
     }
-
+    // 画连接点的线
     colorMode(HSB, 360, 100, 100, 100);
     while (i1 < pointCount && millis () < drawEndTime) {
       for (int i2 = 0; i2 < i1; i2++) {
@@ -244,7 +250,7 @@ void draw() {
       }
     }
   }
-
+  // shift按下和拖拽的时候 划出点
   if (shiftDown || dragging) {
     stroke(0);
     for (int i=0; i<pointCount; i++) {
@@ -289,7 +295,7 @@ void draw() {
     saveOneFrame = false;
   }
 }
-
+// 根据距离用直线连接两个点, 距离影响透明度和色调
 void drawLine(PVector p1, PVector p2) {
   float d, a, h;
   d = PVector.dist(p1, p2);
@@ -298,7 +304,7 @@ void drawLine(PVector p1, PVector p2) {
   if (d <= connectionRadius) {
     if (!invertHue) {
       h = map(a, 0, 1, minHueValue, maxHueValue) % 360;
-    } 
+    }
     else {
       h = map(1-a, 0, 1, minHueValue, maxHueValue) % 360;
     }
@@ -307,8 +313,9 @@ void drawLine(PVector p1, PVector p2) {
   }
 }
 
-
+// 重置函数, 在GUI中有一个重置bang
 void reset() {
+  // 对点和坐标重置
   pointList.clear();
   pointCount = 0;
   i1 = 0;
@@ -325,7 +332,7 @@ void reset() {
   if (invertBackground == true) {
     t = (Toggle) controlP5.getController("invertBackground");
     t.setState(false);
-  }  
+  }
   controlP5.getController("lineWeight").setValue(1.0);
   controlP5.getController("lineAlpha").setValue(50.0);
 
@@ -347,11 +354,12 @@ void reset() {
   }
 }
 
-
+// 选择背景文件的时候 guiEvent = true
 void selectFile() {
   guiEvent = true;
-
-  // opens file chooser
+  // selectInput(prompt, callback)
+  // Opens a platform-specific file chooser dialog to select a file for input.
+  //  After the selection is made, the selected File will be passed to the 'callback' function.
   selectInput("Select an image file", "fileSelected");
 }
 
@@ -363,7 +371,8 @@ void fileSelected(File selection) {
   }
 }
 
-
+// 在一个文件中 每一行代表一个方向的坐标 那么两行就代表一个二维坐标
+// 从这个文件中读取这些坐标,然后画出来
 void selectFileLoadPoints() {
   guiEvent = true;
 
@@ -373,16 +382,18 @@ void selectFileLoadPoints() {
 
 void loadPointPathSelected(File selection) {
   if (selection != null) {
-    String loadPointsPath = selection.getAbsolutePath(); 
+    String loadPointsPath = selection.getAbsolutePath();
+    // Reads the contents of a file and creates a String array of its individual lines.
     String[] pointStrings = loadStrings(loadPointsPath);
     pointCount = 0;
     pointList.clear();
     for (int i=0; i<pointStrings.length; i++) {
       String[] pt = pointStrings[i].split(" ");
       if (pt.length == 2) {
+        // 把字符转为 float ,然后放到 pointList 中
         pointList.add(new PVector(float(pt[0]), float(pt[1]), 1));
         pointCount++;
-      } 
+      }
       else if (pt.length == 3) {
         pointList.add(new PVector(float(pt[0]), float(pt[1]), float(pt[2])));
         pointCount++;
@@ -393,7 +404,7 @@ void loadPointPathSelected(File selection) {
 }
 
 
-
+// 选择文件来保存点
 void selectFileSavePoints() {
   guiEvent = true;
 
@@ -404,14 +415,16 @@ void selectFileSavePoints() {
 
 void savePointPathSelected(File selection) {
   if (selection != null) {
-    String savePointsPath = selection.getAbsolutePath(); 
+    String savePointsPath = selection.getAbsolutePath();
     if (!savePointsPath.endsWith(".txt")) savePointsPath += ".txt";
+    // pointString 内存储了点坐标对应的字符串
     String[] pointStrings = new String[pointCount];
     for (int i=0; i<pointCount; i++) {
+      // pointList 里面存储了点的位置
       PVector p = (PVector) pointList.get(i);
       if (p.z > 0) {
         pointStrings[i] = p.x + " " + p.y + " " + p.z;
-      } 
+      }
       else {
         pointStrings[i] = p.x + " " + p.y + " " + 1;
       }
@@ -425,6 +438,7 @@ void keyPressed() {
 
   if (key=='m' || key=='M') {
     GUI = controlP5.getGroup("menu").isOpen();
+    // GUI 是 menu 指示器
     GUI = !GUI;
     guiEvent = true;
   }
@@ -435,8 +449,8 @@ void keyPressed() {
     saveOneFrame = true;
   }
   if (key=='p' || key=='P') {
-    savePDF = true; 
-    saveOneFrame = true; 
+    savePDF = true;
+    saveOneFrame = true;
     println("saving to pdf - starting");
   }
   if (keyCode==BACKSPACE) {
@@ -456,7 +470,7 @@ void keyPressed() {
     selectFileLoadPoints();
   }
 }
-
+// shift 按键指示器
 void keyReleased() {
   if (shiftDown) {
     shiftDown = false;
@@ -464,7 +478,7 @@ void keyReleased() {
   }
 }
 
-
+// 按下鼠标
 void mousePressed() {
   if (mouseButton==LEFT && !guiEvent) {
     drawing = true;
@@ -479,7 +493,7 @@ void mousePressed() {
   }
 }
 
-
+// 释放鼠标
 void mouseReleased() {
   guiEvent = false;
   drawing = false;

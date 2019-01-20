@@ -1,6 +1,6 @@
 // M_3_4_01_TOOL.pde
 // GUI.pde, Mesh.pde, TileSaver.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -27,12 +27,12 @@
  * KEYS
  * m                   : menu open/close
  * s                   : save png
- * p                   : high resolution export (please update to processing 1.0.8 or 
+ * p                   : high resolution export (please update to processing 1.0.8 or
  *                       later. otherwise this will not work properly)
  * d                   : 3d export (dxf format - will not export colors)
  */
 
-
+// 加了鼠标拖拽旋转,GUI,保存,设置Mesh参数
 // ------ imports ------
 
 import processing.opengl.*;
@@ -43,12 +43,12 @@ import java.util.Calendar;
 // ------ initial parameters and declarations ------
 
 Mesh myMesh;
-
+// 8面环
 int form = Mesh.FIGURE8TORUS;
 float meshAlpha = 100;
 float meshSpecular = 100;
 float meshScale = 100;
-
+// init Shape Mode
 boolean drawTriangles = true;
 boolean drawQuads = false;
 boolean drawNoStrip = true;
@@ -66,9 +66,9 @@ float vCenter = 0;
 float vRange = TWO_PI;
 
 float paramExtra = 1;
-
+// 方向
 float meshDistortion = 0;
-
+// HSB 范围
 float minHue = 190;
 float maxHue = 195;
 float minSaturation = 95;
@@ -78,9 +78,9 @@ float maxBrightness = 65;
 
 
 // ------ mouse interaction ------
-
+// 鼠标偏移参数
 int offsetX = 0, offsetY = 0, clickX = 0, clickY = 0;
-float rotationX = 0.5, rotationY = -0.4, targetRotationX = 0.5, targetRotationY = -0.4, clickRotationX, clickRotationY; 
+float rotationX = 0.5, rotationY = -0.4, targetRotationX = 0.5, targetRotationY = -0.4, clickRotationX, clickRotationY;
 
 
 // ------ ControlP5 ------
@@ -99,13 +99,13 @@ Toggle[] toggles;
 boolean saveOneFrame = false;
 int qualityFactor = 3;
 TileSaver tiler;
-boolean saveDXF = false; 
+boolean saveDXF = false;
 
 
 
 
 void setup() {
-  size(1000, 1000, P3D);
+  size(720, 720, P3D);
 
   setupGUI();
 
@@ -122,7 +122,7 @@ void draw() {
   hint(ENABLE_DEPTH_TEST);
 
   // for high quality output
-  if (tiler==null) return; 
+  if (tiler==null) return;
   tiler.pre();
 
   // dxf output
@@ -133,15 +133,12 @@ void draw() {
   if (useBlendBlack) background(0);
   else background(255);
 
-  if (useBlendWhite || useBlendBlack) {
-  }
-
 
   // Set lights
-  lightSpecular(255, 255, 255); 
-  directionalLight(255, 255, 255, 1, 1, -1); 
-  specular(meshSpecular, meshSpecular, meshSpecular); 
-  shininess(5.0); 
+  lightSpecular(255, 255, 255);
+  directionalLight(255, 255, 255, 1, 1, -1);
+  specular(meshSpecular, meshSpecular, meshSpecular);
+  shininess(5.0);
 
 
   // ------ set view ------
@@ -155,10 +152,10 @@ void draw() {
     targetRotationX = min(max(clickRotationX + offsetY/float(width) * TWO_PI, -HALF_PI), HALF_PI);
     targetRotationY = clickRotationY + offsetX/float(height) * TWO_PI;
   }
-  rotationX += (targetRotationX-rotationX)*0.25; 
-  rotationY += (targetRotationY-rotationY)*0.25;  
+  rotationX += (targetRotationX-rotationX)*0.25;
+  rotationY += (targetRotationY-rotationY)*0.25;
   rotateX(-rotationX);
-  rotateY(rotationY); 
+  rotateY(rotationY);
 
 
   scale(meshScale);
@@ -167,12 +164,12 @@ void draw() {
   // ------ set parameters and draw mesh ------
   myMesh.setForm(form);
   surface.setTitle("Current form: " + myMesh.getFormName());
-
+  // Shape Mode
   if (drawTriangles && drawNoStrip) myMesh.setDrawMode(TRIANGLES);
   else if (drawTriangles && drawStrip) myMesh.setDrawMode(TRIANGLE_STRIP);
   else if (drawQuads && drawNoStrip) myMesh.setDrawMode(QUADS);
   else if (drawQuads && drawStrip) myMesh.setDrawMode(QUAD_STRIP);
-
+  // 传入参数, 设置 u v 两轴坐标范围
   myMesh.setUMin(uCenter-uRange/2);
   myMesh.setUMax(uCenter+uRange/2);
   myMesh.setUCount(uCount);
@@ -182,15 +179,15 @@ void draw() {
   myMesh.setVCount(vCount);
 
   myMesh.setParam(0, paramExtra);
-
+  // 颜色范围
   myMesh.setColorRange(minHue, maxHue, minSaturation, maxSaturation, minBrightness, maxBrightness, meshAlpha);
 
   myMesh.setMeshDistortion(meshDistortion);
-
+  // 更新Mesh, 重新计算
   myMesh.update();
 
   colorMode(HSB, 360, 100, 100, 100);
-
+  // 把Mesh画出来
   randomSeed(123);
   myMesh.draw();
 
@@ -214,15 +211,17 @@ void draw() {
 
   // draw gui
   if (tiler.checkStatus() == false) {
-    if (useBlendBlack || useBlendWhite) {
-    }
+    // if (useBlendBlack || useBlendWhite) {
+    // }
 
     hint(DISABLE_DEPTH_TEST);
+    // 关闭灯光
     noLights();
+    // 画出GUI
     drawGUI();
 
-    if (useBlendWhite || useBlendBlack) {
-    }
+    // if (useBlendWhite || useBlendBlack) {
+    // }
   }
 
 

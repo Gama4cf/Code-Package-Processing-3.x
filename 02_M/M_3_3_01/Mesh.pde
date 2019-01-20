@@ -1,6 +1,6 @@
 // M_3_3_01.pde
 // Mesh.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -17,7 +17,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
+// Paul Bourke geometry
 class Mesh {
 
   // ------ constants ------
@@ -42,7 +42,7 @@ class Mesh {
   final static int SHELL              = 17;
   final static int KIDNEY             = 18;
   final static int LEMNISCAPE         = 19;
-  final static int TRIANGULOID         = 20;
+  final static int TRIANGULOID        = 20;
   final static int SUPERFORMULA       = 21;
 
 
@@ -57,7 +57,7 @@ class Mesh {
   float vMin = -PI;
   float vMax = PI;
   int vCount = 50;
-
+  // 这个参数好像是控制 幅度 的, 还有控制其他的一些别的...
   float[] params = {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1        };
 
@@ -69,7 +69,7 @@ class Mesh {
   float minBrightness = 50;
   float maxBrightness = 50;
   float meshAlpha = 100;
-
+  // 扭曲程度
   float meshDistortion = 0;
 
   PVector[][] points;
@@ -102,10 +102,10 @@ class Mesh {
     if (theForm >=0) {
       form = theForm;
     }
-    uMin = theUMin;    
-    uMax = theUMax;    
-    vMin = theVMin;    
-    vMax = theVMax;    
+    uMin = theUMin;
+    uMax = theUMax;
+    vMin = theVMin;
+    vMax = theVMax;
     update();
   }
 
@@ -115,10 +115,10 @@ class Mesh {
     }
     uCount = max(theUNum, 1);
     vCount = max(theVNum, 1);
-    uMin = theUMin;    
-    uMax = theUMax;    
-    vMin = theVMin;    
-    vMax = theVMax;    
+    uMin = theUMin;
+    uMax = theUMax;
+    vMin = theVMin;
+    vMax = theVMax;
     update();
   }
 
@@ -136,76 +136,76 @@ class Mesh {
         v = map(iv, 0, vCount, vMin, vMax);
 
         switch(form) {
-        case CUSTOM: 
+        case CUSTOM:
           points[iv][iu] = calculatePoints(u, v);
           break;
-        case TUBE: 
+        case TUBE:
           points[iv][iu] = Tube(u, v);
           break;
-        case SPHERE: 
+        case SPHERE:
           points[iv][iu] = Sphere(u, v);
           break;
-        case TORUS: 
+        case TORUS:
           points[iv][iu] = Torus(u, v);
           break;
-        case PARABOLOID: 
+        case PARABOLOID:
           points[iv][iu] = Paraboloid(u, v);
           break;
-        case STEINBACHSCREW: 
+        case STEINBACHSCREW:
           points[iv][iu] = SteinbachScrew(u, v);
           break;
-        case SINE: 
+        case SINE:
           points[iv][iu] = Sine(u, v);
           break;
-        case FIGURE8TORUS: 
+        case FIGURE8TORUS:
           points[iv][iu] = Figure8Torus(u, v);
           break;
-        case ELLIPTICTORUS: 
+        case ELLIPTICTORUS:
           points[iv][iu] = EllipticTorus(u, v);
           break;
-        case CORKSCREW: 
+        case CORKSCREW:
           points[iv][iu] = Corkscrew(u, v);
           break;
-        case BOHEMIANDOME: 
+        case BOHEMIANDOME:
           points[iv][iu] = BohemianDome(u, v);
           break;
-        case BOW: 
+        case BOW:
           points[iv][iu] = Bow(u, v);
           break;
-        case MAEDERSOWL: 
+        case MAEDERSOWL:
           points[iv][iu] = MaedersOwl(u, v);
           break;
-        case ASTROIDALELLIPSOID: 
+        case ASTROIDALELLIPSOID:
           points[iv][iu] = AstroidalEllipsoid(u, v);
           break;
-        case TRIAXIALTRITORUS: 
+        case TRIAXIALTRITORUS:
           points[iv][iu] = TriaxialTritorus(u, v);
           break;
-        case LIMPETTORUS: 
+        case LIMPETTORUS:
           points[iv][iu] = LimpetTorus(u, v);
           break;
-        case HORN: 
+        case HORN:
           points[iv][iu] = Horn(u, v);
           break;
-        case SHELL: 
+        case SHELL:
           points[iv][iu] = Shell(u, v);
           break;
-        case KIDNEY: 
+        case KIDNEY:
           points[iv][iu] = Kidney(u, v);
           break;
-        case LEMNISCAPE: 
+        case LEMNISCAPE:
           points[iv][iu] = Lemniscape(u, v);
           break;
-        case TRIANGULOID: 
+        case TRIANGULOID:
           points[iv][iu] = Trianguloid(u, v);
           break;
-        case SUPERFORMULA: 
+        case SUPERFORMULA:
           points[iv][iu] = Superformula(u, v);
           break;
 
         default:
           points[iv][iu] = calculatePoints(u, v);
-          break;          
+          break;
         }
       }
     }
@@ -223,49 +223,49 @@ class Mesh {
 
   String getFormName() {
     switch(form) {
-    case CUSTOM: 
+    case CUSTOM:
       return "Custom";
-    case TUBE: 
+    case TUBE:
       return "Tube";
-    case SPHERE: 
+    case SPHERE:
       return "Sphere";
-    case TORUS: 
+    case TORUS:
       return "Torus";
-    case PARABOLOID: 
+    case PARABOLOID:
       return "Paraboloid";
-    case STEINBACHSCREW: 
+    case STEINBACHSCREW:
       return "Steinbach Screw";
-    case SINE: 
+    case SINE:
       return "Sine";
-    case FIGURE8TORUS: 
+    case FIGURE8TORUS:
       return "Figure 8 Torus";
-    case ELLIPTICTORUS: 
+    case ELLIPTICTORUS:
       return "Elliptic Torus";
-    case CORKSCREW: 
+    case CORKSCREW:
       return "Corkscrew";
-    case BOHEMIANDOME: 
+    case BOHEMIANDOME:
       return "Bohemian Dome";
-    case BOW: 
+    case BOW:
       return "Bow";
-    case MAEDERSOWL: 
+    case MAEDERSOWL:
       return "Maeders Owl";
-    case ASTROIDALELLIPSOID: 
+    case ASTROIDALELLIPSOID:
       return "Astoidal Ellipsoid";
-    case TRIAXIALTRITORUS: 
+    case TRIAXIALTRITORUS:
       return "Triaxial Tritorus";
-    case LIMPETTORUS: 
+    case LIMPETTORUS:
       return "Limpet Torus";
-    case HORN: 
+    case HORN:
       return "Horn";
-    case SHELL: 
+    case SHELL:
       return "Shell";
-    case KIDNEY: 
+    case KIDNEY:
       return "Kidney";
-    case LEMNISCAPE: 
+    case LEMNISCAPE:
       return "Lemniscape";
-    case TRIANGULOID: 
+    case TRIANGULOID:
       return "Trianguloid";
-    case SUPERFORMULA: 
+    case SUPERFORMULA:
       return "Superformula";
     }
     return "";
@@ -446,9 +446,9 @@ class Mesh {
   }
 
   PVector Paraboloid(float u, float v) {
-    float pd = params[0]; 
+    float pd = params[0];
     if (pd == 0) {
-      pd = 0.0001; 
+      pd = 0.0001;
     }
     float x = power((v/pd),0.5) * sin(u);
     float y = v;
@@ -633,7 +633,7 @@ class Mesh {
   float power(float b, float e) {
     if (b >= 0 || int(e) == e) {
       return pow(b, e);
-    } 
+    }
     else {
       return -pow(-b, e);
     }
@@ -642,7 +642,7 @@ class Mesh {
   float logE(float v) {
     if (v >= 0) {
       return log(v);
-    } 
+    }
     else{
       return -log(-v);
     }
@@ -679,7 +679,7 @@ class Mesh {
     // store previously set colorMode
     pushStyle();
     colorMode(HSB, 360, 100, 100, 100);
-
+    // 太近的同一成一种
     float minH = minHue;
     float maxH = maxHue;
     if (abs(maxH-minH) < 20) maxH = minH;
@@ -693,18 +693,19 @@ class Mesh {
 
     for (int iv = 0; iv <= ivMax; iv++) {
       if (drawMode == TRIANGLES) {
-
         for (int iu = 0; iu <= iuMax; iu++) {
           fill(random(minH, maxH), random(minS, maxS), random(minB, maxB), meshAlpha);
           beginShape(drawMode);
+          // 右上三角形, 随机的扭曲程度
           float r1 = meshDistortion * random(-1, 1);
           float r2 = meshDistortion * random(-1, 1);
           float r3 = meshDistortion * random(-1, 1);
+          // 三个轴上的扭曲值+原坐标
           vertex(points[iv][iu].x+r1, points[iv][iu].y+r2, points[iv][iu].z+r3);
           vertex(points[iv+1][iu+1].x+r1, points[iv+1][iu+1].y+r2, points[iv+1][iu+1].z+r3);
           vertex(points[iv+1][iu].x+r1, points[iv+1][iu].y+r2, points[iv+1][iu].z+r3);
           endShape();
-
+          // 坐下三角形
           fill(random(minH, maxH), random(minS, maxS), random(minB, maxB), meshAlpha);
           beginShape(drawMode);
           r1 = meshDistortion * random(-1, 1);
@@ -714,14 +715,14 @@ class Mesh {
           vertex(points[iv][iu].x+r1, points[iv][iu].y+r2, points[iv][iu].z+r3);
           vertex(points[iv][iu+1].x+r1, points[iv][iu+1].y+r2, points[iv][iu+1].z+r3);
           endShape();
-        }       
+        }
 
       }
       else if (drawMode == QUADS) {
         for (int iu = 0; iu <= iuMax; iu++) {
           fill(random(minH, maxH), random(minS, maxS), random(minB, maxB), meshAlpha);
           beginShape(drawMode);
-
+          // 直接画 相邻的四个点
           float r1 = meshDistortion * random(-1, 1);
           float r2 = meshDistortion * random(-1, 1);
           float r3 = meshDistortion * random(-1, 1);
@@ -731,10 +732,14 @@ class Mesh {
           vertex(points[iv][iu+1].x+r1, points[iv][iu+1].y+r2, points[iv][iu+1].z+r3);
 
           endShape();
-        }        
+        }
       }
       else{
-        // Draw Strips
+        // Draw Strips, 其他的仅仅画这两个点就够了吗???
+        // The parameters available for beginShape() are POINTS, LINES, TRIANGLES, TRIANGLE_FAN, TRIANGLE_STRIP, QUADS, and QUAD_STRIP.
+        // STRIPS, POINTS, LINES 都是可以正常画出来的
+        // TRIANGLES, QUADS 在上面已经画过了
+        // TRIANGLE_FAN 能不能正常化出来呢??? 应该是不可以
         fill(random(minH, maxH), random(minS, maxS), random(minB, maxB), meshAlpha);
         beginShape(drawMode);
 
@@ -744,7 +749,7 @@ class Mesh {
           float r3 = meshDistortion * random(-1, 1);
           vertex(points[iv][iu].x+r1, points[iv][iu].y+r2, points[iv][iu].z+r3);
           vertex(points[iv+1][iu].x+r1, points[iv+1][iu].y+r2, points[iv+1][iu].z+r3);
-        }  
+        }
 
         endShape();
       }
@@ -754,5 +759,3 @@ class Mesh {
   }
 
 }
-
-

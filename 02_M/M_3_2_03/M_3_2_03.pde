@@ -1,5 +1,5 @@
 // M_3_2_03.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -18,17 +18,23 @@
 
 /**
  * draws a grid with a radial wave using u-v-coordinates
- * 
+ *
  * MOUSE
  * click + drag        : rotate
- * 
+ *
  * KEYS
  * p                   : save pdf (may not look correctly due to missing depth sorting)
  */
- 
+
+// Especially with complicated formulas,
+// it's easiest to keep track of the original grid and the three-dimensional form using two different coordinate systems:
+// one for the original two-dimensional grid and another for the positions in the three-dimensional space
+
 import processing.opengl.*;
 import processing.pdf.*;
 import java.util.Calendar;
+
+//u and v will be used to repre­sent the axes of the grid coordinate system
 
 // grid definition horizontal
 int uCount = 40;
@@ -42,14 +48,14 @@ float vMax = 10;
 
 // view rotation
 int offsetX = 0, offsetY = 0, clickX = 0, clickY = 0;
-float rotationX = 0, rotationY = -1.1, targetRotationX = 0, targetRotationY = -1.1, clickRotationX, clickRotationY; 
+float rotationX = 0, rotationY = -1.1, targetRotationX = 0, targetRotationY = -1.1, clickRotationX, clickRotationY;
 
 // image output
 boolean savePDF = false;
 
 
 void setup() {
-  size(800, 800, P3D);
+  size(720, 720, P3D);
   smooth(8);
 }
 
@@ -59,7 +65,7 @@ void draw() {
 
   background(255);
   fill(255);
-  strokeWeight(1/25.0);  
+  strokeWeight(1/25.0);
 
   setView();
 
@@ -71,12 +77,12 @@ void draw() {
     for (float iu = 0; iu <= uCount; iu++) {
       float u = map(iu, 0, uCount, uMin, uMax);
       float v = map(iv, 0, vCount, vMin, vMax);
-      
+
       float x = u;
       float y = v;
       float z = cos(sqrt(u*u + v*v));
       vertex(x, y, z);
-
+      // 正下方的点, 下次循环又画一次
       v = map(iv+1, 0, vCount, vMin, vMax);
       y = v;
       z = cos(sqrt(u*u + v*v));
@@ -94,7 +100,7 @@ void draw() {
 
 
 void keyPressed(){
-  if(key=='p' || key=='P') savePDF = true; 
+  if(key=='p' || key=='P') savePDF = true;
 }
 
 
@@ -108,6 +114,7 @@ void mousePressed(){
 
 
 void setView() {
+  // 默认的坐标原点在 画布中间
   translate(width*0.5,height*0.5);
 
   if (mousePressed) {
@@ -115,11 +122,11 @@ void setView() {
     offsetY = mouseY-clickY;
     targetRotationX = clickRotationX + offsetX/float(width) * TWO_PI;
     targetRotationY = min(max(clickRotationY + offsetY/float(height) * TWO_PI, -HALF_PI), HALF_PI);
-    rotationX += (targetRotationX-rotationX)*0.25; 
-    rotationY += (targetRotationY-rotationY)*0.25;  
+    rotationX += (targetRotationX-rotationX)*0.25;
+    rotationY += (targetRotationY-rotationY)*0.25;
   }
-  rotateX(-rotationY); 
-  rotateY(rotationX); 
+  rotateX(-rotationY);
+  rotateY(rotationX);
 }
 
 
