@@ -1,7 +1,7 @@
 读 Generative Design 代码注释
 ===============================================
 
-神书 <Generative Design: Visualize, Program, and Create with Processing > 代码丰富,由浅入深,为以后再读方便,记录代码注释于此.
+神书 <Generative Design: Visualize, Program, and Create with Processing > 
 
 因为代码前后连贯性比较强, 个别重复部分, 注意翻看!!!
 
@@ -32,3 +32,6 @@ http://www.generative-gestaltung.de
 We hope by using GitHub to host the source code of the book, it will be easier and more swift to manage corrections. Please use the GitHub issues for bug reports, typos, suggestions, etc. You are also very welcome to fork the repo, make corrections on your own and submit a pull request. Please keep pull requests to an easy digestible size, so that the review process can be quick and uncomplicated.
 
 All of the book's source code is licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+This code package still needs to be updated to Processing 3.x and is work in progress! Most of it should work by now.
+===============================================
