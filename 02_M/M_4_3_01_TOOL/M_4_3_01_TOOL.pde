@@ -1,6 +1,6 @@
 // M_4_3_01_TOOL.pde
 // GUI.pde, TileSaver.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -84,15 +84,18 @@ boolean lockY = false;
 boolean drawLines = true;
 boolean drawCurves = false;
 
-// nodes array
+// nodes array,三维Node数组???
+// 第一维: 存储各个layer 第二维: 存储y轴坐标 第三维: 存储x轴坐标
+// Node 和 Attractor 都是 generativedesign.* 的类
+// maxCount*2+1 中间一个, 两边各有maxCount个点
 Node[][][] nodes = new Node[9][maxCount*2+1][maxCount*2+1];
 
-// attraktor 
+// attraktor
 Attractor myAttractor;
 
 
 // ------ mouse interaction ------
-
+// 鼠标拖拽
 boolean dragging = false;
 float offsetX = 0, offsetY = 0, clickX = 0, clickY = 0, clickOffsetX = 0, clickOffsetY = 0;
 boolean mouseInWindow = false;
@@ -119,7 +122,7 @@ boolean savePDF = false;
 
 
 void setup() {
-  size(1000,1000,P2D);
+  size(1000,720,P2D);
 
   // make window resizable
   surface.setResizable(true);
@@ -128,7 +131,9 @@ void setup() {
 
   // init attractor
   myAttractor = new Attractor();
-  myAttractor.setMode(Attractor.SMOOTH); 
+  // Attractor function with a smooth transition at the attractor radius
+  // M_4_2_03 中的公式
+  myAttractor.setMode(Attractor.SMOOTH);
 
   // init grid
   reset();
@@ -154,7 +159,7 @@ void draw() {
   if (invertBackground) {
     bgColor = color(0);
     circleColor = color(255);
-  } 
+  }
   background(bgColor);
 
 
@@ -165,7 +170,10 @@ void draw() {
   smooth();
   stroke(0, 100);
   strokeWeight(lineWeight);
-  bezierDetail(10);
+  // Sets the resolution at which Beziers display. The default value is 20.
+  // This function is only useful when using the P3D renderer;
+  // the default P2D renderer does not use this information.
+  //bezierDetail(10);
 
 
   // ------ canvas dragging ------
@@ -179,44 +187,46 @@ void draw() {
   // ------ set view ------
 
   pushMatrix();
+  // 平移坐标到中心点+鼠标拖拽偏移
   translate(width/2 + offsetX, height/2 + offsetY);
 
 
   // ------ set parameters ------
-
+  // 更新数量
   if (xCount != oldXCount || yCount != oldYCount || layerCount != oldLayerCount) {
     oldXCount = xCount;
     oldYCount = yCount;
     oldLayerCount = layerCount;
   }
-
+  // 更新阻尼
   if (nodes[0][0][0].damping != nodeDamping) {
     // tell all nodes the new damping values
     updateDamping();
   }
-
+  // 改变磁力公式
   if (attractorSmooth) {
-    myAttractor.setMode(Attractor.SMOOTH); 
+    myAttractor.setMode(Attractor.SMOOTH);
   }
   else {
-    myAttractor.setMode(Attractor.TWIRL); 
+    myAttractor.setMode(Attractor.TWIRL);
   }
-
+  // 设置 Attractor 的参数
   myAttractor.radius = attractorRadius;
   myAttractor.ramp = attractorRamp;
   if (mousePressed && mouseButton==LEFT && !guiEvent) {
     if (!keyPressed) {
       // attraction, if left click
-      myAttractor.strength = -attractorStrength; 
-    } 
+      myAttractor.strength = -attractorStrength;
+    }
     else if (keyPressed && keyCode == SHIFT) {
       // repulsion, if shift + left click
-      myAttractor.strength = attractorStrength; 
+      myAttractor.strength = attractorStrength;
     }
-  } 
+  }
   else {
     // otherwise no attraction or repulsion
-    myAttractor.strength = 0; 
+    // 也就是没有按下鼠标左键,也并没有进行guiEvent的时候, 没有磁力, 也就维持了原状
+    myAttractor.strength = 0;
   }
 
   // set attractor at the mouse position
@@ -226,15 +236,17 @@ void draw() {
 
 
   // ------ attract and update node positions ------
-
+  // 尽管只显示一层, 其他层却也都计算出来了
   for (int iz = 0; iz < layerCount; iz++) {
     if (iz == actLayer || actLayer == (-1)) {
       for (int iy = maxCount-yCount; iy <= maxCount+yCount; iy++) {
         for (int ix = maxCount-xCount; ix <= maxCount+xCount; ix++) {
           myAttractor.attract(nodes[iz][iy][ix]);
+          //  void	update(boolean theLockX, boolean theLockY, boolean theLockZ)
+          //  The buttons “Lock X” and “Lock Y” are used to limit the nodes’ directions of movement.
           nodes[iz][iy][ix].update(lockX, lockY, false);
         }
-      }  
+      }
     }
   }
 
@@ -249,16 +261,17 @@ void draw() {
     for (int iz = layerCount-1; iz >= 0; iz--) {
       color c = colors[iz % colors.length];
       stroke(red(c), green(c), blue(c), lineAlpha);
+      // 这个地方需要注意: 现在坐标已经平移了, 以后从中心位置左边偏移 yCount 处开始画
       for (int iy = maxCount-yCount; iy <= maxCount+yCount; iy++) {
         drawLine(nodes[iz][iy], xCount, drawCurves);
 
         if (savePDF) {
-          println("saving to pdf – step " + (stepI++)); 
+          println("saving to pdf – step " + (stepI++));
         }
       }
     }
     lineDrawn = true;
-  } 
+  }
 
   // y
   if (drawY && yCount > 0) {
@@ -266,6 +279,7 @@ void draw() {
       color c = colors[iz % colors.length];
       stroke(red(c), green(c), blue(c), lineAlpha);
       for (int ix = maxCount-xCount; ix <= maxCount+xCount; ix++) {
+        // 生成一个新的Pvector数组,用来记录ix,iz相同的所有向量, 然后交给drawLine
         PVector[] pts = new PVector[maxCount*2+1];
         int ii = 0;
         for (int iy = 0; iy < maxCount*2+1; iy++) {
@@ -273,12 +287,12 @@ void draw() {
         }
         drawLine(pts, yCount, drawCurves);
         if (savePDF) {
-          println("saving to pdf – step " + (stepI++)); 
+          println("saving to pdf – step " + (stepI++));
         }
       }
     }
     lineDrawn = true;
-  } 
+  }
 
   // if no lines were drawn, draw dots
   if (!lineDrawn) {
@@ -289,9 +303,9 @@ void draw() {
         for (int ix = maxCount-xCount; ix <= maxCount+xCount; ix++) {
           Node n = nodes[iz][iy][ix];
           if (savePDF) {
-            println("saving to pdf – step " + (stepI++)); 
+            println("saving to pdf – step " + (stepI++));
             ellipse(n.x, n.y, lineWeight/2, lineWeight/2);
-          } 
+          }
           else {
             point(n.x, n.y);
           }
@@ -349,8 +363,8 @@ void drawLine(PVector[] points, int len, boolean curves) {
   // this funktion draws a line from an array of PVectors
   // len    : number of points to each side of the center index of the array
   //          example: array-length=21, len=5 -> points[5] to points[15] will be drawn
-  // curves : if true, points will be connected with curves (a bit like curveVertex, 
-  //          not as accurate, but faster) 
+  // curves : if true, points will be connected with curves (a bit like curveVertex,
+  //          not as accurate, but faster)
 
   PVector d1 = new PVector();
   PVector d2 = new PVector();
@@ -378,7 +392,7 @@ void drawLine(PVector[] points, int len, boolean curves) {
         // how to distribute d2 to the anchors
         q1 = l1 / (l1+l2);
         q2 = l2 / (l1+l2);
-      } 
+      }
       else {
         // special handling for the last index
         l1 = PVector.dist(points[i], points[i-1]);
@@ -388,16 +402,19 @@ void drawLine(PVector[] points, int len, boolean curves) {
         q2 = 0;
       }
       // draw bezierVertex
-      bezierVertex(points[i-1].x+d1.x*q0, points[i-1].y+d1.y*q0, 
+      // Specifies vertex coordinates for Bezier curves.
+      // Each call to bezierVertex() defines the position of two control points
+      //   and one anchor point of a Bezier curve, adding a new segment to a line or shape.
+      bezierVertex(points[i-1].x+d1.x*q0, points[i-1].y+d1.y*q0,
       points[i].x-d2.x*q1, points[i].y-d2.y*q1,
       points[i].x, points[i].y);
       // remember d2 and q2 for the next iteration
       d1.set(d2);
       q0 = q2;
-    } 
+    }
     else {
       vertex(points[i].x, points[i].y);
-    }  
+    }
   }
 
   endShape();
@@ -422,7 +439,7 @@ void initGrid() {
           n.maxY = 20000;
           n.minZ = 0;
           n.maxZ = 0;
-        } 
+        }
         else {
           n = nodes[iz][iy][ix];
           n.x = xPos;
@@ -443,11 +460,12 @@ void initGrid() {
 
 
 
-
+// 放缩网格
 void scaleGrid(float theFactorX, float theFactorY, float theFactorZ) {
   for (int iz = 0; iz < 9; iz++) {
     for (int iy = 0; iy < maxCount*2+1; iy++) {
       for (int ix = 0; ix < maxCount*2+1; ix++) {
+        // 放大所有点的三个坐标
         nodes[iz][iy][ix].x *= theFactorX;
         nodes[iz][iy][ix].y *= theFactorY;
         nodes[iz][iy][ix].z *= theFactorZ;
@@ -456,7 +474,7 @@ void scaleGrid(float theFactorX, float theFactorY, float theFactorZ) {
   }
 }
 
-
+// 更新阻尼
 void updateDamping() {
   for (int iz = 0; iz < 9; iz++) {
     for (int iy = 0; iy < maxCount*2+1; iy++) {
@@ -470,7 +488,7 @@ void updateDamping() {
 
 
 // ------ functions for reset and presets ------
-
+// 重置颜色,GUI,网格,偏移,活动层为1
 void reset() {
   colors = defaultColors;
   setParas(60, 150, 1, 10, 2, 250, 3, 1, 0.05, false, 1, 50, true, false, false, false, true, false);
@@ -483,7 +501,7 @@ void reset() {
   setActLayer(0);
 }
 
-
+// 四个颜色集
 void set1() {
   colors = new color[9];
   colors[0] = color(0, 130, 164);
@@ -502,7 +520,7 @@ void set1() {
 
 void set2() {
   colors = new color[1];
-  colors[0] = color(0, 130, 164); 
+  colors[0] = color(0, 130, 164);
 
   setParas(100, 100, 1, 4, 4, 100, 3, 1, 0.1, true, 2, 75, true, false, false, true, false, false);
   initGrid();
@@ -524,9 +542,9 @@ void set4() {
   colorMode(HSB, 360, 100, 100, 100);
   colors = new color[3];
 
-  colors[0] = color(273, 73, 51); 
-  colors[1] = color(52, 100, 71); 
-  colors[2] = color(192, 100, 64); 
+  colors[0] = color(273, 73, 51);
+  colors[1] = color(52, 100, 71);
+  colors[2] = color(192, 100, 64);
 
   colorMode(RGB, 255, 255, 255, 100);
 
@@ -534,9 +552,9 @@ void set4() {
   initGrid();
 }
 
-
+// 设置 GUI 的初始化值
 void setParas(int theXCount, int theYCount, int theLayerCount, float theGridStepX, float theGridStepY,
-float theAttractorRadius, float theAttractorStrength, float theAttractorRamp, float theNodeDamping, 
+float theAttractorRadius, float theAttractorStrength, float theAttractorRamp, float theNodeDamping,
 boolean theInvertBackground, float theLineWeigth, float theLineAlpha, boolean theDrawX, boolean theDrawY, boolean theDrawCurves, boolean theAttractorTwirl,
 boolean theLockX, boolean theLockY) {
 
@@ -610,30 +628,33 @@ boolean theLockX, boolean theLockY) {
 
 void setActLayer(int theLayer) {
   actLayer = theLayer;
-
+  // -1 的话就显示取值-1可能是考虑: 0x0000 - 0x0001 = 0xffff
   if (theLayer == -1) {
-    infoBang.setLabel("Currently affected layer: all"); 
+    infoBang.setLabel("Currently affected layer: all");
     for (int i = 0; i < 9; i++) {
       freezeLayer(i);
     }
-  } 
+  }
   else {
+    // 右上角的提示信息
     infoBang.setLabel("Currently affected layer: " + (theLayer+1));
     freezeLayer(actLayer);
   }
 }
 
-
+// 冻结某一层
 void freezeLayer(int iz) {
   Node n;
   for (int iy = 0; iy < maxCount*2+1; iy++) {
     for (int ix = 0; ix < maxCount*2+1; ix++) {
+      // 指向 PVector 的指针
       n = nodes[iz][iy][ix];
+      // velocity 个方向设为0, 也就是不再变化
       n.velocity.x = 0;
       n.velocity.y = 0;
       n.velocity.z = 0;
     }
-  } 
+  }
 }
 
 
@@ -653,20 +674,20 @@ void keyPressed(){
     guiEvent = false;
   }
   if(key=='s' || key=='S') {
-    saveOneFrame = true; 
+    saveOneFrame = true;
   }
   if(key=='p' || key=='P') {
     savePDF = true;
-    saveOneFrame = true; 
+    saveOneFrame = true;
     println("saving to pdf - starting (this may take some time)");
   }
-
+  // 空格键 控制冻结
   if(key==' ') {
     freeze = !freeze;
     if (freeze) noLoop();
     else loop();
   }
-
+  // 激活某一层
   int k = int(key)-49;
   if (k>=0 && k<9 && k<layerCount) {
     setActLayer(k);

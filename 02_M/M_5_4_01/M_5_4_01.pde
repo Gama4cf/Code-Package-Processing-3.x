@@ -1,6 +1,6 @@
 // M_5_4_01.pde
 // FileSystemItem.pde, SunburstItem.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -18,7 +18,7 @@
 // limitations under the License.
 
 // CREDITS
-// part of the FileSystemItem class is based on code from Visualizing Data, First Edition 
+// part of the FileSystemItem class is based on code from Visualizing Data, First Edition
 // by Ben Fry. Copyright 2008 Ben Fry, 9780596514556.
 //
 // calcEqualAreaRadius function was done by Prof. Franklin Hernandez-Castro
@@ -26,11 +26,11 @@
 /**
  * press 'o' to select an input folder!
  * take care of very big folders, loading will take up to several minutes.
- * 
- * program takes a file directory (hierarchical tree) as input. 
+ *
+ * program takes a file directory (hierarchical tree) as input.
  * also all files and folders are displayed with sunburst technique
- * and in addition all relations of the files are visualized with lines. 
- * 
+ * and in addition all relations of the files are visualized with lines.
+ *
  * KEYS
  * o                          : select an input folder
  * 1                          : mappingMode -> last modified
@@ -50,7 +50,7 @@ boolean savePDF = false;
 
 
 // ------ default folder path ------
-String defaultFolderPath = System.getProperty("user.home")+"/Desktop";
+String defaultFolderPath = System.getProperty("user.home")+"/Desktop/其他/订票助手.NET";
 
 
 // ------ control parameters ------
@@ -58,10 +58,10 @@ float hueStart = 190, hueEnd = 195;
 float saturationStart = 90, saturationEnd = 100;
 float brightnessStart = 25, brightnessEnd = 85;
 float folderBrightnessStart = 20, folderBrightnessEnd = 90;
-float fileArcScale = 0.2, folderArcScale = 0.1;
+float fileArcScale = 0.2, folderArcScale = 0.1;  // 文件比文件夹宽一些
 float strokeWeightStart = 1.0, strokeWeightEnd = 2.5;
 float dotSize = 1.5, dotBrightness = 1;
-boolean useBezierLine = false;
+boolean useBezierLine = true;
 int mappingMode = 1;
 
 
@@ -77,7 +77,7 @@ int fileCounter = 0;
 
 
 void setup() {
-  size(1000,800);
+  size(1000,720);
   colorMode(HSB,360,100,100);
 
   setInputFolder(defaultFolderPath);
@@ -100,15 +100,15 @@ void draw() {
   translate(width/2,height/2);
 
   // ------ draw the viz items ------
-  /*
+
   for (int i = 0 ; i < sunburst.length; i++) {
    sunburst[i].drawArc(folderArcScale,fileArcScale);
-   }*/
+  }
 
   for (int i = 0 ; i < sunburst.length; i++) {
     if (useBezierLine) sunburst[i].drawRelationBezier();
     else sunburst[i].drawRelationLine();
-  } 
+  }
 
   for (int i = 0 ; i < sunburst.length; i++) {
     sunburst[i].drawDot();
@@ -132,17 +132,17 @@ void setInputFolder(File theFolder) {
 void setInputFolder(String theFolderPath) {
   // get files on harddisk
   println("\n"+theFolderPath);
-  FileSystemItem selectedFolder = new FileSystemItem(new File(theFolderPath)); 
+  FileSystemItem selectedFolder = new FileSystemItem(new File(theFolderPath));
   //selectedFolder.printDepthFirst();
-  //selectedFolder.printBreadthFirst(); 
+  //selectedFolder.printBreadthFirst();
 
   // init sunburst
   sunburst = selectedFolder.createSunburstItems();
 
-  // mine sunburst -> get min and max values 
+  // mine sunburst -> get min and max values
   // reset the old values, without the root element
   depthMax = 0;
-  lastModifiedOldest = lastModifiedYoungest = 0; 
+  lastModifiedOldest = lastModifiedYoungest = 0;
   fileSizeMin = fileSizeMax = 0;
   childCountMin = childCountMax = 0;
   for (int i = 1 ; i < sunburst.length; i++) {
@@ -155,7 +155,7 @@ void setInputFolder(String theFolderPath) {
     childCountMax = max(sunburst[i].childCount, childCountMax);
   }
 
-  // update vars 
+  // update vars
   for (int i = 0 ; i < sunburst.length; i++) {
     sunburst[i].update(mappingMode);
   }
@@ -183,11 +183,11 @@ void keyReleased() {
   if (key == '1') {
     mappingMode = 1;
     surface.setTitle("last modified: old / young files, global");
-  }  
+  }
   if (key == '2') {
     mappingMode = 2;
     frame.setTitle("file size: big / small files, global");
-  }  
+  }
   if (key == '3') {
     mappingMode = 3;
     frame.setTitle("local folder file size: big / small files, each folder independent");
@@ -203,4 +203,4 @@ void keyReleased() {
 
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
-} 
+}

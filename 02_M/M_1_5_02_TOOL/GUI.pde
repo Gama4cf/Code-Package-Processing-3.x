@@ -44,7 +44,6 @@ void setupGUI(){
   int si = 0;
   int posY = 0;
   // Slider	addSlider(java.lang.String theName, float theMin, float theMax, int theX, int theY, int theWidth, int theHeight)
-  // java.lang.String theName 都是已经定义的变量名
   sliders[si++] = controlP5.addSlider("agentsCount",1,10000,left,top+posY+0,len,15);
   posY += 30;
   sliders[si++] = controlP5.addSlider("noiseScale",1,1000,left,top+posY+0,len,15);
@@ -61,7 +60,7 @@ void setupGUI(){
     sliders[i].setGroup(ctrl);
     // 在类 Label 中
     sliders[i].getCaptionLabel().toUpperCase(true);
-    // R G B alpha 
+    // R G B alpha
     sliders[i].getCaptionLabel().setColorBackground(0x99ffffff);
     // 在类 ControllerStyle 中
     sliders[i].getCaptionLabel().getStyle().padding(4,3,3,3);

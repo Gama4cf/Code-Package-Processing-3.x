@@ -1,6 +1,6 @@
 // M_4_2_02.pde
 // Attractor.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -38,7 +38,7 @@ int xCount = 301;
 int yCount = 301;
 float gridSize = 600;
 
-// nodes array 
+// nodes array
 Node[] myNodes = new Node[xCount*yCount];
 
 // attractor
@@ -50,8 +50,8 @@ boolean saveOneFrame = false;
 boolean saveToPrint = false;
 
 
-void setup() {  
-  size(800, 800); 
+void setup() {
+  size(720, 720);
 
   // setup drawing parameters
   colorMode(RGB, 255, 255, 255, 100);
@@ -59,7 +59,7 @@ void setup() {
   noStroke();
   fill(0);
 
-  background(255); 
+  background(255);
 
   cursor(CROSS);
 
@@ -68,8 +68,8 @@ void setup() {
 
   // setup attractor
   myAttractor = new Attractor(0, 0);
-  myAttractor.strength = -10;
-  myAttractor.ramp = 0.4;
+  myAttractor.strength = 1;
+  myAttractor.ramp = 1;
 }
 
 void draw() {
@@ -114,13 +114,14 @@ void draw() {
 
 
 void initGrid() {
-  int i = 0; 
+  int i = 0;
   for (int y = 0; y < yCount; y++) {
     for (int x = 0; x < xCount; x++) {
       float xPos = x*(gridSize/(xCount-1))+(width-gridSize)/2;
       float yPos = y*(gridSize/(yCount-1))+(height-gridSize)/2;
       myNodes[i] = new Node(xPos, yPos);
       myNodes[i].setBoundary(0, 0, width, height);
+      // 阻尼大了, 不会反弹了
       myNodes[i].setDamping(0.8);  //// 0.0 - 1.0
       i++;
     }
@@ -137,8 +138,8 @@ void keyPressed() {
     saveOneFrame = true;
   }
   if (key=='p' || key=='P') {
-    saveToPrint = true; 
-    saveOneFrame = true; 
+    saveToPrint = true;
+    saveOneFrame = true;
     println("saving to pdf - starting (this may take some time)");
   }
 }
@@ -147,11 +148,3 @@ void keyPressed() {
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-
-
-
-
-

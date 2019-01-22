@@ -1,6 +1,6 @@
 // M_4_2_01.pde
 // Attractor.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -33,9 +33,11 @@ import java.util.Calendar;
 
 int xCount = 200;
 int yCount = 200;
+// 整个网格尺寸
 float gridSize = 500;
 
-// nodes array 
+// nodes array
+// The node class supplies a basic object for physical simulations.
 Node[] myNodes = new Node[xCount*yCount];
 
 // attractor
@@ -47,15 +49,15 @@ boolean saveOneFrame = false;
 
 
 
-void setup() {  
-  size(600, 600); 
+void setup() {
+  size(600, 600);
 
   // setup drawing parameters
   colorMode(RGB, 255, 255, 255, 100);
   smooth();
   noStroke();
 
-  background(255); 
+  background(255);
 
   cursor(CROSS);
 
@@ -69,7 +71,7 @@ void setup() {
 void draw() {
   fill(255, 10);
   rect(0, 0, width, height);
-
+  // Attractor 跟随鼠标
   myAttractor.x = mouseX;
   myAttractor.y = mouseY;
 
@@ -80,7 +82,7 @@ void draw() {
 
     myNodes[i].update();
 
-    // draw nodes
+    // 画出每一个 node
     fill(0);
     rect(myNodes[i].x, myNodes[i].y, 1, 1);
   }
@@ -94,13 +96,17 @@ void draw() {
 
 
 void initGrid() {
-  int i = 0; 
+  int i = 0;
   for (int y = 0; y < yCount; y++) {
     for (int x = 0; x < xCount; x++) {
+      // (width-gridSize)/2 页边距
       float xPos = x*(gridSize/(xCount-1))+(width-gridSize)/2;
       float yPos = y*(gridSize/(yCount-1))+(height-gridSize)/2;
       myNodes[i] = new Node(xPos, yPos);
+      // void	setBoundary(float theMinX, float theMinY, float theMaxX, float theMaxY)
       myNodes[i].setBoundary(0, 0, width, height);
+      //  void	setDamping(float theDamping)
+      // 阻尼比较小,可能会有反弹到相反方向的现象
       myNodes[i].setDamping(0.02);  //// 0.0 - 1.0
       i++;
     }
@@ -122,10 +128,3 @@ void keyPressed() {
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 // M_4_2_01.pde
 // Attractor.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -19,7 +19,7 @@
 
 class Attractor {
   // position
-  float x=0, y=0; 
+  float x=0, y=0;
 
   // radius of impact
   float radius = 200;
@@ -35,6 +35,7 @@ class Attractor {
     // calculate distance
     float dx = x - theNode.x;
     float dy = y - theNode.y;
+    // Calculates the magnitude (or length) of a vector.
     float d = mag(dx, dy);
 
     if (d > 0 && d < radius) {
@@ -42,7 +43,7 @@ class Attractor {
       float s = d/radius;
       float f = 1 / pow(s, 0.5) - 1;
       f = f / radius;
-      
+      // 从物理上看, 是有错误的
       // apply force to node velocity
       theNode.velocity.x += dx * f;
       theNode.velocity.y += dy * f;
@@ -50,10 +51,3 @@ class Attractor {
   }
 
 }
-
-
-
-
-
-
-

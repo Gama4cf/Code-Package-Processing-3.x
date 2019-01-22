@@ -1,6 +1,6 @@
 // M_5_2_01.pde
 // FileSystemItem.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -34,7 +34,8 @@ class FileSystemItem {
       if (contents != null) {
         // Sort the file names in case insensitive order
         contents = sort(contents);
-
+        // 每一个文件除了软连接 都创建了一个 FileSystemItem 实例
+        //  文件夹的话里面存储了包含在其中的文件 children
         children = new FileSystemItem[contents.length];
         for (int i = 0 ; i < contents.length; i++) {
           // skip the . and .. directory entries on Unix systems
@@ -48,8 +49,8 @@ class FileSystemItem {
             String absPath = childFile.getAbsolutePath();
             String canPath = childFile.getCanonicalPath();
             if (!absPath.equals(canPath)) continue;
-          } 
-          catch (IOException e) { 
+          }
+          catch (IOException e) {
           }
           FileSystemItem child = new FileSystemItem(childFile);
           children[childCount] = child;
@@ -62,7 +63,7 @@ class FileSystemItem {
 
 
   // ------ print and debug functions ------
-  // Depth First Search
+  // DFS 深度优先遍历
   void printDepthFirst() {
     println("printDepthFirst");
     // global fileCounter
@@ -72,7 +73,7 @@ class FileSystemItem {
   }
   void printDepthFirst(int depth, int indexToParent) {
     // print four spaces for each level of depth + debug println
-    for (int i = 0; i < depth; i++) print("    ");  
+    for (int i = 0; i < depth; i++) print("    ");
     println(fileCounter+" "+indexToParent+"<-->"+fileCounter+" ("+depth+") "+file.getName());
 
     indexToParent = fileCounter;
@@ -84,14 +85,14 @@ class FileSystemItem {
   }
 
 
-  // Breadth First Search
+  // BFS 广度优先遍历
   void printBreadthFirst() {
     println("printBreadthFirst");
-
+    // 需要存储当前深度的所有项
     // queues for pushing and saving all elements in "breadth first search" style
-    ArrayList items = new ArrayList();  
-    ArrayList depths = new ArrayList(); 
-    ArrayList indicesParent = new ArrayList(); 
+    ArrayList items = new ArrayList();
+    ArrayList depths = new ArrayList();
+    ArrayList indicesParent = new ArrayList();
 
     // add first elements and startingpoint
     items.add(this);
@@ -99,12 +100,13 @@ class FileSystemItem {
     indicesParent.add(-1);
 
     // tmp vars for running in while loop
-    int index = 0;
-    int itemCount = 1;
+    int index = 0;  // current handle
+    int itemCount = 1;  // FileSystemItem Count
 
     while (itemCount > index) {
       FileSystemItem item = (FileSystemItem) items.get(index);
-      int depth = (Integer) depths.get(index); 
+      int depth = (Integer) depths.get(index);
+      // 需要一个存储 父目录index 的数组
       int indexToParent = (Integer) indicesParent.get(index);
 
       // print four spaces for each level of depth + debug println
@@ -113,11 +115,11 @@ class FileSystemItem {
 
       // is current node a directory?
       // yes -> push all children to the end of the items
-      if (item.file.isDirectory()) {      
+      if (item.file.isDirectory()) {
         for (int i = 0; i < item.childCount; i++) {
-          items.add(item.children[i]);  
+          items.add(item.children[i]);
           depths.add(depth+1);
-          indicesParent.add(index);    
+          indicesParent.add(index);
         }
         itemCount += item.childCount;
       }
@@ -126,39 +128,3 @@ class FileSystemItem {
     println(index+" files");
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

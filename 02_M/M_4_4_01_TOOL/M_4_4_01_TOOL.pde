@@ -1,6 +1,6 @@
 // M_4_4_01_TOOL.pde
 // GUI.pde, TileSaver.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -31,11 +31,12 @@
  * r                   : reset
  * s                   : save png
  * p                   : save pdf
- * h                   : save high resolution png (please update to processing 1.0.8 or 
+ * h                   : save high resolution png (please update to processing 1.0.8 or
  *                       later. otherwise this will not work properly)
  */
 
-
+// the mouse can influence all the nodes
+// 把原来的层变为Z轴
 // ------ imports ------
 
 import generativedesign.*;
@@ -89,14 +90,14 @@ boolean drawCurves = false;
 // nodes array
 Node[][][] nodes = new Node[maxCount*2+1][maxCount*2+1][maxCount*2+1];
 
-// attraktor 
+// attraktor
 Attractor myAttractor;
 
 
 // ------ mouse interaction ------
 
 int offsetX = 0, offsetY = 0, clickX = 0, clickY = 0;
-float rotationX = 0, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY; 
+float rotationX = 0, rotationY = 0, targetRotationX = 0, targetRotationY = 0, clickRotationX, clickRotationY;
 boolean mouseInWindow = false;
 
 
@@ -121,7 +122,7 @@ TileSaver tiler;
 
 
 void setup() {
-  size(1000, 1000, P3D);
+  size(720, 720, P3D);
   hint(DISABLE_DEPTH_TEST);
 
   tiler = new TileSaver(this);
@@ -130,7 +131,7 @@ void setup() {
 
   // init attractor
   myAttractor = new Attractor();
-  myAttractor.setMode(Attractor.SMOOTH); 
+  myAttractor.setMode(Attractor.SMOOTH);
 
   // init grid
   reset();
@@ -141,7 +142,7 @@ void setup() {
 
 void draw() {
   // ------ image output ------
-  if(tiler==null) return; 
+  if(tiler==null) return;
   tiler.pre();
 
   if (savePDF) {
@@ -155,7 +156,7 @@ void draw() {
   if (invertBackground) {
     bgColor = color(0);
     circleColor = color(360);
-  } 
+  }
   background(bgColor);
 
 
@@ -173,7 +174,7 @@ void draw() {
   // ------ set view ------
   pushMatrix();
   translate(width/2,height/2);
-
+  // 鼠标控制旋转的代码, 要注意的是: 后面的 Attractor 也要随着旋转
   if (mousePressed && mouseButton==RIGHT) {
     offsetX = (mouseX-clickX);
     offsetY = -(mouseY-clickY);
@@ -181,10 +182,10 @@ void draw() {
     targetRotationX = min(max(clickRotationX + offsetY/float(width) * TWO_PI, -HALF_PI), HALF_PI);
     targetRotationY = clickRotationY + offsetX/float(height) * TWO_PI;
   }
-  rotationX += (targetRotationX-rotationX)*0.25; 
-  rotationY += (targetRotationY-rotationY)*0.25;  
+  rotationX += (targetRotationX-rotationX)*0.25;
+  rotationY += (targetRotationY-rotationY)*0.25;
   rotateX(rotationX);
-  rotateY(rotationY); 
+  rotateY(rotationY);
 
 
 
@@ -206,28 +207,31 @@ void draw() {
   if (mousePressed && mouseButton==LEFT && !guiEvent) {
     if (!keyPressed) {
       // attraction, if left click
-      myAttractor.strength = -attractorStrength; 
-    } 
+      myAttractor.strength = -attractorStrength;
+    }
     else if (keyPressed && keyCode == SHIFT) {
       // repulsion, if shift + left click
-      myAttractor.strength = attractorStrength; 
+      myAttractor.strength = attractorStrength;
     }
-  } 
+  }
   else {
     // otherwise no attraction or repulsion
-    myAttractor.strength = 0; 
+    myAttractor.strength = 0;
   }
 
 
-  randomSeed(433);
-  float r1, r2, r3, r4;
-  float m = millis() / 1000.0;
+  // randomSeed(433);
+  // float r1, r2, r3, r4;
+  // float m = millis() / 1000.0;
 
 
-  // set attractor at the mouse position
+  // 跟随鼠标动
   myAttractor.x = (mouseX-width/2);
   myAttractor.y = (mouseY-height/2);
   myAttractor.z = 0;
+  //  If the nodes are rotated in space, the position of the attractor has to
+  //   be rotated in the opposite direction so that it influences those nodes
+  //     that are located on the screen plane
   myAttractor.rotateX(-rotationX);
   myAttractor.rotateY(-rotationY);
 
@@ -240,7 +244,7 @@ void draw() {
         myAttractor.attract(nodes[iz][iy][ix]);
         nodes[iz][iy][ix].update(lockX, lockY, lockZ);
       }
-    }  
+    }
   }
 
 
@@ -258,12 +262,12 @@ void draw() {
         drawLine(nodes[iz][iy], xCount, drawCurves);
 
         if (savePDF) {
-          println("saving to pdf – step " + (stepI++)); 
+          println("saving to pdf – step " + (stepI++));
         }
       }
     }
     lineDrawn = true;
-  } 
+  }
 
 
 
@@ -281,14 +285,14 @@ void draw() {
         }
         drawLine(pts, yCount, drawCurves);
         if (savePDF) {
-          println("saving to pdf – step " + (stepI++)); 
+          println("saving to pdf – step " + (stepI++));
         }
       }
     }
     lineDrawn = true;
-  } 
+  }
 
-  // z
+  // z, 原来是画两个轴, 现在把原来的层画成Z轴
   if (drawZ && zCount > 0) {
     for (int iy = maxCount-yCount; iy <= maxCount+yCount; iy++) {
       color c = colors[iy % colors.length];
@@ -302,12 +306,12 @@ void draw() {
         }
         drawLine(pts, zCount, drawCurves);
         if (savePDF) {
-          println("saving to pdf – step " + (stepI++)); 
+          println("saving to pdf – step " + (stepI++));
         }
       }
     }
     lineDrawn = true;
-  } 
+  }
 
 
   // if no lines were drawn, draw dots
@@ -336,7 +340,7 @@ void draw() {
         color c = colors[int(sp.z) % colors.length];
         fill(red(c), green(c), blue(c), lineAlpha);
 
-        println("saving to pdf – step " + (stepI++)); 
+        println("saving to pdf – step " + (stepI++));
         ellipse(sp.x, sp.y, lineWeight, lineWeight);
       }
 
@@ -358,7 +362,7 @@ void draw() {
     }
 
 
-  } 
+  }
   else {
     popMatrix();
 
@@ -411,8 +415,8 @@ void drawLine(PVector[] points, int len, boolean curves) {
   // this funktion draws a line from an array of PVectors
   // len    : number of points to each side of the center index of the array
   //          example: array-length=21, len=5 -> points[5] to points[15] will be drawn
-  // curves : if true, points will be connected with curves (a bit like curveVertex, 
-  //          not as accurate, but faster) 
+  // curves : if true, points will be connected with curves (a bit like curveVertex,
+  //          not as accurate, but faster)
 
   PVector d1 = new PVector();
   PVector d2 = new PVector();
@@ -440,7 +444,7 @@ void drawLine(PVector[] points, int len, boolean curves) {
         // how to distribute d2 to the anchors
         q1 = l1 / (l1+l2);
         q2 = l2 / (l1+l2);
-      } 
+      }
       else {
         // special handling for the last index
         l1 = PVector.dist(points[i], points[i-1]);
@@ -450,16 +454,16 @@ void drawLine(PVector[] points, int len, boolean curves) {
         q2 = 0;
       }
       // draw bezierVertex
-      bezierVertex(points[i-1].x+d1.x*q0, points[i-1].y+d1.y*q0, points[i-1].z+d1.z*q0, 
+      bezierVertex(points[i-1].x+d1.x*q0, points[i-1].y+d1.y*q0, points[i-1].z+d1.z*q0,
       points[i].x-d2.x*q1, points[i].y-d2.y*q1, points[i].z-d2.z*q1,
       points[i].x, points[i].y, points[i].z);
       // remember d2 and q2 for the next iteration
       d1.set(d2);
       q0 = q2;
-    } 
+    }
     else {
       vertex(points[i].x, points[i].y, points[i].z);
-    }  
+    }
   }
 
   endShape();
@@ -485,7 +489,7 @@ void initGrid() {
           n.maxY = 20000;
           n.minZ = -20000;
           n.maxZ = 20000;
-        } 
+        }
         else {
           n = nodes[iz][iy][ix];
           n.x = xPos;
@@ -592,8 +596,8 @@ void set4() {
 
 
 void setParas(int theXCount, int theYCount, int theZCount, float theGridStepX, float theGridStepY,  float theGridStepZ,
-float theAttractorRadius, float theAttractorStrength, float theAttractorRamp, float theNodeDamping, 
-boolean theInvertBackground, float theLineWeigth, float theLineAlpha, 
+float theAttractorRadius, float theAttractorStrength, float theAttractorRamp, float theNodeDamping,
+boolean theInvertBackground, float theLineWeigth, float theLineAlpha,
 boolean theDrawX, boolean theDrawY, boolean theDrawZ,
 boolean theLockX, boolean theLockY, boolean theLockZ, boolean theDrawCurves) {
 
@@ -658,7 +662,7 @@ boolean theLockX, boolean theLockY, boolean theLockZ, boolean theDrawCurves) {
     t = (Toggle) controlP5.getController("drawCurves");
     t.setState(theDrawCurves);
     drawCurves = theDrawCurves;
-  }    
+  }
 }
 
 
@@ -686,11 +690,11 @@ void keyPressed(){
     guiEvent = false;
   }
   if(key=='s' || key=='S') {
-    saveOneFrame = true; 
+    saveOneFrame = true;
   }
   if(key=='p' || key=='P') {
-    savePDF = true; 
-    saveOneFrame = true; 
+    savePDF = true;
+    saveOneFrame = true;
     println("saving to pdf - starting (this may take some time)");
   }
   if (key =='h' || key == 'H') {
@@ -731,56 +735,3 @@ void mouseExited(MouseEvent e) {
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

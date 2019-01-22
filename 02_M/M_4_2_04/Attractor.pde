@@ -1,6 +1,6 @@
 // M_4_2_04.pde
 // Attractor.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -19,12 +19,12 @@
 
 class Attractor {
   // position
-  float x=0, y=0; 
+  float x=0, y=0;
 
   // radius of impact
   float radius = 200;
   // strength: positive for attraction, negative for repulsion
-  float strength = 1;  
+  float strength = 1;
   // parameter that influences the form of the function
   float ramp = 0.5;    //// 0.01 - 0.99
 
@@ -48,17 +48,10 @@ class Attractor {
 
       // apply force to node velocity
       // swapping of dx and dy makes the twirl
+      // 旋风，旋涡
       theNode.velocity.x += dy * f;
       theNode.velocity.y -= dx * f;
     }
   }
 
 }
-
-
-
-
-
-
-
-

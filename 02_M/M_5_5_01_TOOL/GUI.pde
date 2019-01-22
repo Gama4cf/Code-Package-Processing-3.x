@@ -1,6 +1,6 @@
 // M_5_5_01_TOOL.pde
 // FileSystemItem.pde, GUI.pde, SunburstItem.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -43,7 +43,8 @@ void setupGUI(){
   int ri = 0;
   int ti = 0;
   int posY = 0;
-
+  // 对于那些 并非Range的GUI项, 是不是直接使用参数名就可以自动设置参数, 为不用使用theControlEvent????
+  // 一个有意思的事情是: theControlEvent 有一个 public float getValue() 方法
   ranges[ri++] = controlP5.addRange("file hue range",0,360,hueStart,hueEnd,left,top+posY+0,len,15);
   ranges[ri++] = controlP5.addRange("file saturation range",0,100,saturationStart,saturationEnd,left,top+posY+20,len,15);
   ranges[ri++] = controlP5.addRange("file brightness range",0,100,brightnessStart,brightnessEnd,left,top+posY+40,len,15);
@@ -108,12 +109,13 @@ void setupGUI(){
 }
 
 void drawGUI(){
-  controlP5.show(); 
+  controlP5.show();
   controlP5.draw();
 }
 
 
 // called on every change of the gui
+// theControlEvent: A controlEvent is sent to a PApplet or a ControlListener whenever a controller value has changed.
 void controlEvent(ControlEvent theControlEvent) {
   //println("got a control event from controller with id "+theControlEvent.getController().getId());
   if(theControlEvent.getController().getName().equals("file hue range")) {
@@ -147,25 +149,8 @@ void controlEvent(ControlEvent theControlEvent) {
     strokeWeightEnd = f[1];
   }
 
-  // update vars 
+  // update vars
   for (int i = 0 ; i < sunburst.length; i++) {
     sunburst[i].update(mappingMode);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

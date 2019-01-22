@@ -1,6 +1,6 @@
 // M_5_3_01.pde
 // FileSystemItem.pde, SunburstItem.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -49,20 +49,20 @@ class FileSystemItem {
             String absPath = childFile.getAbsolutePath();
             String canPath = childFile.getCanonicalPath();
             if (!absPath.equals(canPath)) continue;
-          } 
-          catch (IOException e) { 
+          }
+          catch (IOException e) {
           }
           FileSystemItem child = new FileSystemItem(childFile);
           children[childCount] = child;
           childCount++;
 
           folderMinFilesize = min(child.getFileSize(),folderMinFilesize);
-          folderMaxFilesize = max(child.getFileSize(),folderMaxFilesize); 
+          folderMaxFilesize = max(child.getFileSize(),folderMaxFilesize);
         }
         // remember the biggest and smallest filesite on each depth
         for (int i = 0 ; i < childCount; i++) {
           children[i].folderMinFilesize = folderMinFilesize;
-          children[i].folderMaxFilesize = folderMaxFilesize;        
+          children[i].folderMaxFilesize = folderMaxFilesize;
         }
 
       }
@@ -79,7 +79,9 @@ class FileSystemItem {
 
   long getFileSize(FileSystemItem hdItem) {
     try {
+      // 如果 FileSystemItem 是一个文件,直接返回文件的长度
       if (hdItem.file.isFile()) return hdItem.file.length();
+      // 如果是一个文件夹, 递归深度遍历 求和
       FileSystemItem[] hdItems = hdItem.children;
       long totalSize = 0;
       if (hdItems != null) {
@@ -89,7 +91,7 @@ class FileSystemItem {
       return totalSize;
     }
     catch (NullPointerException e) {
-      return 0; 
+      return 0;
     }
   }
 
@@ -101,7 +103,7 @@ class FileSystemItem {
     Calendar theLater = Calendar.getInstance();
     theLater.setTime(new Date(theFile.lastModified()));
     long milis1 = theLater.getTimeInMillis();
-    // now, global var
+    // now, global var : Calendar now = Calendar.getInstance();
     long milis2 = now.getTimeInMillis();
     // calculate difference in milliseconds
     long diff = milis2 - milis1;
@@ -122,7 +124,7 @@ class FileSystemItem {
   }
   void printDepthFirst(int depth, int indexToParent) {
     // print four spaces for each level of depth + debug println
-    for (int i = 0; i < depth; i++) print("    ");  
+    for (int i = 0; i < depth; i++) print("    ");
     println(fileCounter+" "+indexToParent+"<-->"+fileCounter+" ("+depth+") "+file.getName());
 
     indexToParent = fileCounter;
@@ -141,9 +143,9 @@ class FileSystemItem {
     println("printBreadthFirst");
 
     // queues for pushing and saving all elements in "breadth first search" style
-    ArrayList items = new ArrayList();  
-    ArrayList depths = new ArrayList(); 
-    ArrayList indicesParent = new ArrayList(); 
+    ArrayList items = new ArrayList();
+    ArrayList depths = new ArrayList();
+    ArrayList indicesParent = new ArrayList();
 
     // add first elements and startingpoint
     items.add(this);
@@ -156,7 +158,7 @@ class FileSystemItem {
 
     while (itemCount > index) {
       FileSystemItem item = (FileSystemItem) items.get(index);
-      int depth = (Integer) depths.get(index); 
+      int depth = (Integer) depths.get(index);
       int indexToParent = (Integer) indicesParent.get(index);
 
       // print four spaces for each level of depth + debug println
@@ -165,11 +167,11 @@ class FileSystemItem {
 
       // is current node a directory?
       // yes -> push all children to the end of the items
-      if (item.file.isDirectory()) {      
+      if (item.file.isDirectory()) {
         for (int i = 0; i < item.childCount; i++) {
-          items.add(item.children[i]);  
+          items.add(item.children[i]);
           depths.add(depth+1);
-          indicesParent.add(index);    
+          indicesParent.add(index);
         }
         itemCount += item.childCount;
       }
@@ -184,26 +186,30 @@ class FileSystemItem {
   // Breadth First
   SunburstItem[] createSunburstItems() {
     print("createSunburstItems -> ");
-
+    // 计算的是 anglePerMegabyte 然后根据每个文件的大小 计算角度
     float megabytes = this.getFileSize();
     float anglePerMegabyte = TWO_PI/megabytes;
-
+    // println(megabytes);
+    // 做广度优先遍历, 计算每一层
     // temp array for pushing and saving all elements in "breadth first search" style
-    ArrayList items = new ArrayList();  
-    ArrayList depths = new ArrayList(); 
-    ArrayList indicesParent = new ArrayList(); 
+    // 没有参数的构造器:Constructs an empty list with an initial capacity of ten.
+    ArrayList items = new ArrayList();
+    ArrayList depths = new ArrayList();
+    ArrayList indicesParent = new ArrayList();
     ArrayList sunburstItems = new ArrayList();
-    ArrayList angles = new ArrayList(); 
+    ArrayList angles = new ArrayList();
 
     // add first elements and startingpoint
-    items.add(this);
+    items.add(this);   //处理当前 FileSystemItem, 每次打开新 FileSystemItem 才调用这一段
     depths.add(0);
     indicesParent.add(-1);
     angles.add(0.0);
 
     // tmp vars for running in while loop
     int index = 0;
-    float angleOffset = 0, oldAngle = 0;
+	  // angleOffset: 某个文件或者文件夹在父文件夹中的偏移 = 排在其前面的文件和文件夹偏移之和
+    // oldAngle: 记录一个文件夹在整体中的角度
+    float angleOffset = 0, oldAngle = 0, oldDepth = 0;
 
     while (items.size() > index) {
       FileSystemItem item = (FileSystemItem) items.get(index);
@@ -211,28 +217,30 @@ class FileSystemItem {
       int indexToParent = (Integer) indicesParent.get(index);
       float angle = (Float) angles.get(index);
 
-      //if there is an angle change (= entering a new directory) reset angleOffset 
-      if (oldAngle != angle) angleOffset = 0.0;
+      //if there is an angle change (= entering a new directory) reset angleOffset
+      if (oldAngle != angle || oldDepth != depth) angleOffset = 0.0;
 
       // is current node a directory?
       // yes -> push all children to the end of the items
-      if (item.file.isDirectory()) {      
+      if (item.file.isDirectory()) {
         for (int ii = 0; ii < item.childCount; ii++) {
-          items.add(item.children[ii]);  
+          items.add(item.children[ii]);
           depths.add(depth+1);
           indicesParent.add(index);
-          angles.add(angle+angleOffset);    
+          // 同一个文件夹下所有文件的 angles[]数组内容 相同
+          angles.add(angle+angleOffset);
         }
       }
-
-      sunburstItems.add(new SunburstItem(index, indexToParent, item.childCount, depth, 
-      item.getFileSize(), getNotModifiedSince(item.file), 
-      item.file, (angle+angleOffset)%TWO_PI, item.getFileSize()*anglePerMegabyte, 
-      item.folderMinFilesize, item.folderMaxFilesize));
-
+      // 根据当前访问的 File 创建一个 sunburstItems
+      sunburstItems.add(new SunburstItem(index, indexToParent, item.childCount, depth,
+                                        item.getFileSize(), getNotModifiedSince(item.file),
+                                        item.file, (angle+angleOffset)%TWO_PI, item.getFileSize()*anglePerMegabyte,
+                                        item.folderMinFilesize, item.folderMaxFilesize));
+      // 计算到目前为止, 当前文件夹下 已访问的所有文件的 偏移角度
       angleOffset += item.getFileSize() * anglePerMegabyte;
       index++;
       oldAngle = angle;
+      oldDepth = depth;
     }
 
     println(index+" SunburstItems");
@@ -242,5 +250,3 @@ class FileSystemItem {
 
 
 }
-
-

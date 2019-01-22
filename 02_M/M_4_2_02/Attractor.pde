@@ -1,6 +1,6 @@
 // M_4_2_02.pde
 // Attractor.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -19,13 +19,15 @@
 
 class Attractor {
   // position
-  float x=0, y=0; 
+  float x=0, y=0;
 
   // radius of impact
   float radius = 200;
   // strength: positive for attraction, negative for repulsion
-  float strength = 1;  
+  float strength = 1;
   // parameter that influences the form of the function
+  // the more quickly the curve reaches its highest point, the greater the value.
+  // The parameter could therefore be called ramp.
   float ramp = 0.5;    //// 0.01 - 0.99
 
 
@@ -54,10 +56,3 @@ class Attractor {
   }
 
 }
-
-
-
-
-
-
-

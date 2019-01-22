@@ -1,6 +1,6 @@
 // M_4_1_01.pde
 // Node.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -27,10 +27,10 @@
 
 
 import java.util.Calendar;
-
+// node Count
 int nodeCount = 20;
 
-// myNodes array 
+// myNodes array
 Node[] myNodes = new Node[nodeCount];
 
 
@@ -40,22 +40,22 @@ boolean saveOneFrame = false;
 
 
 void setup() {
-  size(600,600); 
+  size(600,600);
   colorMode(RGB, 255, 255, 255, 100);
   smooth();
-  background(255); 
+  background(255);
   noStroke();
   fill(0);
 
   // setup myNodes
   for (int i = 0; i < nodeCount; i++) {
     myNodes[i] = new Node(random(width), random(height));
-    myNodes[i].velocity.x = random(-3, 3);
-    myNodes[i].velocity.y = random(-3, 3);
+    myNodes[i].velocity.x = random(-30, 30);
+    myNodes[i].velocity.y = random(-30, 30);
     myNodes[i].damping = 0.01;
   }
 }
-
+// 不刷新
 void draw() {
   fill(255, 5);
   rect(0, 0, width, height);
@@ -88,7 +88,7 @@ void keyPressed(){
   }
 
   if(key=='s' || key=='S') {
-    saveOneFrame = true; 
+    saveOneFrame = true;
   }
 }
 
@@ -96,11 +96,3 @@ void keyPressed(){
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-
-
-
-
-

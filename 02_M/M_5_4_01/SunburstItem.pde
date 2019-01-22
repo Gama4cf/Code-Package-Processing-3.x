@@ -1,6 +1,6 @@
 // M_5_4_01.pde
 // FileSystemItem.pde, SunburstItem.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -21,7 +21,7 @@ class SunburstItem {
   File file;
 
   // relations
-  int depth; 
+  int depth;
   int index;
   int indexToParent;
   int childCount;
@@ -39,7 +39,7 @@ class SunburstItem {
   float lineWeight;
   float angleStart, angleCenter, angleEnd;
   float extension;
-  float radius; 
+  float radius;
   float depthWeight; // stroke weight of the arc
   float x,y;
   float arcLength;
@@ -80,27 +80,27 @@ class SunburstItem {
 
       // chord
       float startX  = cos(angleStart) * radius;
-      float startY  = sin(angleStart) * radius;  
+      float startY  = sin(angleStart) * radius;
       float endX  = cos(angleEnd) * radius;
-      float endY  = sin(angleEnd) * radius; 
+      float endY  = sin(angleEnd) * radius;
       arcLength = dist(startX,startY, endX,endY);
 
       // color mapings
       float percent = 0;
       switch(theMappingMode) {
-      case 1: 
+      case 1:
         percent = norm(lastModified, lastModifiedOldest, lastModifiedYoungest);
         break;
-      case 2: 
+      case 2:
         percent = norm(fileSize, fileSizeMin, fileSizeMax);
         break;
-      case 3: 
+      case 3:
         percent = norm(fileSize, folderMinFilesize, folderMaxFilesize);
         break;
       }
 
       // colors for files and folders
-      if (isDir) { 
+      if (isDir) {
         float bright = lerp(folderBrightnessStart,folderBrightnessEnd,percent);
         col = color(0,0,bright);
       }
@@ -113,19 +113,27 @@ class SunburstItem {
       // calc stroke weight for relations line
       lineWeight = map(depth,depthMax,1,strokeWeightStart,strokeWeightEnd);
       if (arcLength < lineWeight) lineWeight = arcLength*0.93;
-      
+
       // calc bezier controlpoints
-      c1X = cos(angleCenter);
-      c1X *= calcEqualAreaRadius(depth-1, depthMax);
-      
-      c1Y = sin(angleCenter);
-      c1Y *= calcEqualAreaRadius(depth-1, depthMax);
+      if(indexToParent == 0){
+        c1X = cos(angleCenter);  // 中心的角度的cos()
+        c1Y = sin(angleCenter);
+        c2X = cos(sunburst[indexToParent].angleCenter);
+        c2Y = sin(sunburst[indexToParent].angleCenter);
+      }else{
+        // 第一个控制点: 父点的角度和子点的半径 组成的点
+        c1X = cos(angleCenter);
+        c1X *= calcEqualAreaRadius(depth-1, depthMax);
 
-      c2X = cos(sunburst[indexToParent].angleCenter); 
-      c2X *= calcEqualAreaRadius(depth, depthMax);
+        c1Y = sin(angleCenter);
+        c1Y *= calcEqualAreaRadius(depth-1, depthMax);
+        // 第二个控制点: 子点的角度和父点的半径 组成的点
+        c2X = cos(sunburst[indexToParent].angleCenter);
+        c2X *= calcEqualAreaRadius(depth, depthMax);
 
-      c2Y = sin(sunburst[indexToParent].angleCenter); 
-      c2Y *= calcEqualAreaRadius(depth, depthMax);
+        c2Y = sin(sunburst[indexToParent].angleCenter);
+        c2Y *= calcEqualAreaRadius(depth, depthMax);
+      }
     }
   }
 
@@ -136,13 +144,13 @@ class SunburstItem {
     if (depth > 0 ) {
       if (isDir) {
         strokeWeight(depthWeight * theFolderScale);
-        arcRadius = radius + depthWeight*theFolderScale/2;  
-      } 
+        arcRadius = radius + depthWeight*theFolderScale/2;
+      }
       else {
-        strokeWeight(depthWeight * theFileScale); 
-        arcRadius = radius + depthWeight*theFileScale/2;  
-      } 
-      stroke(col); 
+        strokeWeight(depthWeight * theFileScale);
+        arcRadius = radius + depthWeight*theFileScale/2;
+      }
+      stroke(col);
       arc(0,0, arcRadius,arcRadius, angleStart, angleEnd);
     }
   }
@@ -155,29 +163,29 @@ class SunburstItem {
       fill(0,0,dotBrightness);
       noStroke();
       ellipse(x,y,diameter,diameter);
-      noFill(); 
+      noFill();
     }
   }
 
   void drawRelationLine() {
     if (depth > 0) {
-      stroke(col); 
+      stroke(col);
       strokeWeight(lineWeight);
       line(x,y, sunburst[indexToParent].x,sunburst[indexToParent].y);
     }
   }
-  
+
   void drawRelationBezier() {
-    if (depth > 1) {
-      stroke(col); 
+    if (depth > 0) {
+      // 颜色是由子文件或者子文件夹的颜色来决定的
+      stroke(col);
       strokeWeight(lineWeight);
+      // 锚点,控制点,控制点,锚点
       bezier(x,y, c1X,c1Y, c2X,c2Y, sunburst[indexToParent].x,sunburst[indexToParent].y);
-    } 
+    }
     /*else {
       drawRelationLine();
     }*/
   }
 
 }
-
-

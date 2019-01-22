@@ -1,6 +1,6 @@
 // M_5_5_01_TOOL.pde
 // FileSystemItem.pde, GUI.pde, SunburstItem.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -18,7 +18,7 @@
 // limitations under the License.
 
 // CREDITS
-// part of the FileSystemItem class is based on code from Visualizing Data, First Edition 
+// part of the FileSystemItem class is based on code from Visualizing Data, First Edition
 // by Ben Fry. Copyright 2008 Ben Fry, 9780596514556.
 //
 // calcEqualAreaRadius function was done by Prof. Franklin Hernandez-Castro
@@ -26,13 +26,13 @@
 /**
  * press 'o' to select an input folder!
  * take care of very big folders, loading will take up to several minutes.
- * 
- * program takes a file directory (hierarchical tree) as input 
+ *
+ * program takes a file directory (hierarchical tree) as input
  * and displays all files and folders with sunburst technique.
- * 
+ *
  * MOUSE
  * position x/y               : rollover -> get meta information
- * 
+ *
  * KEYS
  * o                          : select an input folder
  * 1                          : mappingMode -> last modified
@@ -51,7 +51,7 @@ import java.io.File;
 
 
 // ------ default folder path ------
-String defaultFolderPath = System.getProperty("user.home")+"/Desktop";
+String defaultFolderPath = System.getProperty("user.home")+"/Desktop/test";
 //String defaultFolderPath = "/Users/admin/Desktop";
 //String defaultFolderPath = "C:\\windows";
 
@@ -102,9 +102,9 @@ int childCountMin, childCountMax;
 int fileCounter = 0;
 
 
-void setup() { 
-  size(1000,800);
-  setupGUI(); 
+void setup() {
+  size(1000,720);
+  setupGUI();
   colorMode(HSB,360,100,100);
 
   //font = createFont("Arial", 14);
@@ -146,14 +146,15 @@ void draw() {
 
   if (mAngle < 0) mAngle = map(mAngle,-PI,0,PI,TWO_PI);
   else mAngle = map(mAngle,0,PI,0,PI);
-  // calc mouse depth with mouse radius ... transformation of calcEqualAreaRadius()
+  // calc mouse depth with mouse radius ...
+  // 已知mRadius, calcEqualAreaRadius() 求:mDepth, 就是calcEqualAreaRadius()反着用
   int mDepth = floor(pow(mRadius,2)*(depthMax+1)/pow(height*0.5,2));
 
 
   // ------ draw the viz items ------
   for (int i = 0 ; i < sunburst.length; i++) {
     // draw arcs or rects
-    if (showArcs) { 
+    if (showArcs) {
       if (useArc) sunburst[i].drawArc(folderArcScale,fileArcScale);
       else sunburst[i].drawRect(folderArcScale,fileArcScale);
     }
@@ -168,7 +169,7 @@ void draw() {
     for (int i = 0 ; i < sunburst.length; i++) {
       if (useBezierLine) sunburst[i].drawRelationBezier();
       else sunburst[i].drawRelationLine();
-    } 
+    }
   }
 
   for (int i = 0 ; i < sunburst.length; i++) {
@@ -178,7 +179,7 @@ void draw() {
 
   // ------ mouse rollover ------
   if (showGUI == false) {
-    // depth level focus
+    // 着重的画出 鼠标处于的两一层的两个边缘
     if (mDepth <= depthMax) {
       float r1 = calcEqualAreaRadius(mDepth,depthMax);
       float r2 = calcEqualAreaRadius(mDepth+1,depthMax);
@@ -187,15 +188,17 @@ void draw() {
       ellipse(0,0,r1,r1);
       ellipse(0,0,r2,r2);
     }
-    // rollover text
+    // 显示当前文件的基本信息
     if(hitTestIndex != -1) {
       String tex = sunburst[hitTestIndex].name+"\n";
       tex += nf(sunburst[hitTestIndex].fileSize,1,1)+" MB | ";
       tex += sunburst[hitTestIndex].lastModified+" days | ";
-      tex += sunburst[hitTestIndex].childCount+" kids"; 
+      tex += sunburst[hitTestIndex].childCount+" kids";
       float texW = textWidth(tex)*1.2;
       fill(0,0,0);
       int offset = 5;
+      // textAscent(): Returns ascent of the current font at its current size.
+      // This information is useful for determining the height of the font above the baseline.
       rect(mX+offset,mY+offset,texW+4,textAscent()*3.6);
       fill(0,0,100);
       text(tex.toUpperCase(),mX+offset+2,mY+offset+2);
@@ -223,17 +226,17 @@ void setInputFolder(File theFolder) {
 void setInputFolder(String theFolderPath) {
     // get files on harddisk
   println("\n"+theFolderPath);
-  FileSystemItem selectedFolder = new FileSystemItem(new File(theFolderPath)); 
+  FileSystemItem selectedFolder = new FileSystemItem(new File(theFolderPath));
   //selectedFolder.printDepthFirst();
-  //selectedFolder.printBreadthFirst(); 
+  //selectedFolder.printBreadthFirst();
 
   // init sunburst
   sunburst = selectedFolder.createSunburstItems();
 
-  // mine sunburst -> get min and max values 
+  // mine sunburst -> get min and max values
   // reset the old values, without the root element
   depthMax = 0;
-  lastModifiedOldest = lastModifiedYoungest = 0; 
+  lastModifiedOldest = lastModifiedYoungest = 0;
   fileSizeMin = fileSizeMax = 0;
   childCountMin = childCountMax = 0;
   for (int i = 1 ; i < sunburst.length; i++) {
@@ -246,7 +249,7 @@ void setInputFolder(String theFolderPath) {
     childCountMax = max(sunburst[i].childCount, childCountMax);
   }
 
-  // update vars 
+  // update vars
   for (int i = 0 ; i < sunburst.length; i++) {
     sunburst[i].update(mappingMode);
   }
@@ -273,11 +276,11 @@ void keyReleased() {
   if (key == '1') {
     mappingMode = 1;
     frame.setTitle("last modified: old / young files, global");
-  }  
+  }
   if (key == '2') {
     mappingMode = 2;
     frame.setTitle("file size: big / small files, global");
-  }  
+  }
   if (key == '3') {
     mappingMode = 3;
     frame.setTitle("local folder file size: big / small files, each folder independent");
@@ -296,20 +299,6 @@ void keyReleased() {
   else controlP5.getGroup("menu").close();
 }
 
-
-void mouseEntered(MouseEvent e) {
-  loop();
-}
-
-void mouseExited(MouseEvent e) {
-  noLoop();
-}
-
-
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
-} 
-
-
-
-
+}

@@ -1,6 +1,6 @@
 // M_4_1_01.pde
 // Node.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -20,6 +20,7 @@
 class Node extends PVector {
 
   // velocity
+  // a velocity vector that specifies by how many pixels the position is offset in each frame
   PVector velocity = new PVector();
 
   // minimum and maximum posiions
@@ -28,7 +29,7 @@ class Node extends PVector {
   // damping of the velocity (0 = no damping, 1 = full damping)
   float damping = 0.1;
 
-
+  // 构造函数
   Node(float theX, float theY) {
     x = theX;
     y = theY;
@@ -38,7 +39,7 @@ class Node extends PVector {
   void update() {
     x += velocity.x;
     y += velocity.y;
-
+    // 限定范围, 反弹的效果
     if (x < minX) {
       x = minX - (x - minX);
       velocity.x = -velocity.x;
@@ -56,11 +57,8 @@ class Node extends PVector {
       y = maxY - (y - maxY);
       velocity.y = -velocity.y;
     }
-
+    // 阻尼
     velocity.x *= (1-damping);
     velocity.y *= (1-damping);
   }
 }
-
-
-

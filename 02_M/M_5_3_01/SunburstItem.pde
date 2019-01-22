@@ -1,6 +1,6 @@
 // M_5_3_01.pde
 // FileSystemItem.pde, SunburstItem.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -21,7 +21,7 @@ class SunburstItem {
   File file;
 
   // relations
-  int depth; 
+  int depth;
   int index;
   int indexToParent;
   int childCount;
@@ -39,14 +39,17 @@ class SunburstItem {
   float lineWeight;
   float angleStart, angleCenter, angleEnd;
   float extension;
-  float radius; 
+  float radius;
   float depthWeight; // stroke weight of the arc
   float x,y;
   float arcLength;
   float c1X,c1Y,c2X,c2Y; // bezier controlpoints
 
   // ------ constructor ------
-  SunburstItem(int theIndex, int theIndexToParent, int theChildCount, int theDepth, float theFileSize, int theLastModified, File theFile, float theAngle, float theExtension, float theFolderMinFilesize, float theFolderMaxFilesize) {
+  SunburstItem( int theIndex, int theIndexToParent, int theChildCount,
+                int theDepth, float theFileSize, int theLastModified,
+                File theFile, float theAngle, float theExtension,
+                float theFolderMinFilesize, float theFolderMaxFilesize) {
 
     this.depth = theDepth;
     this.index = theIndex;
@@ -80,27 +83,27 @@ class SunburstItem {
 
       // chord
       float startX  = cos(angleStart) * radius;
-      float startY  = sin(angleStart) * radius;  
+      float startY  = sin(angleStart) * radius;
       float endX  = cos(angleEnd) * radius;
-      float endY  = sin(angleEnd) * radius; 
+      float endY  = sin(angleEnd) * radius;
       arcLength = dist(startX,startY, endX,endY);
 
       // color mapings
       float percent = 0;
       switch(theMappingMode) {
-      case 1: 
+      case 1:
         percent = norm(lastModified, lastModifiedOldest, lastModifiedYoungest);
         break;
-      case 2: 
+      case 2:
         percent = norm(fileSize, fileSizeMin, fileSizeMax);
         break;
-      case 3: 
+      case 3:
         percent = norm(fileSize, folderMinFilesize, folderMaxFilesize);
         break;
       }
 
       // colors for files and folders
-      if (isDir) { 
+      if (isDir) {
         float bright = lerp(folderBrightnessStart,folderBrightnessEnd,percent);
         col = color(0,0,bright);
       }
@@ -109,7 +112,6 @@ class SunburstItem {
         color to = color(hueEnd, saturationEnd, brightnessEnd);
         col = lerpColor(from, to, percent);
       }
-
     }
   }
 
@@ -120,13 +122,19 @@ class SunburstItem {
     if (depth > 0 ) {
       if (isDir) {
         strokeWeight(depthWeight * theFolderScale);
-        arcRadius = radius + depthWeight*theFolderScale/2;  
-      } 
+        arcRadius = radius + depthWeight*theFolderScale/2;
+      }
       else {
-        strokeWeight(depthWeight * theFileScale); 
-        arcRadius = radius + depthWeight*theFileScale/2;  
-      } 
-      stroke(col); 
+        strokeWeight(depthWeight * theFileScale);
+        arcRadius = radius + depthWeight*theFileScale/2;
+      }
+      stroke(col);
+      // print("0 "+"0 "+arcRadius+" "+arcRadius+" "+angleStart+" "+ angleEnd+" \n");
+      // In some cases, the arc() function isn't accurate enough for smooth drawing.
+      // For example, the shape may jitter on screen when rotating slowly.
+      // If you're having an issue with how arcs are rendered,
+      // you'll need to draw the arc yourself with beginShape()/endShape() or a PShape.
+      // 在这里, 当文件非常多且占比很低的时候, 出现了奇怪的状况???
       arc(0,0, arcRadius,arcRadius, angleStart, angleEnd);
     }
   }
