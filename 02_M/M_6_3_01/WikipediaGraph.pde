@@ -1,6 +1,6 @@
 // M_6_3_01.pde
 // WikipediaGraph.pde, WikipediaNode.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -19,6 +19,12 @@
 
 
 class WikipediaGraph {
+  // The class WikipediaGraph administers the
+  // nodes and springs. The nodes are stored in
+  // a HashMap, which facilitates access via their
+  // ID. An arrayList is preferable for the springs
+  // since it can be expanded more quickly than
+  // an array.
 
   // we use a HashMap to store the nodes, because we frequently have to find them by their id,
   // which is easy to do with a HashMap
@@ -67,7 +73,7 @@ class WikipediaGraph {
 
   // helpers
   int pMillis = millis();
-  // for pdf output we need to freeze time to 
+  // for pdf output we need to freeze time to
   // prevent text from disappearing
   boolean freezeTime = false;
 
@@ -80,7 +86,10 @@ class WikipediaGraph {
 
 
   // ------ methods ------
-
+  // Before adding a node with addNode(), we
+  // check whether a node with this ID is already
+  // in nodeMap. If not, a new instance is created
+  // with this ID and saved in nodeMap.
   Node addNode(String theID, float theX, float theY) {
     // check if node is already there
     Node findNode = (Node) nodeMap.get(theID);
@@ -91,7 +100,7 @@ class WikipediaGraph {
       newNode.setID(theID);
       nodeMap.put(theID, newNode);
       return newNode;
-    } 
+    }
     else {
       return null;
     }
@@ -123,16 +132,22 @@ class WikipediaGraph {
     }
   }
 
-
+  // spring is created by passing theIDs of two
+  // nodes. Then it is verified that the respective
+  // nodes are in nodeMap. If they are not, the
+  // process is aborted.
   Spring addSpring(String fromID, String toID) {
-    WikipediaNode fromNode, toNode; 
+    WikipediaNode fromNode, toNode;
     fromNode = (WikipediaNode) nodeMap.get(fromID);
     toNode = (WikipediaNode) nodeMap.get(toID);
 
     // if one of the nodes do not exist, stop creating spring
     if (fromNode==null) return null;
     if (toNode==null) return null;
-
+    // If they are in nodeMap, it is verified that a
+    // connection already exists between these two
+    // nodes. If none exists, one will be created and
+    // stored in the Array List springs.
     if (getSpring(fromNode, toNode) == null) {
       // create a new spring
       Spring newSpring = new Spring(fromNode, toNode, springLength, springStiffness, 0.9);
@@ -146,11 +161,11 @@ class WikipediaGraph {
 
 
   Node getNodeByID(String theID) {
-    Node node = (Node) nodeMap.get(theID); 
+    Node node = (Node) nodeMap.get(theID);
     return node;
   }
 
-
+  // 根据鼠标的点击位置 获取Node
   Node getNodeByScreenPos(float theX, float theY) {
     float mx = (theX-width/2)/zoom-offset.x;
     float my = (theY-height/2)/zoom-offset.y;
@@ -173,7 +188,7 @@ class WikipediaGraph {
     }
     return selectedNode;
   }
-
+  // 与某个 Node 相连的 spring
   int getSpringIndexByNode(Node theNode) {
     for (int i = 0; i < springs.size(); i++) {
       Spring s = (Spring) springs.get(i);
@@ -183,7 +198,7 @@ class WikipediaGraph {
     }
     return -1;
   }
-
+  // 根据 Node 获取 连接两个Node的弹簧
   Spring getSpring(Node theFromNode, Node theToNode) {
     for (int i = 0; i < springs.size(); i++) {
       Spring s = (Spring) springs.get(i);
@@ -194,7 +209,7 @@ class WikipediaGraph {
     return null;
   }
 
-
+  // getter setter iser
   float getZoom() {
     return targetZoom;
   }
@@ -207,9 +222,9 @@ class WikipediaGraph {
   }
 
   void setOffset(float theOffsetX, float theOffsetY) {
-    offset.x = theOffsetX; 
-    offset.y = theOffsetY; 
-    targetOffset.x = offset.x; 
+    offset.x = theOffsetX;
+    offset.y = theOffsetY;
+    targetOffset.x = offset.x;
     targetOffset.y = offset.y;
   }
 
@@ -247,24 +262,24 @@ class WikipediaGraph {
   }
 
 
-
-  PVector screenPos(PVector thePos) {
-    return new PVector(thePos.x, thePos.y, 1);
-  }
-
-  PVector localToGlobal(float theX, float theY) {
-    float mx = (theX+offset.x)*zoom+width/2;
-    float my = (theY+offset.y)*zoom+height/2;
-
-    return new PVector(mx, my);
-  }
-
-  PVector globalToLocal(float theX, float theY) {
-    float mx = (theX-width/2)/zoom-offset.x;
-    float my = (theY-height/2)/zoom-offset.y;
-
-    return new PVector(mx, my);
-  }
+  // // XXX之间的转换
+  // PVector screenPos(PVector thePos) {
+  //   return new PVector(thePos.x, thePos.y, 1);
+  // }
+  //
+  // PVector localToGlobal(float theX, float theY) {
+  //   float mx = (theX+offset.x)*zoom+width/2;
+  //   float my = (theY+offset.y)*zoom+height/2;
+  //
+  //   return new PVector(mx, my);
+  // }
+  //
+  // PVector globalToLocal(float theX, float theY) {
+  //   float mx = (theX-width/2)/zoom-offset.x;
+  //   float my = (theY-height/2)/zoom-offset.y;
+  //
+  //   return new PVector(mx, my);
+  // }
 
 
 
@@ -273,7 +288,9 @@ class WikipediaGraph {
 
     Iterator i = nodeMap.entrySet().iterator();
     while (i.hasNext ()) {
+      // The only way to obtain a reference to a map entry is from the iterator of this collection-view.
       Map.Entry me = (Map.Entry) i.next();
+      // Returns the value corresponding to this entry.
       Node node = (Node) me.getValue();
       s += node.toString() + "\n";
     }
@@ -283,14 +300,14 @@ class WikipediaGraph {
 
   void update() {
     // use this function also to get actual width and heigth of the graph
-    minX = Float.MAX_VALUE; 
+    minX = Float.MAX_VALUE;
     minY = Float.MAX_VALUE;
-    maxX = -Float.MAX_VALUE; 
+    maxX = -Float.MAX_VALUE;
     maxY = -Float.MAX_VALUE;
 
     // make an Array out of the values in nodeMap
     Node[] nodes = (Node[]) nodeMap.values().toArray(new Node[0]);
-
+    // 对每一个 Node 更新, 以及更新所有的弹簧 spring
     for (int i = 0; i < nodes.length; i++) {
       nodes[i].attract(nodes);
     }
@@ -312,9 +329,9 @@ class WikipediaGraph {
       // when dragging a node
       selectedNode.x = (mouseX - width/2)/zoom - offset.x;
       selectedNode.y = (mouseY - height/2)/zoom - offset.y;
-    } 
+    }
 
-    // check if there is a node hovered    
+    // check if there is a node hovered
     rolloverNode = getNodeByScreenPos(mouseX, mouseY);
   }
 
@@ -323,7 +340,7 @@ class WikipediaGraph {
     int dt = 0;
     if (!freezeTime) {
       int m = millis();
-      dt = m - pMillis;    
+      dt = m - pMillis;
       pMillis = m;
     }
 
@@ -377,7 +394,7 @@ class WikipediaGraph {
       node.draw();
     }
 
-    // draw node labels 
+    // draw node labels
     iter = nodeMap.entrySet().iterator();
     while (iter.hasNext ()) {
       Map.Entry me = (Map.Entry) iter.next();
@@ -398,9 +415,9 @@ class WikipediaGraph {
     float margin2 = n2.diameter/2.0 + 3 + lineWeight/2;
 
     if (d.mag() > margin1+margin2) {
-      d.normalize();
+      d.normalize();  // 单位化之后 仅表示方向
       line(n1.x+d.x*margin1, n1.y+d.y*margin1, n2.x-d.x*margin2, n2.y-d.y*margin2);
-
+      // 箭头方向终点的 横线表示终止
       float a = atan2(d.y, d.x);
       pushMatrix();
       translate(n2.x-d.x*margin2, n2.y-d.y*margin2);
@@ -416,7 +433,7 @@ class WikipediaGraph {
   float getWidth() {
     return 1;
   }
-
+  // 把 链接地址 进行 url 编码
   String encodeURL(String name) {
     StringBuffer sb = new StringBuffer();
     byte[] utf8 = name.getBytes();
@@ -425,13 +442,13 @@ class WikipediaGraph {
       if (value < 33 || value > 126) {
         sb.append('%');
         sb.append(hex(value, 2));
-      } 
+      }
       else {
         sb.append((char) value);
       }
     }
     return sb.toString();
-  } 
+  }
 
 
 
@@ -448,7 +465,7 @@ class WikipediaGraph {
         }
         return true;
       }
-    } 
+    }
 
     return false;
   }
@@ -508,7 +525,7 @@ class WikipediaGraph {
           return true;
         }
       }
-    } 
+    }
 
     return false;
   }

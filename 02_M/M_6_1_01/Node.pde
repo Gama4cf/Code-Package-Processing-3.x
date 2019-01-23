@@ -1,6 +1,6 @@
 // M_6_1_01.pde
 // Node.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -39,6 +39,7 @@ class Node extends PVector {
   // radius of impact
   float radius = 200;
   // strength: positive for attraction, negative for repulsion (default for Nodes)
+  // 默认就是斥力
   float strength = -1;
   // parameter that influences the form of the function
   float ramp = 1.0f;
@@ -90,6 +91,7 @@ class Node extends PVector {
   // ------ calculate attraction ------
   void attract(Node[] theNodes) {
     // attraction or repulsion part
+    // 如若传进来一个 Node数组 那么针对数组中的每一个 Node 循环执行
     for (int i = 0; i < theNodes.length; i++) {
       Node otherNode = theNodes[i];
       // stop when empty
@@ -293,6 +295,3 @@ class Node extends PVector {
   }
 
 }
-
-
-

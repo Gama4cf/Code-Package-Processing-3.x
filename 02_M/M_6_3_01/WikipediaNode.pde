@@ -1,6 +1,6 @@
 // M_6_3_01.pde
 // WikipediaGraph.pde, WikipediaNode.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -18,14 +18,19 @@
 // limitations under the License.
 
 class WikipediaNode extends Node {
-
+  // The WikipediaNode class extends the Node
+  // class. In order to retrieve the information
+  // from the graph, the variable graph will later
+  // receive a reference to the graph. In linksXML
+  // and backlinksXML the XML files are loaded
+  // for the linking articles
   // reference to the force directed graph
   WikipediaGraph graph;
-
+  // 正向链接和反向链接
   // available links
   XML linksXML;
-  boolean availableLinksLoaded = false;
-  ArrayList availableLinks = new ArrayList();
+  boolean availableLinksLoaded = false;   // load之后置为 flase, 处理完之后置为 true
+  ArrayList availableLinks = new ArrayList();   // 存储当前可以load的所有children
 
   // available backlinks
   XML backlinksXML;
@@ -71,7 +76,7 @@ class WikipediaNode extends Node {
     graph = theGraph;
     init();
   }
-
+  // 构造器中的初始化一些参数
   void init() {
     activationTime = millis();
     diameter = nodeDiameter + 6;
@@ -81,7 +86,9 @@ class WikipediaNode extends Node {
     setRadius(nodeRadius);
   }
 
-
+  // The title of the Wikipedia article is passed to
+  // the setID( ) function. The XML file can then
+  // begin loading.
   void setID(String theID) {
     super.setID(theID);
 
@@ -98,13 +105,15 @@ class WikipediaNode extends Node {
     backlinksXML = GenerativeDesign.loadXMLAsync(thisPApplet, url);
   }
 
-
+  // Since the XML files were asynchronously
+  // loaded, loaderLoop() must constantly
+  // check if the data is already loaded
   void loaderLoop() {
     // handle loading of links
-    if (!availableLinksLoaded) {
+    if (!availableLinksLoaded) {  // 检查时必须检查的, 不让你就 有重复
       if (linksXML.getChildCount() > 0) {
         // get titles of links
-        XML[] children = linksXML.getChildren("query/pages/page/links/pl"); 
+        XML[] children = linksXML.getChildren("query/pages/page/links/pl");
         for (int i = 1; i < children.length; i++) {
           String title = children[i].getString("title");
           availableLinks.add(title);
@@ -114,20 +123,20 @@ class WikipediaNode extends Node {
         if (querycontinue == null) {
           availableLinksLoaded = true;
           GenerativeDesign.unsort(availableLinks);
-        } 
+        }
         else {
           String plcontinue = querycontinue.getString("plcontinue");
           String url = encodeURL("http://en.wikipedia.org/w/api.php?format=xml&action=query&prop=links&titles="+id+"&pllimit=500&plnamespace=0&plcontinue="+plcontinue);
           linksXML = GenerativeDesign.loadXMLAsync(thisPApplet, url);
         }
-      } 
+      }
     }
 
     // handle loading of backlinks
     if (!availableBacklinksLoaded) {
       if (backlinksXML.getChildCount() > 0) {
         // get titles of backlinks
-        XML[] children = backlinksXML.getChildren("query/backlinks/bl"); 
+        XML[] children = backlinksXML.getChildren("query/backlinks/bl");
         for (int i = 1; i < children.length; i++) {
           String title = children[i].getString("title");
           availableBacklinks.add(title);
@@ -137,13 +146,13 @@ class WikipediaNode extends Node {
         if (querycontinue == null) {
           availableBacklinksLoaded = true;
           GenerativeDesign.unsort(availableBacklinks);
-        } 
+        }
         else {
           String blcontinue = querycontinue.getString("blcontinue");
           String url = encodeURL("http://en.wikipedia.org/w/api.php?format=xml&action=query&list=backlinks&bltitle="+id+"&bllimit=500&blnamespace=0&blcontinue="+blcontinue);
           backlinksXML = GenerativeDesign.loadXMLAsync(thisPApplet, url);
         }
-      } 
+      }
     }
   }
 
@@ -155,7 +164,7 @@ class WikipediaNode extends Node {
     if (graph.isLoading(this)) {
       fill(128);
       ellipse(x, y, d, d);
-    } 
+    }
 
     // white ring between center circle and link ring
     d = diameter;
@@ -170,7 +179,7 @@ class WikipediaNode extends Node {
     popStyle();
   }
 
-
+  // 每个Node标签
   void drawLabel() {
     // draw text
     textAlign(LEFT);
@@ -193,7 +202,7 @@ class WikipediaNode extends Node {
           fill(0);
         }
         text(id, x+(diameter/2+5)*tfactor, y+6*tfactor);
-      } 
+      }
       else {
         // draw text for all nodes that are linked to the rollover node
         if (wasClicked || graph.showRolloverNeighbours) {

@@ -1,5 +1,5 @@
 // M_6_2_01.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -27,19 +27,20 @@ String query;
 
 
 void setup() {
-  query = "http://en.wikipedia.org/w/api.php?titles=Superegg&format=xml&action=query&prop=links&pllimit=500";
-  
+  query = "C:\\Users\\Name\\Desktop\\api.xml";
+
   try {
     myXML = loadXML(query);
-    links = myXML.getChildren("query/pages/page/links/pl"); 
+    // A list of XML elements can be created using the getChlidren() function,
+    //  in this case all the entries in XML under the specified path with the tag <p1>
+    links = myXML.getChildren("query/pages/page/links/pl");
 
     for (int i = 0; i < links.length; i++) {
       String title = links[i].getString("title");
       println("Link " + i + ": " + title);
     }
-  } 
+  }
   catch (Exception exception) {
     println(exception);
   }
 }
-

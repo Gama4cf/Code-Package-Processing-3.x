@@ -1,6 +1,6 @@
 // M_6_1_02.pde
 // Spring.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -16,7 +16,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+// 弹簧
 class Spring {
   Node fromNode;
   Node toNode;
@@ -43,14 +43,13 @@ class Spring {
   // ------ apply forces on spring and attached nodes ------
   void update() {
     // calculate the target position
-    // target = normalize(to - from) * length + from
+    // target = normalize(to - from) * length
     PVector diff = PVector.sub(toNode, fromNode);
     diff.normalize();
-    diff.mult(length);
-    PVector target = PVector.add(fromNode, diff);
-
-    PVector force = PVector.sub(target, toNode);
-    force.mult(0.5);
+    PVector target = diff.mult(length);
+    // force = (normalize(to - from) * length + from - to) * 0.5 * stiffness * (1 - damping)
+    PVector force = PVector.add(PVector.sub(fromNode, toNode), target);
+    force.mult(0.5); // 将这个力分给两个Node
     force.mult(stiffness);
     force.mult(1 - damping);
 
@@ -100,8 +99,3 @@ class Spring {
   }
 
 }
-
-
-
-
-

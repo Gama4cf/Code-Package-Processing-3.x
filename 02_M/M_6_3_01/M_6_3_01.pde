@@ -1,6 +1,6 @@
 // M_6_3_01.pde
 // WikipediaGraph.pde, WikipediaNode.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -58,7 +58,7 @@ PApplet thisPApplet = this;
 // the graph
 WikipediaGraph myWikipediaGraph;
 
-
+int x = 0;
 
 // ------ mouse interaction ------
 
@@ -76,7 +76,7 @@ boolean savePDF = false;
 
 
 void setup(){
-  size(800, 800);
+  size(720, 720);
   smooth();
   noStroke();
 
@@ -101,11 +101,11 @@ void draw() {
   background(255);
 
   // ------ update zooming and position of graph ------
-    myWikipediaGraph.setZoom(zoom);
-    // canvas dragging
-    if (dragging) {
-      myWikipediaGraph.setOffset(clickOffsetX + (mouseX - clickX), clickOffsetY + (mouseY - clickY));
-    }
+  myWikipediaGraph.setZoom(zoom);
+  // canvas dragging
+  if (dragging) {
+    myWikipediaGraph.setOffset(clickOffsetX + (mouseX - clickX), clickOffsetY + (mouseY - clickY));
+  }
 
   // ------ update and draw graph ------
   myWikipediaGraph.update();
@@ -154,16 +154,16 @@ String encodeURL(String url) {
   URI uri = null;
   try {
     uri = new URI(scheme, ssp, fragment);
-  } 
-  catch (URISyntaxException use) { 
-    return use.toString(); 
+  }
+  catch (URISyntaxException use) {
+    return use.toString();
   }
   String encodedURL1 = null;
   try {
     encodedURL1 = uri.toURL().toString();
-  } 
-  catch (MalformedURLException mue) { 
-    return mue.toString(); 
+  }
+  catch (MalformedURLException mue) {
+    return mue.toString();
   }
   // Here, we still have Unicode chars unchanged
 
@@ -172,9 +172,9 @@ String encodeURL(String url) {
   // to UTF-8, which always have the high bit set.
   try {
     utf8 = encodedURL1.getBytes("UTF-8");
-  } 
-  catch (UnsupportedEncodingException uee) { 
-    return uee.toString(); 
+  }
+  catch (UnsupportedEncodingException uee) {
+    return uee.toString();
   }
 
   StringBuffer encodedURL = new StringBuffer();
@@ -189,9 +189,9 @@ String encodeURL(String url) {
       conv[0] = utf8[i];
       try {
         encodedURL.append(new String(conv, "ASCII")); // Convert back to Ascii
-      } 
-      catch (UnsupportedEncodingException uee) { 
-        return uee.toString(); 
+      }
+      catch (UnsupportedEncodingException uee) {
+        return uee.toString();
       }
     }
   }
@@ -212,7 +212,7 @@ void keyPressed(){
   if (key=='s' || key=='S') saveFrame(timestamp()+".png");
 
   if (key=='p' || key=='P') {
-    savePDF = true; 
+    savePDF = true;
     println("saving to pdf - starting (this may take some time)");
   }
 }

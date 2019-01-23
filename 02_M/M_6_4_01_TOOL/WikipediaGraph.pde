@@ -1,6 +1,6 @@
 // M_6_4_01_TOOL.pde
 // GUI.pde, WikipediaGraph.pde, WikipediaNode.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -62,7 +62,15 @@ class WikipediaGraph {
   float nodeDiameterFactor = 1;
 
   // arrays for text analysis
-  Pattern[] patterns = new Pattern[0];
+  // For counting the keywords in a text, it is con ­
+  // venient to resort to java classes that were
+  // developed for working with regular expres ­
+  // sions. With regular expressions, strings can
+  // be analyzed and manipulated in various
+  // ways. Pattern is a class for a search pattern.
+  // A specific search pattern is needed for each
+  // subject.
+  Pattern[] patterns = new Pattern[0];   // Pattern: A compiled representation of a regular expression.
   color[] colors = new color[0];
 
   boolean showText = true;
@@ -79,13 +87,13 @@ class WikipediaGraph {
   float targetZoom = 1;
   // center of the boundaries of the graph
   PVector center = new PVector();
-  // 
+  //
   PVector offset = new PVector();
   PVector targetOffset = new PVector();
 
   // helpers
   int pMillis = millis();
-  // for pdf output we need to freeze time to 
+  // for pdf output we need to freeze time to
   // prevent text from disappearing
   boolean freezeTime = false;
 
@@ -103,11 +111,19 @@ class WikipediaGraph {
 
     // keywords for coloing the nodes
     // scientific -> blue
+    // In string s, the regular expression with
+    // the keywords for the subject science are
+    // defined. This string is then compiled
+    // with Pattern.compile() and added to
+    // the patterns array. The array colors is
+    // extended by the corresponding color.
     s = "model|theory|structur|component|element|concept|experiment|mathematic|chemi|device|biology|engineer|physic|scientific|science";
     patterns = (Pattern[]) append(patterns, Pattern.compile(s));
     colors = append(colors, color(0, 130, 164));
 
     // geography, politics -> yellow
+    // The same is done for the other tw objects,
+    // "nalure/society" and "art/culture"
     s = "climate|histor|planet|plant|population|ethnic|politic|atmosphere|treaty";
     patterns = (Pattern[]) append(patterns, Pattern.compile(s));
     colors = append(colors, color(181, 157, 0));
@@ -135,9 +151,9 @@ class WikipediaGraph {
       nodeMap.put(theID, newNode);
 
       return newNode;
-    } 
+    }
     else {
-      return null; 
+      return null;
     }
   }
 
@@ -169,7 +185,10 @@ class WikipediaGraph {
     }
   }
 
-
+  // Each time a new connection is created, the
+  // variables llnkCountand backlinkCount
+  // have to be increased accordingly in the cor ­
+  // responding nodes.
   Spring addSpring(String fromID, String toID) {
     WikipediaNode fromNode = (WikipediaNode) nodeMap.get(fromID);
     WikipediaNode toNode = (WikipediaNode) nodeMap.get(toID);
@@ -194,7 +213,7 @@ class WikipediaGraph {
 
 
   Node getNodeByID(String theID) {
-    Node node = (Node) nodeMap.get(theID); 
+    Node node = (Node) nodeMap.get(theID);
     return node;
   }
 
@@ -247,7 +266,7 @@ class WikipediaGraph {
     return targetZoom;
   }
   void setZoom(float theZoom) {
-    targetZoom = theZoom; 
+    targetZoom = theZoom;
   }
 
   PVector getOffset() {
@@ -255,10 +274,10 @@ class WikipediaGraph {
   }
 
   void setOffset(float theOffsetX, float theOffsetY) {
-    offset.x = theOffsetX; 
-    offset.y = theOffsetY; 
-    targetOffset.x = offset.x; 
-    targetOffset.y = offset.y; 
+    offset.x = theOffsetX;
+    offset.y = theOffsetY;
+    targetOffset.x = offset.x;
+    targetOffset.y = offset.y;
   }
 
   Node getLoadingNode() {
@@ -300,37 +319,37 @@ class WikipediaGraph {
   }
 
   void setSpringLength(float theLength) {
-    if (theLength != springLength) { 
+    if (theLength != springLength) {
       springLength = theLength;
       for (int i = 0; i < springs.size(); i++) {
         Spring s = (Spring) springs.get(i);
-        s.setLength(springLength);     
+        s.setLength(springLength);
       }
     }
   }
 
   void setSpringStiffness(float theStiffness) {
-    if (theStiffness != springStiffness) { 
+    if (theStiffness != springStiffness) {
       springStiffness = theStiffness;
       for (int i = 0; i < springs.size(); i++) {
         Spring s = (Spring) springs.get(i);
-        s.setStiffness(springStiffness);     
+        s.setStiffness(springStiffness);
       }
     }
   }
 
   void setSpringDamping(float theDamping) {
-    if (theDamping != springDamping) { 
+    if (theDamping != springDamping) {
       springDamping = theDamping;
       for (int i = 0; i < springs.size(); i++) {
         Spring s = (Spring) springs.get(i);
-        s.setDamping(springDamping);     
+        s.setDamping(springDamping);
       }
     }
   }
 
   void setNodeRadius(float theRadius) {
-    if (theRadius != nodeRadius) { 
+    if (theRadius != nodeRadius) {
       nodeRadius = theRadius;
       Iterator i = nodeMap.entrySet().iterator();
       while (i.hasNext()) {
@@ -342,7 +361,7 @@ class WikipediaGraph {
   }
 
   void setNodeStrength(float theStrength) {
-    if (theStrength != nodeStrength) { 
+    if (theStrength != nodeStrength) {
       nodeStrength = theStrength;
       Iterator i = nodeMap.entrySet().iterator();
       while (i.hasNext()) {
@@ -354,7 +373,7 @@ class WikipediaGraph {
   }
 
   void setNodeDamping(float theDamping) {
-    if (theDamping != nodeDamping) { 
+    if (theDamping != nodeDamping) {
       nodeDamping = theDamping;
       Iterator i = nodeMap.entrySet().iterator();
       while (i.hasNext()) {
@@ -367,19 +386,19 @@ class WikipediaGraph {
 
 
   void setInvertBackground(boolean theInvertBackground) {
-    invertBackground = theInvertBackground;  
+    invertBackground = theInvertBackground;
   }
 
   void setDrawHyperbolic(boolean theDrawHyperbolic) {
-    drawFishEyed = theDrawHyperbolic;  
+    drawFishEyed = theDrawHyperbolic;
   }
 
   void setLineWeight(float theLineWeight) {
-    lineWeight = theLineWeight;  
+    lineWeight = theLineWeight;
   }
 
   void setLineAlpha(float theLineAlpha) {
-    lineAlpha = theLineAlpha;  
+    lineAlpha = theLineAlpha;
   }
 
 
@@ -397,7 +416,7 @@ class WikipediaGraph {
 
 
   void setLinkColor(color theLinkColor) {
-    linkColor = theLinkColor;  
+    linkColor = theLinkColor;
   }
 
   void setShowText(boolean theShowText) {
@@ -412,31 +431,58 @@ class WikipediaGraph {
     showRolloverNeighbours = theShowRolloverNeighbours;
   }
 
-
+  // The screenPos() function Is called by the
+  // nodes before they are drawn in the display.
+  // The position thePos is passed and converted
+  // and a new PVector is returned.
   PVector screenPos(PVector thePos) {
-    if (drawFishEyed) {      
-      // position of the node transformed, so that x and y is 0 
+    if (drawFishEyed) {
+      // position of the node transformed, so that x and y is 0
       // if the node is in the center of the screen
       float x = thePos.x + offset.x / zoom;
       float y = thePos.y + offset.y / zoom;
       // get polar coordinates of the point
+      // 1. The passed position must first be cor ­
+      // rected since offset and zoomaffect where
+      // the coordinates are located in the display.
+      // This position (x, y) can be transformed in
+      // polarcoordinates — I.e., in a distance pol [OJ
+      // and an angle poKl].
       float[] pol = GenerativeDesign.cartesianToPolar(x, y);
       float distance = pol[0];
-      
+
       // fisheye projection
       float radius = min(width, height)/2;
+      // 2. Calculation of the viewing angle
+      // dis t Angle with the atan( ) function.
+      // The result of this function is a number
+      // between 0 and KAtF_PI. By dividing it
+      // by HALF_PI, distAngleisthusa value
+      // between 0 and 1.
       float distAngle = atan(distance/(radius/2)*zoom) / HALF_PI;
+      // 3. The unfolding ofthe viewing angle
+      // requires only taking the viewing angle
+      // di st Angle and multiplying it by the
+      // desired radius.
       float newDistance = distAngle * radius / zoom;
-      
+
       // transform polar coordinates back into cartesian coordinates
+      // 4. The new point newPos can now be calcu ­
+      // lated using newDi stance and the old direc ­
+      // tion angle pol[l].
       float[] newPos = GenerativeDesign.polarToCartesian(newDistance, pol[1]);
       // new position
       float newX = newPos[0]-offset.x;
       float newY = newPos[1]-offset.y;
       float newScale = min(1.2-distAngle, 1);
+      // In the z-coordinate of the returned vector,
+      // the information (a number between 0 and 1)
+      // about how much the node should be scaled is
+      // transmitted with newScal e.
       return new PVector(newX, newY, newScale);
     }
     else {
+
       return new PVector(thePos.x, thePos.y, 1);
     }
   }
@@ -472,25 +518,25 @@ class WikipediaGraph {
 
   void update() {
     // use this function also to get actual width and heigth of the graph
-    minX = Float.MAX_VALUE; 
+    minX = Float.MAX_VALUE;
     minY = Float.MAX_VALUE;
-    maxX = -Float.MAX_VALUE; 
+    maxX = -Float.MAX_VALUE;
     maxY = -Float.MAX_VALUE;
 
     // make an Array out of the values in nodeMap
     Node[] nodes = (Node[]) nodeMap.values().toArray(new Node[0]);
-
+    // 作用 磁力
     for (int i = 0; i < nodes.length; i++) {
       nodes[i].attract(nodes);
     }
     for (int i = 0; i < springs.size(); i++) {
       Spring s = (Spring) springs.get(i);
       if (s == null) break;
-      s.update();
+      s.update();  // 更新弹簧
     }
     for (int i = 0; i < nodes.length; i++) {
+      // 更新 Node 坐标, 之后 求出最大最小横纵坐标
       nodes[i].update();
-
       minX = min(nodes[i].x, minX);
       maxX = max(nodes[i].x, maxX);
       minY = min(nodes[i].y, minY);
@@ -501,12 +547,12 @@ class WikipediaGraph {
       // when dragging a node
       selectedNode.x = (mouseX - width/2)/zoom - offset.x;
       selectedNode.y = (mouseY - height/2)/zoom - offset.y;
-    } 
+    }
     else if (autoZoom) {
       // otherwise recalc zoom, center and offset
       center.set((minX+maxX)/2, (minY+maxY)/2, 0);
       targetOffset.set(-center.x, -center.y, 0);
-
+      // 自动缩放: 横纵坐标的整个跨度 被 现在画布-页边距 除
       float dx = maxX - minX;
       float dy = maxY - minY;
       float qx = 100;
@@ -516,7 +562,7 @@ class WikipediaGraph {
       targetZoom = min(min(qx, qy), 1);
     }
 
-    // check if there is a node hovered    
+    // check if there is a node hovered
     rolloverNode = getNodeByScreenPos(mouseX, mouseY);
 
   }
@@ -538,7 +584,7 @@ class WikipediaGraph {
     int dt = 0;
     if (!freezeTime) {
       int m = millis();
-      dt = m - pMillis;    
+      dt = m - pMillis;
       pMillis = m;
     }
 
@@ -597,7 +643,7 @@ class WikipediaGraph {
       node.draw();
     }
 
-    // draw node labels 
+    // draw node labels
     iter = nodeMap.entrySet().iterator();
     while (iter.hasNext()) {
       Map.Entry me = (Map.Entry) iter.next();
@@ -646,41 +692,70 @@ class WikipediaGraph {
       if (value < 33 || value > 126) {
         sb.append('%');
         sb.append(hex(value, 2));
-      } 
+      }
       else {
         sb.append((char) value);
       }
     }
     return sb.toString();
-  } 
+  }
 
-
+  // When a node has loaded the text of its Wiki-­
+  // pedia article, this calls the textToColor( )
+  // function, which evaluates the text and
+  // returns a color. The function is flexible with
+  // regard to the number len of the subjects, in
+  // this example it is three, but the number could
+  // be higher.
   color textToColor(String theText) {
     int i;
     int len = patterns.length;
     int[] counters = new int[len];
     int[] counterSums = new int[len];
-
+    // Matcher is the class that contains the result
+    // of the evaluation of a regular expression. In
+    // the loop, the search pattern is evaluated with
+    // the matcher( ) function. This result must be
+    // processed as long as more hits are encoun-
+    // tered. The corresponding counter[i] is
+    // incremented.
     Matcher m;
     for (i = 0; i < len; i++) {
+      // Creates a matcher that will match the given input against this pattern.
       m = patterns[i].matcher(theText.toLowerCase());
+      // Attempts to find the next subsequence of the input sequence that matches the pattern.
       while (m.find() == true) {
         counters[i]++;
       }
     }
 
     // sumarize counters
+    // For the interpolation of the colors, the sum of
+    // the countervalues counterSums is needed.
+    // This means when counters contains the
+    // values 13. 12. 51, then counterSums will
+    // contain 13, 15, 201.
     counterSums[0] = counters[0];
     for (i = 1; i < len; i++) {
       counterSums[i] = counterSums[i-1] + counters[i];
     }
     // if all counters are 0, return black
+    // When the last value in the array
+    // counterSums is 0, then not a single
+    // keyword was found in the text, and
+    // the colors are returned as black.
     if (counterSums[len-1] == 0) {
       return color(0);
     }
 
     // interpolate colors
     color result = colors[0];
+    // The interpolation steps are executed in the
+    // loop. It isinterpolated between the last inter ­
+    // polation resul t and the current color. The
+    // variable amount results in the current coun ­
+    // tervalue counter!!] and the running total of
+    // all counter values until this point.
     for (i = 1; i < len; i++) {
       float amount = counters[i]/float(counterSums[i]);
       result = lerpColor(result, colors[i], amount);
@@ -698,12 +773,12 @@ class WikipediaGraph {
 
         // double click right -> open page in browser
         if (mouseEvent.getClickCount()==2) {
-          link("http://en.wikipedia.org/wiki/"+encodeURL(clickedNode.id)); 
+          link("http://en.wikipedia.org/wiki/"+encodeURL(clickedNode.id));
         }
         return true;
       }
 
-    } 
+    }
 
     return false;
   }
@@ -769,7 +844,7 @@ class WikipediaGraph {
         }
 
       }
-    } 
+    }
     else {
       // doubleclick on canvas
       if (lastMouseButton == LEFT) {

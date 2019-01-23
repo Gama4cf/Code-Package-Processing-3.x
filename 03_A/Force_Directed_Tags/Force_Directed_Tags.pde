@@ -1,6 +1,6 @@
 // Force_Directed_Tags.pde
 // ImageRibbon.pde, Tag.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Groß, Julia Laub, Claudius Lazzeroni
@@ -20,10 +20,10 @@
 /**
  * generates a force directed layout with the tags found in book.xml.
  * this sketch is not explained in the book and not commented in detail
- * 
+ *
  * MOUSE
  * drag                : drag nodes
- * 
+ *
  * KEYS
  * a                   : stop/start attraction
  * arrow left/right    : node radius -/+
@@ -100,7 +100,8 @@ PFont font;
 
 
 void setup() {
-  size((2*205)*qf, 285*qf); 
+  //size((2*205)*qf, 285*qf);
+  size(1230, 855);
   background(255);
   smooth();
   noStroke();
@@ -108,20 +109,20 @@ void setup() {
   font = createFont("FreeSansBold.ttf",12);
   textFont(font, 7*qf);
 
-  // ------ load and interpret xml ------ 
+  // ------ load and interpret xml ------
 
   try {
     bookXML = loadXML("book.xml");
   } catch (Exception e) {
   }
-  
+
   int numEntries = bookXML.getChildCount();
   int tagSum = 0;
   XML[] sections = bookXML.getChildren("sections/section");
   for (int i=0; i < sections.length; i++) {
-    int pageCount = sections[i].getInt("pagecount"); 
+    int pageCount = sections[i].getInt("pagecount");
     String pageName = sections[i].getString("name");
-    int bookpart = sections[i].getInt("part"); 
+    int bookpart = sections[i].getInt("part");
 
     if (bookpart > 0) {
       bookParts = append(bookParts, pageSum);
@@ -186,7 +187,7 @@ void setup() {
     nodes[i].setRadius(50);
     nodes[i].setStrength(-5);
     nodes[i].setID(str(i));
-  } 
+  }
   for (int i = 0; i < sortedTags.size(); i++) {
     //println(sortedTags.get(i));
     Node n = new Node(width/2+random(-200, 200), height/2+random(-200, 200));
@@ -195,7 +196,7 @@ void setup() {
     nodes[pageSum+i].setRadius(nodeRadius*qf);
     nodes[pageSum+i].setStrength(nodeStrength);
     nodes[pageSum+i].setID(sortedTags.get(i).toString());
-  } 
+  }
 
   // set springs
   springs = new Spring[0];
@@ -226,15 +227,15 @@ void draw() {
     // let all nodes repel each other
     for (int i = pageSum; i < nodes.length; i++) {
       nodes[i].attract(nodes);
-    } 
+    }
     // apply spring forces
     for (int i = 0 ; i < springs.length; i++) {
       springs[i].update();
-    } 
+    }
     // apply velocity vector and update position
     for (int i = pageSum ; i < nodes.length; i++) {
       nodes[i].update();
-    } 
+    }
   }
 
   if (selectedNode != null) {
@@ -249,7 +250,7 @@ void draw() {
     strokeWeight(0.15*qf);
 
     for (int i = 1; i < 6; i++) {
-      line(i*345*qf, 0, i*345*qf, height); 
+      line(i*345*qf, 0, i*345*qf, height);
     }
   }
 
@@ -266,7 +267,7 @@ void draw() {
       if (ix >= imagesPerLine/2) px += (gridFoldW-(gridStepX-gridImageW));
       float py = gridMarginTop + iy*gridStepY;
       rect(px, py, gridImageW, gridImageH);
-      line(px+gridImageW/2, py, px+gridImageW/2, py+gridImageH); 
+      line(px+gridImageW/2, py, px+gridImageW/2, py+gridImageH);
     }
   }
 
@@ -278,7 +279,7 @@ void draw() {
     int actBookPart = 0;
     for (int i = 0 ; i < springs.length; i++) {
       if (actBookPart+1 < bookParts.length) {
-        if (int(springs[i].fromNode.id) >= bookParts[actBookPart+1]) actBookPart++; 
+        if (int(springs[i].fromNode.id) >= bookParts[actBookPart+1]) actBookPart++;
       }
       stroke(springColors[actBookPart]);
       float x1 = springs[i].fromNode.x + springs[i].fromNode.z;
@@ -297,7 +298,7 @@ void draw() {
   int actBookPart = 0;
   for (int i = 0 ; i < nodes.length; i++) {
     if (actBookPart+1 < bookParts.length) {
-      if (int(nodes[i].id) >= bookParts[actBookPart+1]) actBookPart++; 
+      if (int(nodes[i].id) >= bookParts[actBookPart+1]) actBookPart++;
     }
 
     float nodeDiameter = nodeDiameter1*qf;
@@ -330,7 +331,7 @@ void draw() {
       if (nodes[i].x+nodes[i].z > width/2) {
         textAlign(LEFT, CENTER);
         text(nodes[i].id, nodes[i].x+nodes[i].z+(s*0.1+1)*qf, nodes[i].y);
-      } 
+      }
       else {
         textAlign(RIGHT, CENTER);
         text(nodes[i].id, nodes[i].x+nodes[i].z-(s*0.1+1)*qf, nodes[i].y);
@@ -352,9 +353,9 @@ int getTagIndexByName(String name) {
     String s1 = name.toUpperCase();
     String s2 = sortedTags.get(i).toString().toUpperCase();
     if (s1.equals(s2)) {
-      return i;      
+      return i;
     }
-  } 
+  }
   return -1;
 }
 
@@ -381,14 +382,14 @@ void mouseReleased() {
 
 
 void keyPressed() {
-  if(key=='s' || key=='S') saveFrame(timestamp()+"_##.png"); 
+  if(key=='s' || key=='S') saveFrame(timestamp()+"_##.png");
 
   if(key=='p' || key=='P') {
-    savePDF = true; 
+    savePDF = true;
     println("saving to pdf - starting (this may take some time)");
   }
 
-  if(key=='a' || key=='A') attractionOn = !attractionOn; 
+  if(key=='a' || key=='A') attractionOn = !attractionOn;
 
   if (keyCode == LEFT) nodeRadius /= 1.5;
   if (keyCode == RIGHT) nodeRadius *= 1.5;
@@ -399,7 +400,7 @@ void keyPressed() {
   for (int i = 0; i < sortedTags.size(); i++) {
     nodes[pageSum+i].setRadius(nodeRadius*qf);
     nodes[pageSum+i].setStrength(nodeStrength);
-  } 
+  }
 
 }
 
@@ -407,49 +408,3 @@ void keyPressed() {
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

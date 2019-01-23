@@ -1,6 +1,6 @@
 // M_6_1_01.pde
 // Node.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -32,7 +32,7 @@ Node[] nodes = new Node[200];
 
 
 void setup() {
-  size(800, 800);
+  size(720, 720);
   background(255);
   smooth();
   noStroke();
@@ -41,7 +41,7 @@ void setup() {
   for (int i = 0 ; i < nodes.length; i++) {
     nodes[i] = new Node(width/2+random(-1, 1), height/2+random(-1, 1));
     nodes[i].setBoundary(5, 5, width-5, height-5);
-  } 
+  }
 }
 
 
@@ -51,12 +51,13 @@ void draw() {
 
   // let all nodes repel each other
   for (int i = 0 ; i < nodes.length; i++) {
+    // 全部相互排斥, 爆炸的效果, 但因为阻尼和限制的边界, 并不会平均分布
     nodes[i].attract(nodes);
-  } 
+  }
   // apply velocity vector and update position
   for (int i = 0 ; i < nodes.length; i++) {
     nodes[i].update();
-  } 
+  }
 
   // draw node
   fill(0);
@@ -68,13 +69,13 @@ void draw() {
 
 
 void keyPressed(){
-  if(key=='s' || key=='S') saveFrame(timestamp()+"_##.png"); 
+  if(key=='s' || key=='S') saveFrame(timestamp()+"_##.png");
 
   if(key=='r' || key=='R') {
     background(255);
     for (int i = 0 ; i < nodes.length; i++) {
       nodes[i].set(width/2+random(-5, 5), height/2+random(-5, 5), 0);
-    } 
+    }
   }
 }
 
@@ -82,7 +83,3 @@ void keyPressed(){
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-

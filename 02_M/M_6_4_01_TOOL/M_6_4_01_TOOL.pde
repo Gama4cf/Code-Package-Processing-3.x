@@ -1,6 +1,6 @@
 // M_6_4_01_TOOL.pde
 // GUI.pde, WikipediaGraph.pde, WikipediaNode.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -58,19 +58,19 @@ PApplet root = this;
 String actKeyword = "Design";
 WikipediaNode actNode;
 
-float zoom = 0.75;
-boolean autoZoom = false;
+float zoom = 0.75;  // 默认缩放
+boolean autoZoom = false;  // 自动缩放
 
-int resultCount = 10;
+int resultCount = 10;  // 每次点击新的 Node 数量
 
-float springLength = 100;
-float springStiffness = 0.4;
-float springDamping = 0.9;
+float springLength = 100;   // 弹簧长度
+float springStiffness = 0.4;  // 刚度
+float springDamping = 0.9;   // 阻尼
 
-float nodeRadius = 200;
-float nodeStrength = 15;
-float nodeDamping = 0.5;
-
+float nodeRadius = 200;  // 作用半径
+float nodeStrength = 15;  // 强度
+float nodeDamping = 0.5;  // 阻尼
+// 关于线的一些参数
 boolean invertBackground = false;
 boolean drawFishEyed = false;
 float lineWeight = 1;
@@ -94,7 +94,7 @@ WikipediaGraph myWikipediaGraph;
 
 
 // ------ mouse interaction ------
-
+// 鼠标交互的参数,其实就是控制 偏移
 boolean dragging = false;
 float offsetX = 0, offsetY = 0, clickX = 0, clickY = 0, clickOffsetX = 0, clickOffsetY = 0;
 int lastMouseButton = 0;
@@ -120,7 +120,7 @@ boolean savePDF = false;
 
 
 void setup(){
-  size(800, 800);
+  size(1280, 720);
   //textMode(SHAPE);
   setupGUI();
   guiEvent = false;
@@ -152,7 +152,7 @@ void draw() {
   color bgColor = color(255);
   if (invertBackground) {
     bgColor = color(0);
-  } 
+  }
   background(bgColor);
 
 
@@ -252,16 +252,16 @@ String encodeURL(String url) {
   URI uri = null;
   try {
     uri = new URI(scheme, ssp, fragment);
-  } 
-  catch (URISyntaxException use) { 
-    return use.toString(); 
+  }
+  catch (URISyntaxException use) {
+    return use.toString();
   }
   String encodedURL1 = null;
   try {
     encodedURL1 = uri.toURL().toString();
-  } 
-  catch (MalformedURLException mue) { 
-    return mue.toString(); 
+  }
+  catch (MalformedURLException mue) {
+    return mue.toString();
   }
   // Here, we still have Unicode chars unchanged
 
@@ -270,9 +270,9 @@ String encodeURL(String url) {
   // to UTF-8, which always have the high bit set.
   try {
     utf8 = encodedURL1.getBytes("UTF-8");
-  } 
-  catch (UnsupportedEncodingException uee) { 
-    return uee.toString(); 
+  }
+  catch (UnsupportedEncodingException uee) {
+    return uee.toString();
   }
 
   StringBuffer encodedURL = new StringBuffer();
@@ -287,9 +287,9 @@ String encodeURL(String url) {
       conv[0] = utf8[i];
       try {
         encodedURL.append(new String(conv, "ASCII")); // Convert back to Ascii
-      } 
-      catch (UnsupportedEncodingException uee) { 
-        return uee.toString(); 
+      }
+      catch (UnsupportedEncodingException uee) {
+        return uee.toString();
       }
     }
   }
@@ -298,7 +298,7 @@ String encodeURL(String url) {
 }
 
 
-// function to make a broad range of colors available by 
+// function to make a broad range of colors available by
 // a single number between 0 and 1
 color linearColor(float theValue) {
   pushStyle();
@@ -331,6 +331,7 @@ void keyPressed(){
       Toggle t = (Toggle) controlP5.getController("colorizeNodes");
       t.setState(colorizeNodes);
     }
+    //鱼眼镜头: 覆盖角度在180°左右、产生圆形图象且中央是夸张的使更向外围扭曲的透视图的广角摄影镜头
     if (key=='2') {
       drawFishEyed = !drawFishEyed;
       Toggle t = (Toggle) controlP5.getController("drawFishEyed");
@@ -342,10 +343,10 @@ void keyPressed(){
     zoom = max(zoom, 0.1);
 
     if(key=='s' || key=='S') {
-      saveOneFrame = true; 
+      saveOneFrame = true;
     }
     if(key=='p' || key=='P') {
-      savePDF = true; 
+      savePDF = true;
       println("saving to pdf - starting (this may take some time)");
     }
   }
@@ -354,7 +355,7 @@ void keyPressed(){
 
 void mousePressed() {
   lastMouseButton = mouseButton;
-  
+
   if (!guiEvent) {
     // tell graph that mouse was pressed
     boolean eventHandled = myWikipediaGraph.mousePressed();

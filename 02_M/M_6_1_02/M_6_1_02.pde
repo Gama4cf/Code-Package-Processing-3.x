@@ -1,6 +1,6 @@
 // M_6_1_02.pde
 // Spring.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -39,17 +39,17 @@ void setup() {
   size(600, 600);
   smooth();
   fill(0);
-
+  // 随机生成两个Node
   nodeA = new Node(width/2+random(-50, 50), height/2+random(-50, 50));
   nodeB = new Node(width/2+random(-50, 50), height/2+random(-50, 50));
-
+  // 设置阻尼
   nodeA.setDamping(0.1);
   nodeB.setDamping(0.1);
 
   spring = new Spring(nodeA, nodeB);
   spring.setLength(100);
-  spring.setStiffness(0.6);
-  spring.setDamping(0.3);
+  spring.setStiffness(0.6); // 刚度
+  spring.setDamping(0.3);  // 阻尼
 }
 
 
@@ -84,12 +84,10 @@ void draw() {
 
 
 void keyPressed(){
-  if(key=='s' || key=='S') saveFrame(timestamp()+"_##.png"); 
+  if(key=='s' || key=='S') saveFrame(timestamp()+"_##.png");
 }
 
 
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-

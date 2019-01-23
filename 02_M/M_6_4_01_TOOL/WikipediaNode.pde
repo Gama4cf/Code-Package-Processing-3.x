@@ -1,6 +1,6 @@
 // M_6_4_01_TOOL.pde
 // GUI.pde, WikipediaGraph.pde, WikipediaNode.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -80,7 +80,10 @@ class WikipediaNode extends Node {
     activationTime = millis();
   }
 
-
+  // In order to evaluate the length of an article,
+  // the text of the article has to be loaded. This is
+  // not a problem since the name of the page the
+  // node represents is saved in the ID.
   void setID(String theID) {
     super.setID(theID);
 
@@ -88,6 +91,10 @@ class WikipediaNode extends Node {
       // load html
       htmlLoaded = false;
       htmlString = "";
+      // In the loadHTMLAsync() function, it is pos-
+      // sible to load the complete source text (with
+      // the constant HTML_PLA1N) or, as illustrated
+      // here, the text as it appears in the browser.
       String url = encodeURL("https://en.wikipedia.org/wiki/"+id);
       htmlList = GenerativeDesign.loadHTMLAsync(thisPApplet, url, GenerativeDesign.HTML_CONTENT);
 
@@ -117,7 +124,7 @@ class WikipediaNode extends Node {
             htmlLoaded = true;
             nodeColor = graph.textToColor(htmlString);
           }
-        } 
+        }
         catch (Exception e) {
           println("Error during asyncHTMLLoad - but no problem");
         }
@@ -137,7 +144,7 @@ class WikipediaNode extends Node {
           //}
 
           // get titles of links
-          XML[] children = linksXML.getChildren("query/pages/page/links/pl"); 
+          XML[] children = linksXML.getChildren("query/pages/page/links/pl");
           for (int i = 1; i < children.length; i++) {
             String title = children[i].getString("title");
             availableLinks.add(title);
@@ -147,13 +154,13 @@ class WikipediaNode extends Node {
           if (querycontinue == null) {
             availableLinksLoaded = true;
             GenerativeDesign.unsort(availableLinks);
-          } 
+          }
           else {
             String plcontinue = querycontinue.getString("plcontinue");
             String url = encodeURL("http://en.wikipedia.org/w/api.php?format=xml&action=query&prop=links&titles="+id+"&pllimit=500&plnamespace=0&plcontinue="+plcontinue);
             linksXML = GenerativeDesign.loadXMLAsync(thisPApplet, url);
           }
-        } 
+        }
       }
 
       // handle loading of backlinks
@@ -161,7 +168,7 @@ class WikipediaNode extends Node {
         if (backlinksXML.getChildCount() > 0) {
           // backlinksXML = backlinksXML.getChild(0);
 
-          XML[] children = backlinksXML.getChildren("query/backlinks/bl"); 
+          XML[] children = backlinksXML.getChildren("query/backlinks/bl");
           for (int i = 1; i < children.length; i++) {
             String title = children[i].getString("title");
             availableBacklinks.add(title);
@@ -171,13 +178,13 @@ class WikipediaNode extends Node {
           if (querycontinue == null) {
             availableBacklinksLoaded = true;
             GenerativeDesign.unsort(availableBacklinks);
-          } 
+          }
           else {
             String blcontinue = querycontinue.getString("blcontinue");
             String url = encodeURL("http://en.wikipedia.org/w/api.php?format=xml&action=query&list=backlinks&bltitle="+id+"&bllimit=500&blnamespace=0&blcontinue="+blcontinue);
             backlinksXML = GenerativeDesign.loadXMLAsync(thisPApplet, url);
           }
-        } 
+        }
       }
     }
   }
@@ -191,8 +198,15 @@ class WikipediaNode extends Node {
     sy = spos.y;
     sfactor = spos.z;
 
-    // length of the text of the article (ignore 1500 chars 
-    // that are used for menu and other stuff)
+    // The length of the loaded HTML text is now
+    // used to define the radius ofthe node diam ­
+    // eter. First 1,500 characters are subtracted
+    // from the length, which is about the number
+    // of characters that are not part ofthe article.
+    // The result is then adjusted with the square
+    // root function sqrt( ) so the surface area of
+    // the circle grows proportionally to the length
+    // ofthe article.
     float l = max(htmlString.length()-1500, 0);
     // make this number a lot smaller and keep it from growing to fast
     l = sqrt(l/10000.0);
@@ -200,6 +214,10 @@ class WikipediaNode extends Node {
     diameter = graph.minNodeDiameter + graph.nodeDiameterFactor * l;
 
     // thickness of the ring around the node
+    // The entire number of links is available in the
+    // array availableLinks. The linkCount is the
+    // number of links already depicted. The radius
+    // of the ring is defined depending on the dif­ference.
     int hiddenLinkCount = availableLinks.size()-linkCount;
     hiddenLinkCount = max(0, hiddenLinkCount);
     ringRadius = 1 + sqrt(hiddenLinkCount / 2.0);
@@ -216,15 +234,15 @@ class WikipediaNode extends Node {
     if (graph.isLoading(this)) {
       fill(128);
       ellipse(sx, sy, d, d);
-    } 
+    }
     else if (!htmlLoaded) {
       fill(128);
       ellipse(sx, sy, d, d);
-    } 
+    }
 
     color col = nodeColor;
     if (graph.invertBackground && nodeColor == color(0)) {
-      col = color(255); 
+      col = color(255);
     }
 
     // ring for outgoing links
@@ -239,7 +257,7 @@ class WikipediaNode extends Node {
         if (graph.invertBackground) {
           s *= 0.8;
           b = b*0.5;
-        } 
+        }
         else {
           s *= 0.3;
           b = 100-(100-b)*0.5;
@@ -307,7 +325,7 @@ class WikipediaNode extends Node {
           if (graph.invertBackground) fill(255);
         }
         text(id, sx+(diameter/2+5)*tfactor*sfactor, sy+6*tfactor);
-      } 
+      }
       else {
         // draw text for all nodes that are linked to the rollover node
         if (wasClicked || graph.showRolloverNeighbours) {

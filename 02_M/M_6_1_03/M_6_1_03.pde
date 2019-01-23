@@ -1,5 +1,5 @@
 // M_6_1_03.pde
-// 
+//
 // Generative Gestaltung, ISBN: 978-3-87439-759-9
 // First Edition, Hermann Schmidt, Mainz, 2009
 // Hartmut Bohnacker, Benedikt Gross, Julia Laub, Claudius Lazzeroni
@@ -38,12 +38,12 @@ Spring[] springs = new Spring[0];
 
 // dragged node
 Node selectedNode = null;
-
+// Node 的半径, 但实际上并没有传给 Node 的实例, 仅在画Node的时候用到
 float nodeDiameter = 16;
 
 
 void setup() {
-  size(800, 800);
+  size(720, 720);
   background(255);
   smooth();
   noStroke();
@@ -62,22 +62,22 @@ void draw() {
   // let all nodes repel each other
   for (int i = 0 ; i < nodes.length; i++) {
     nodes[i].attract(nodes);
-  } 
+  }
   // apply spring forces
   for (int i = 0 ; i < springs.length; i++) {
     springs[i].update();
-  } 
+  }
   // apply velocity vector and update position
   for (int i = 0 ; i < nodes.length; i++) {
     nodes[i].update();
-  } 
-
+  }
+  // 无论鼠标在何处, 被选中的点都 重置为鼠标的坐标
   if (selectedNode != null) {
     selectedNode.x = mouseX;
     selectedNode.y = mouseY;
   }
 
-  // draw nodes
+  // draw springs
   stroke(0, 130, 164);
   strokeWeight(2);
   for (int i = 0 ; i < springs.length; i++) {
@@ -86,7 +86,7 @@ void draw() {
   // draw nodes
   noStroke();
   for (int i = 0 ; i < nodes.length; i++) {
-    fill(255);
+    fill(150);
     ellipse(nodes[i].x, nodes[i].y, nodeDiameter, nodeDiameter);
     fill(0);
     ellipse(nodes[i].x, nodes[i].y, nodeDiameter-4, nodeDiameter-4);
@@ -104,11 +104,15 @@ void initNodesAndSprings() {
   // init nodes
   float rad = nodeDiameter/2;
   for (int i = 0; i < nodes.length; i++) {
+    // 随机位置 初始化Node
     nodes[i] = new Node(width/2+random(-200, 200), height/2+random(-200, 200));
+    // 设置边界
     nodes[i].setBoundary(rad, rad, width-rad, height-rad);
+    // 作用半径
     nodes[i].setRadius(100);
+    // 斥力
     nodes[i].setStrength(-5);
-  } 
+  }
 
   // set springs randomly
   springs = new Spring[0];
@@ -120,6 +124,8 @@ void initNodesAndSprings() {
       Spring newSpring = new Spring(nodes[j], nodes[r]);
       newSpring.setLength(20);
       newSpring.setStiffness(1);
+      // Expands an array by one element and adds data to the new position.
+      // The datatype of the element parameter must be the same as the datatype of the array.
       springs = (Spring[]) append(springs, newSpring);
     }
   }
@@ -129,6 +135,7 @@ void initNodesAndSprings() {
 
 void mousePressed() {
   // Ignore anything greater than this distance
+  // 选中最近的点, 但是大于 maxDist 的话, 所有的点都不会被选中
   float maxDist = 20;
   for (int i = 0; i < nodes.length; i++) {
     Node checkNode = nodes[i];
@@ -139,7 +146,7 @@ void mousePressed() {
     }
   }
 }
-
+// 鼠标释放,选中的点也被释放了
 void mouseReleased() {
   if (selectedNode != null) {
     selectedNode = null;
@@ -148,13 +155,13 @@ void mouseReleased() {
 
 
 void keyPressed() {
-  if(key=='s' || key=='S') saveFrame(timestamp()+"_##.png"); 
+  if(key=='s' || key=='S') saveFrame(timestamp()+"_##.png");
 
   if(key=='p' || key=='P') {
-    savePDF = true; 
+    savePDF = true;
     println("saving to pdf - starting (this may take some time)");
   }
-
+  // r 是还原键
   if(key=='r' || key=='R') {
     background(255);
     initNodesAndSprings();
@@ -165,21 +172,3 @@ void keyPressed() {
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
